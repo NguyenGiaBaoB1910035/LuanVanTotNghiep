@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -26,6 +25,7 @@ return new class extends Migration
             $table->longText('description');
             $table->text('address');
             $table->string('favourite')->default('0');
+            $table->string('status')->default('pendding');
             $table->unsignedBigInteger('user_id');
 
             $table->foreign('user_id')
