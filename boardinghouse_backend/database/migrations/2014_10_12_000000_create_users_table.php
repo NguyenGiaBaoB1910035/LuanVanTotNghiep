@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('avatar')->default('avatar-default.jpg');
             $table->string('role')->default(UserRole::Customer);
-            $table->string('fullname')->nullable();
+            $table->string('name')->nullable();
             $table->string('gender')->nullable();
             $table->string('address')->nullable();
             $table->date('birthday')->nullable();
