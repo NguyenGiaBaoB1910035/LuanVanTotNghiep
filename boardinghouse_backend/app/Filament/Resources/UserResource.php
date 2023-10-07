@@ -61,7 +61,10 @@ class UserResource extends Resource
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
-            ]);
+            ])
+            ->query(function (User $query) {
+                return $query->where('id', '<>', auth()->user()->id);
+            });
     }
 
     public static function getRelations(): array
