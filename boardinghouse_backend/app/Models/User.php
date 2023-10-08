@@ -54,6 +54,6 @@ class User extends Authenticatable
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->avatar_url;
+        return $this->avatar;
     }
 }
