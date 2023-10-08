@@ -12,7 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use Illuminate\Validation\Rules\Password;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
@@ -31,7 +31,9 @@ class UserResource extends Resource
                     ->password()
                     ->required()
                     ->hiddenOn('edit')
-                    ->visibleOn('create'),
+                    ->visibleOn('create')
+                    ->maxLength(255)
+                    ->rule(Password::default()),
             ]);
     }
 
