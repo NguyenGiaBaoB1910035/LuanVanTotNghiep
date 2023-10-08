@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\UserRole;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -21,8 +23,9 @@ use Filament\Forms\Components\{
     TextInput,
     Card,
     Grid,
-    DateTimePicker,
-    Toggle
+    DatePicker,
+    Toggle,
+    Select
 };
 use Filament\Tables\Columns\{
     TextColumn,
@@ -47,9 +50,13 @@ class UserResource extends Resource
                         FileUpload::make('avatar'),
                         Card::make()
                             ->schema([
-                                TextInput::make('user_name')->required(),
+                                Select::make('role')
+                                    ->options(UserRole::toSelectArray()),
+                                TextInput::make('user_name')->required()->readonly('edit'),
                                 TextInput::make('name')->required(),
-                                TextInput::make('email')->email()->required(),
+                                TextInput::make('email')->email()->required()->hiddenOn('edit'),
+                                TextInput::make('phone')->required(),
+                                DatePicker::make('birthday')->required(),
                                 TextInput::make('phone')->required(),
                                 TextInput::make('password')
                                     ->password()

@@ -37,5 +37,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Gia Bao',
             ],
         ]);
+
+        User::factory(50)->create();
     }
 }
