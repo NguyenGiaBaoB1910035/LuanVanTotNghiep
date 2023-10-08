@@ -10,41 +10,90 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\{
+    Builder,
+    SoftDeletingScope
+};
 use Illuminate\Validation\Rules\Password;
+use Filament\Support\Enums\FontWeight;
+use Filament\Forms\Components\{
+    FileUpload,
+    TextInput,
+    Card,
+    Grid,
+    DateTimePicker,
+    Toggle
+};
+use Filament\Tables\Columns\{
+    TextColumn,
+    ImageColumn,
+    Layout\Stack,
+    Layout\Split,
+    Layout\Panel,
+};
+
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_name')->required(),
-                Forms\Components\TextInput::make('name')->required(),
-                Forms\Components\TextInput::make('email')->email()->required(),
-                Forms\Components\TextInput::make('phone')->required(),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->hiddenOn('edit')
-                    ->visibleOn('create')
-                    ->maxLength(255)
-                    ->rule(Password::default()),
-            ]);
+                Card::make()
+                    ->schema([
+                        FileUpload::make('avatar'),
+                        Card::make()
+                            ->schema([
+                                TextInput::make('user_name')->required(),
+                                TextInput::make('name')->required(),
+                                TextInput::make('email')->email()->required(),
+                                TextInput::make('phone')->required(),
+                                TextInput::make('password')
+                                    ->password()
+                                    ->required()
+                                    ->hiddenOn('edit')
+                                    ->visibleOn('create')
+                                    ->maxLength(255)
+                                    ->rule(Password::default()),
+                            ]),
+
+                    ])
+            ])->columns(12);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->contentGrid([
+                'md' => 2,
+                'xl' => 3,
+            ])
             ->columns([
-                Tables\Columns\TextColumn::make('user_name'),
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('role'),
-                Tables\Columns\TextColumn::make('email'),
+                Stack::make([
+                    ImageColumn::make('avatar')->circular(),
+                    TextColumn::make('name')
+                        ->weight(FontWeight::Bold)
+                        ->searchable()
+                        ->sortable(),
+                    TextColumn::make('role')
+                        ->searchable()
+                        ->sortable(),
+                ]),
+                Panel::make([
+                    Split::make([
+                        Stack::make([
+                            TextColumn::make('phone')
+                                ->icon('heroicon-m-phone')
+                                ->searchable(),
+                            TextColumn::make('email')
+                                ->icon('heroicon-m-envelope')
+                                ->searchable(),
+                        ]),
+                    ])->from('md'),
+                ])->collapsed(true)
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
