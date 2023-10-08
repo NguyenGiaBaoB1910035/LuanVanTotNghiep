@@ -23,11 +23,19 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         User::insert([
-            'user_name' => 'phamle21',
-            'email' => 'phamle21@gmail.com',
-            'phone' => '091649826',
-            'password' => Hash::make('phamle21'),
-            'name' => 'Phạm Lê',
+            [
+                'user_name' => 'phamle21',
+                'email' => 'phamle21@gmail.com',
+                'phone' => '091649826',
+                'password' => Hash::make('phamle21'),
+                'name' => 'Phạm Lê'],
+            [
+                'user_name' => 'giabao111',
+                'email' => 'nbao7757@gmail.com',
+                'phone' => '0377808122',
+                'password' => Hash::make('123456789'),
+                'name' => 'Gia Bao',
+            ],
         ]);
     }
 }
