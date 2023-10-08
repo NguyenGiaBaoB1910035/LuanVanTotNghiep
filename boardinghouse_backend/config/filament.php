@@ -37,10 +37,4 @@ return [
 
     'default_filesystem_disk' => env('FILAMENT_FILESYSTEM_DISK', 'public'),
 
-
-    'layout' => [
-        'sidebar' => [
-            'is_collapsible_on_desktop' => true,
-        ],
-    ],
 ];
