@@ -9,6 +9,7 @@ import 'package:boardinghouse_app/screens/home/outstandingpage.dart';
 import 'package:boardinghouse_app/screens/home/suggestpage.dart';
 import 'package:boardinghouse_app/screens/post_quickly/create_boarding_house.dart';
 import 'package:boardinghouse_app/screens/post_quickly/post_quickly_page.dart';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,7 +18,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,11 @@ class MyApp extends StatelessWidget {
         'account': (context) => const AccountPage(),
         //-----//
         'postquickly': (context) => const PostQuicklyPage(),
-        'createBH':(context) => const CreateBoardingHousePage()
+        'createBH': (context) => const CreateBoardingHousePage(),
+
+        //-----//
+        // 'test': (context) => const TestCreateBoardingHousePage(),
+        // 'util': (context) => const UtilUI()
       },
     );
   }

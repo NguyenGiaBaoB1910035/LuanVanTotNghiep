@@ -1,11 +1,9 @@
-import 'package:boardinghouse_app/models/page_views.dart';
-import 'package:boardinghouse_app/screens/authu/login_page.dart';
-import 'package:boardinghouse_app/screens/authu/register_page.dart';
-
+// import 'package:boardinghouse_app/models/page_views.dart';
+// import 'package:boardinghouse_app/screens/authu/login_page.dart';
+// import 'package:boardinghouse_app/screens/authu/register_page.dart';
+// import '../bottombar.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
-import '../bottombar.dart';
 
 final logoImages = [
   "assets/logos/logobegin1.png",
@@ -21,22 +19,22 @@ final text2 = [
   "Đưa căn trọ của bạn \n đến mọi người nhanh chóng"
 ];
 
-final List<PageViews> _pageViews = [
-  PageViews(
-    logoImage: "assets/logos/logobegin1.png",
-    text1: "Ứng dụng uy tín",
-    text2: "Kiểm duyệt chính xác \n an toàn - nhanh chóng - tiện lợi ",
-  ),
-  PageViews(
-    logoImage: "assets/logos/logobegin2.png",
-    text1: "Tìm kiếm nhanh chóng",
-    text2: "Tìm kiếm dựa trên các \n yêu cầu của khách hàng",
-  ),
-  PageViews(
-      logoImage: "assets/logos/logobegin3.png",
-      text1: "Đăng tin dễ dàng",
-      text2: "Đưa căn trọ của bạn \n đến mọi người nhanh chóng"),
-];
+// final List<PageViews> _pageViews = [
+//   PageViews(
+//     logoImage: "assets/logos/logobegin1.png",
+//     text1: "Ứng dụng uy tín",
+//     text2: "Kiểm duyệt chính xác \n an toàn - nhanh chóng - tiện lợi ",
+//   ),
+//   PageViews(
+//     logoImage: "assets/logos/logobegin2.png",
+//     text1: "Tìm kiếm nhanh chóng",
+//     text2: "Tìm kiếm dựa trên các \n yêu cầu của khách hàng",
+//   ),
+//   PageViews(
+//       logoImage: "assets/logos/logobegin3.png",
+//       text1: "Đăng tin dễ dàng",
+//       text2: "Đưa căn trọ của bạn \n đến mọi người nhanh chóng"),
+// ];
 
 class BeginPage extends StatelessWidget {
   const BeginPage({super.key});

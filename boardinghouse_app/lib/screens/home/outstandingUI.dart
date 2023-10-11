@@ -1,5 +1,5 @@
 import 'package:boardinghouse_app/screens/home/CardUI.dart';
-import 'package:boardinghouse_app/screens/home/outstandingpage.dart';
+// import 'package:boardinghouse_app/screens/home/outstandingpage.dart';
 import 'package:flutter/material.dart';
 
 class OutstandingUI extends StatelessWidget {
@@ -30,7 +30,7 @@ class OutstandingUI extends StatelessWidget {
               crossAxisSpacing: 20,
               shrinkWrap: true,
               crossAxisCount: 2,
-              childAspectRatio: (1 / 1.5),
+              childAspectRatio: (1 / 1.2),
               // scrollDirection: Axis.vertical,
               children: List.generate(4, (index) {
                 return CardUI();

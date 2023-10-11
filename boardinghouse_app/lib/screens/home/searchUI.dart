@@ -43,7 +43,9 @@ class SearchUI extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).pushNamed('util');
+                    },
                     child: Column(
                       children: [
                         Container(

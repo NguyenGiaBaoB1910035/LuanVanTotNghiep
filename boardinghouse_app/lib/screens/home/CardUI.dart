@@ -23,7 +23,7 @@ class _CardUIState extends State<CardUI> {
               width: MediaQuery.of(context).size.width,
               height: 100,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(10),
                 image: const DecorationImage(
                   image: AssetImage("assets/images/anh.jpg"),
                   fit: BoxFit.fitWidth,
@@ -64,13 +64,13 @@ class _CardUIState extends State<CardUI> {
                     TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2.5),
-              child: Text(
-                "40B/49, Trần Hoàng Na, Hưng Lợi",
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
+            // const Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2.5),
+            //   child: Text(
+            //     "40B/49, Trần Hoàng Na, Hưng Lợi",
+            //     overflow: TextOverflow.ellipsis,
+            //   ),
+            // ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2.5),
               child: Text("Ninh Kiêu"),

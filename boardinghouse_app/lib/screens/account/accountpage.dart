@@ -59,11 +59,11 @@ class AccountPage extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {},
-                      child: Padding(
+                      child: const Padding(
                           padding: EdgeInsets.symmetric(vertical: 20),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
+                            children: [
                               Text(
                                 "Xem thông tin cá nhân",
                                 style: TextStyle(fontSize: 20),
@@ -79,11 +79,11 @@ class AccountPage extends StatelessWidget {
                     ),
                     InkWell(
                       onTap: () {},
-                      child: Padding(
+                      child: const Padding(
                           padding: EdgeInsets.symmetric(vertical: 20),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
+                            children: [
                               Text(
                                 "Xác minh tài khoản",
                                 style: TextStyle(fontSize: 20),
@@ -108,11 +108,11 @@ class AccountPage extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {},
-                      child: Padding(
+                      child: const Padding(
                           padding: EdgeInsets.symmetric(vertical: 20),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
+                            children: [
                               Text(
                                 "Thông tin về SEBOA",
                                 style: TextStyle(fontSize: 20),
