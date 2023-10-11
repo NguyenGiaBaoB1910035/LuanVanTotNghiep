@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('boarding_house', function (Blueprint $table) {
             $table->id();
             $table->string('type')->default(BoardingHouseType::BoardingRoom);
-            $table->string('price');
-            $table->string('acreage');
-            $table->string('capacity');
-            $table->string('deposit_price');
-            $table->string('electric_price');
-            $table->string('water_price');
+            $table->String('room_number');// loai phong
+            $table->string('acreage'); // diện tích
+            $table->string('capacity'); // sức chứa
+            $table->string('price'); //giá phòng
+            $table->string('deposit_price'); //giá cọc
+            $table->string('electric_price'); //giá điện
+            $table->string('water_price'); //giá nước
             $table->time('open_time');
             $table->time('close_time');
             $table->longText('description');

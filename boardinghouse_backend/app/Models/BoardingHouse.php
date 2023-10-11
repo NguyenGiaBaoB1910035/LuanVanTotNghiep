@@ -10,8 +10,10 @@ class BoardingHouse extends Model
     use HasFactory;
     protected $fillable = [
         'type',
+        'room_number',
         'acreage',
         'capacity',
+        'price',
         'deposit_price',
         'electric_price',
         'water_price',
