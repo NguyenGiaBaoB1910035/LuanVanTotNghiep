@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('boarding_house_id')
-            ->references('id')->on('boarding_house')
+            ->references('id')->on('boarding_houses')
             ->onDelete('cascade')
             ->onUpdate('cascade');
         });

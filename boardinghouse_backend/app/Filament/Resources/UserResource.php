@@ -57,7 +57,8 @@ class UserResource extends Resource
                                 TextInput::make('email')->email()->required()->hiddenOn('edit'),
                                 TextInput::make('phone')->required(),
                                 DatePicker::make('birthday')->required(),
-                                TextInput::make('phone')->required(),
+                                TextInput::make('gender')->required(),
+                                TextInput::make('address')->required(),
                                 TextInput::make('password')
                                     ->password()
                                     ->required()

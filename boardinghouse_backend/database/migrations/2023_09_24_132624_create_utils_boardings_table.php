@@ -23,7 +23,7 @@ return new class extends Migration
             ->onUpdate('cascade');
 
             $table->foreign('boarding_house_id')
-            ->references('id')->on('boarding_house')
+            ->references('id')->on('boarding_houses')
             ->onDelete('cascade')
             ->onUpdate('cascade');
 

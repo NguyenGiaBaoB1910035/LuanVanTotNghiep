@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -31,7 +32,7 @@ return new class extends Migration
             ->onUpdate('cascade');
 
             $table->foreign('boarding_house_id')
-            ->references('id')->on('boarding_house')
+            ->references('id')->on('boarding_houses')
             ->onDelete('cascade')
             ->onUpdate('cascade');
         });
