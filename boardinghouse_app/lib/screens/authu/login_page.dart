@@ -13,15 +13,18 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formkey = GlobalKey<FormState>();
+  final TextEditingController _controllerEmailPhone = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
   bool passwordVisible = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
             leading: IconButton(
-              color: Color.fromRGBO(0, 177, 237, 1),
-              icon: Icon(Icons.arrow_back),
+              color: const Color.fromRGBO(0, 177, 237, 1),
+              icon: const Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => const BeginPage()));
@@ -44,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: TextFormField(
+                      controller: _controllerEmailPhone,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'nhập Email hoặc số điện thoại';
@@ -55,9 +59,9 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       decoration: const InputDecoration(
                           hintText: 'Email hoặc số điện thoại',
-                          labelText: 'Email',
+                          labelText: 'Email hoặc số điện thoại',
                           prefixIcon: Icon(
-                            Icons.email,
+                            Icons.person,
                             color: Colors.lightBlue,
                           ),
                           errorStyle: TextStyle(fontSize: 18.0),
@@ -70,6 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: TextFormField(
+                      controller: _controllerPassword,
                       obscureText: passwordVisible,
                       validator: MultiValidator([
                         RequiredValidator(errorText: 'Enter first named'),
@@ -95,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                               );
                             },
                           ),
-                          errorStyle: TextStyle(fontSize: 18.0),
+                          errorStyle: const TextStyle(fontSize: 18.0),
                           // border: InputBorder.none,
                           border: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.red),
@@ -108,16 +113,14 @@ class _LoginPageState extends State<LoginPage> {
                       if (_formkey.currentState!.validate()) {
                         print('form submiitted');
                         Navigator.of(context).pushNamed('main');
-                      };
-                      
-                      
+                      }
                     },
                     child: Container(
                         margin: const EdgeInsets.symmetric(vertical: 10),
                         height: 55,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Color.fromRGBO(0, 177, 237, 1),
+                          color: const Color.fromRGBO(0, 177, 237, 1),
                         ),
                         child: const Center(
                           child: Text(
@@ -159,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 55,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Color.fromRGBO(0, 177, 237, 1),
+                          color: const Color.fromRGBO(0, 177, 237, 1),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

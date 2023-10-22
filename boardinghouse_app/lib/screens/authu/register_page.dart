@@ -13,7 +13,12 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formkey = GlobalKey<FormState>();
+  final TextEditingController _controllerUsername = TextEditingController();
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerPhone = TextEditingController();
+  final TextEditingController _controllerPassword = TextEditingController();
   bool passwordVisible = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: TextFormField(
+                      controller: _controllerUsername,
                       validator: MultiValidator([
                         RequiredValidator(errorText: 'Enter first named'),
                         MinLengthValidator(3,
@@ -67,6 +73,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: TextFormField(
+                      // focusNode: _focusNodeEmail,
+                      controller: _controllerEmail,
                       validator: MultiValidator([
                         RequiredValidator(errorText: 'Enter email address'),
                         EmailValidator(
@@ -89,9 +97,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: TextFormField(
+                      controller: _controllerPhone,
                       validator: MultiValidator([
                         RequiredValidator(errorText: 'Enter mobile number'),
-                        PatternValidator(r'(^[0,9]{10}$)',
+                        PatternValidator(r'^[0-9]{10}$',
                             errorText: 'enter vaid mobile number'),
                       ]),
                       decoration: const InputDecoration(
@@ -110,6 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: TextFormField(
+                      controller: _controllerPassword,
                       obscureText: passwordVisible,
                       validator: MultiValidator([
                         RequiredValidator(errorText: 'Enter first named'),
@@ -147,7 +157,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     onTap: () {
                       if (_formkey.currentState!.validate()) {
                         print('form submiitted');
-                        Navigator.of(context).pushNamed('main');
+                        Navigator.of(context).pushNamed('login');
                       }
                     },
                     child: Container(

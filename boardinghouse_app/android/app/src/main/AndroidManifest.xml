@@ -4,6 +4,14 @@
         android:label="boardinghouse_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- TODO: Add your Google Maps API key here 
+        <meta-data android:name="MyAPI"
+               android:value="AIzaSyBNEUDMuDUf5GH6dbcqsRdeg2NYG4yRWA8"/>-->
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBNEUDMuDUf5GH6dbcqsRdeg2NYG4yRWA8"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

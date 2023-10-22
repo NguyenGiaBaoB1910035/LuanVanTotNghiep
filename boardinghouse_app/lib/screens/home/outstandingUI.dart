@@ -1,4 +1,4 @@
-import 'package:boardinghouse_app/screens/home/CardUI.dart';
+import 'package:boardinghouse_app/components/card_boarding_house_detail.dart';
 // import 'package:boardinghouse_app/screens/home/outstandingpage.dart';
 import 'package:flutter/material.dart';
 
@@ -30,10 +30,10 @@ class OutstandingUI extends StatelessWidget {
               crossAxisSpacing: 20,
               shrinkWrap: true,
               crossAxisCount: 2,
-              childAspectRatio: (1 / 1.2),
+              childAspectRatio: (1 / 1.4),
               // scrollDirection: Axis.vertical,
               children: List.generate(4, (index) {
-                return CardUI();
+                return const CardBoardingHouseDetail();
               }),
             ),
             const Padding(

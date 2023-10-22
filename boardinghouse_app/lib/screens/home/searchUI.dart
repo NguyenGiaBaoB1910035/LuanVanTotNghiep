@@ -1,8 +1,15 @@
+// import 'dart:js';
+// import 'package:path/path.dart';
 import 'package:flutter/material.dart';
 
-class SearchUI extends StatelessWidget {
-  const SearchUI({super.key});
+class SearchUI extends StatefulWidget {
+  //  SearchUI({super.key});
 
+  @override
+  State<SearchUI> createState() => _SearchUIState();
+}
+
+class _SearchUIState extends State<SearchUI> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -44,7 +51,8 @@ class SearchUI extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () {
-                      Navigator.of(context).pushNamed('util');
+                      // _showMaterialDialog();
+                      Navigator.of(context).pushNamed('search');
                     },
                     child: Column(
                       children: [
@@ -72,7 +80,9 @@ class SearchUI extends StatelessWidget {
                     ),
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).pushNamed('map');
+                    },
                     child: Column(
                       children: [
                         Container(

@@ -1,6 +1,8 @@
-import 'package:boardinghouse_app/screens/account/accountpage.dart';
-import 'package:boardinghouse_app/screens/home/favouritepage.dart';
+import 'package:boardinghouse_app/screens/account/account_page.dart';
+// import 'package:boardinghouse_app/screens/favouritepage.dart';
 import 'package:boardinghouse_app/screens/home/homepage.dart';
+import 'package:boardinghouse_app/screens/message/messagepage.dart';
+import 'package:boardinghouse_app/screens/post/post_page.dart';
 import 'package:flutter/material.dart';
 
 class BottomBar extends StatefulWidget {
@@ -16,11 +18,9 @@ class _BottomBarState extends State<BottomBar> {
       fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black26);
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    FavouritePage(),
-    Text(
-      'Page 3: Chat',
-      style: optionStyle,
-    ),
+    // FavouritePage(),
+    PostPage(),
+    MessagePage(),
     AccountPage(),
   ];
 
@@ -47,11 +47,17 @@ class _BottomBarState extends State<BottomBar> {
             ),
             label: 'Trang chủ',
           ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(
+          //     Icons.favorite_border,
+          //   ),
+          //   label: 'Yêu thích',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.favorite_border,
+              Icons.feed_outlined,
             ),
-            label: 'Yêu thích',
+            label: 'Bảng tin',
           ),
           BottomNavigationBarItem(
             icon: Icon(
