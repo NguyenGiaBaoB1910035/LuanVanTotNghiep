@@ -6,7 +6,7 @@ use Rupadana\ApiService\Http\Handlers;
 use App\Filament\Resources\AuthResource;
 
 class AuthHandler extends Handlers {
-    public static string | null $uri = '/';
+    public static string | null $uri = '/login';
     public static string | null $resource = AuthResource::class;
 
     public static function getMethod()
@@ -20,6 +20,7 @@ class AuthHandler extends Handlers {
 
     public function handler(Request $request)
     {
+        return 213;
         $model = new (static::getModel());
 
         $model->fill($request->all());

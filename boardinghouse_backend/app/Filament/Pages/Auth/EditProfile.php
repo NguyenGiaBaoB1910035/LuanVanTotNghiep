@@ -7,6 +7,7 @@ use Filament\Forms\Components\{
     DatePicker,
     Card,
     Grid,
+    Select,
 };
 use Filament\Forms\Form;
 use Filament\Pages\Auth\EditProfile as BaseEditProfile;
@@ -26,11 +27,18 @@ class EditProfile extends BaseEditProfile
                         $this->getNameFormComponent(),
                         $this->getEmailFormComponent(),
                         TextInput::make('phone')->required(),
-                        DatePicker::make('birthday')->required(),
-                        TextInput::make('gender')->required(),
-                        TextInput::make('address')->required(),
-                        $this->getPasswordFormComponent(),
-                        $this->getPasswordConfirmationFormComponent(),
+                        DatePicker::make('birthday'),
+                        Select::make('gender')
+                            ->options([
+                                'Male' => 'Nam',
+                                'Female' => 'Nữ',
+                            ]),
+                        Grid::make()
+                            ->schema([
+                                TextInput::make('address'),
+                                $this->getPasswordFormComponent(),
+                                $this->getPasswordConfirmationFormComponent(),
+                            ])->columns(1),
                     ])
             ])->columns(12);
     }
