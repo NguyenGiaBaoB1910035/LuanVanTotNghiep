@@ -3,13 +3,19 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enums\UserRole;
+use Filament\Models\Contracts\HasAvatar;
+use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Sushi\Sushi;
-class User extends Authenticatable
+
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
@@ -54,6 +60,20 @@ class User extends Authenticatable
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->avatar;
+        return asset('storage/' . $this->avatar);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if ($panel->getId() === 'admin') {
+            return $this->role == UserRole::Admin || $this->role == UserRole::SubAdmin;
+        }
+
+        return true;
+    }
+
+    public function getFilamentName(): string
+    {
+        return "{$this->name}";
     }
 }

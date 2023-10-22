@@ -3,6 +3,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Enums\BoardingHouseType;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -11,8 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('boarding_house', function (Blueprint $table) {
+        Schema::create('boarding_houses', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->string('type')->default(BoardingHouseType::BoardingRoom);
             $table->String('room_number');// loai phong
             $table->string('acreage'); // diện tích
