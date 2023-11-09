@@ -76,23 +76,28 @@ class _CardBoardingHousePostState extends State<CardBoardingHousePost> {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.black26)),
-                height: 35,
-                width: MediaQuery.of(context).size.width * 1 / 2 - 20,
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.post_add,
-                      color: Colors.blue,
-                    ),
-                    Text(
-                      'Đăng bài',
-                      style: TextStyle(color: Colors.blue),
-                    )
-                  ],
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).pushNamed('createpost');
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.black26)),
+                  height: 35,
+                  width: MediaQuery.of(context).size.width * 1 / 2 - 20,
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.post_add,
+                        color: Colors.blue,
+                      ),
+                      Text(
+                        'Đăng bài',
+                        style: TextStyle(color: Colors.blue),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Row(

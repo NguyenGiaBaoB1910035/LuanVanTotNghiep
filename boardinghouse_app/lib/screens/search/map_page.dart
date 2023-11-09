@@ -9,12 +9,21 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  late GoogleMapController mapController;
+  // late GoogleMapController mapController;
 
   final LatLng _center = const LatLng(10.029971997636826, 105.77060993558173);
 
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
+  // void _onMapCreated(GoogleMapController controller) {
+  //   mapController = controller;
+  // }
+
+  late GoogleMapController _controller;
+
+  Future<void> onMapCreated(GoogleMapController controller) async {
+    _controller = controller;
+    String value = await DefaultAssetBundle.of(context)
+        .loadString('assets/map_style.json');
+    _controller.setMapStyle(value);
   }
 
   @override
@@ -39,11 +48,12 @@ class _MapPageState extends State<MapPage> {
       body: GoogleMap(
         // mapToolbarEnabled: true,
         // myLocationButtonEnabled: true,
-        onMapCreated: _onMapCreated,
-        initialCameraPosition: CameraPosition(
-          target: _center,
-          zoom: 15,
-        ),
+        onMapCreated: onMapCreated,
+        initialCameraPosition:
+            CameraPosition(target: _center, zoom: 15, tilt: 0, bearing: 0),
+        myLocationEnabled: true,
+        myLocationButtonEnabled: true,
+        
         // markers: {
         //   const Marker(
         //     markerId: MarkerId('Đại học Cần Thơ'),
@@ -55,6 +65,18 @@ class _MapPageState extends State<MapPage> {
         //   )
         // },
       ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: _goToTheLake,
+      //   label: const Text('To the lake!'),
+      //   icon: const Icon(Icons.directions_boat),
+      // ),
     );
+
+    
   }
+
+  // Future<void> _goToTheLake() async {
+  //   final GoogleMapController controller = await _controller.future;
+  //   await controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
+  // }
 }

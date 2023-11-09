@@ -1,6 +1,7 @@
 // import 'package:boardinghouse_app/models/message.dart';
 // import 'package:boardinghouse_app/models/user.dart';
 import 'package:boardinghouse_app/screens/account/account_page.dart';
+import 'package:boardinghouse_app/screens/account/info_user_page.dart';
 // import 'package:boardinghouse_app/screens/account/info_user_page.dart';
 import 'package:boardinghouse_app/screens/authu/begin_page.dart';
 import 'package:boardinghouse_app/screens/authu/login_page.dart';
@@ -9,6 +10,7 @@ import 'package:boardinghouse_app/screens/boardinghousedetail/boarding_house_det
 import 'package:boardinghouse_app/screens/bottombar.dart';
 import 'package:boardinghouse_app/screens/favouritepage.dart';
 import 'package:boardinghouse_app/screens/message/chat_page.dart';
+import 'package:boardinghouse_app/screens/post/create_post.dart';
 import 'package:boardinghouse_app/screens/search/map_page.dart';
 import 'package:boardinghouse_app/screens/home/homepage.dart';
 // import 'package:boardinghouse_app/screens/message/chat_page.dart';
@@ -52,10 +54,11 @@ class MyApp extends StatelessWidget {
         'map': (context) => const MapPage(),
         //------//
         'post': (context) => const PostPage(),
-        // 'users':(context) => InfoUserPage(),
+        'createpost': (context) => const CreatePost(),
+        'users': (context) => InfoUserPage(),
         //------//
         'message': (context) => const MessagePage(),
-        'chat':(context) => const  ChatPage(),
+        'chat': (context) => const ChatPage(),
 
         //-----//
         'account': (context) => const AccountPage(),

@@ -130,7 +130,6 @@ class InfoDetail extends StatefulWidget {
 }
 
 class _InfoDetailState extends State<InfoDetail> {
-  @override
   bool _isFavorite = false;
   Widget build(BuildContext context) {
     return Padding(
@@ -606,7 +605,6 @@ class Rating extends StatefulWidget {
 
 class _RatingState extends State<Rating> {
   double _rating = 0.0;
-  String _comment = "";
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -653,7 +651,6 @@ class _RatingState extends State<Rating> {
           TextField(
             onChanged: (value) {
               setState(() {
-                _comment = value;
               });
             },
             maxLines: 1,

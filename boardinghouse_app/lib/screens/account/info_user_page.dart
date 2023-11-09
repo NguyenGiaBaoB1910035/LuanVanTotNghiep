@@ -1,113 +1,66 @@
-import 'package:boardinghouse_app/api/user_api.dart';
+import 'package:boardinghouse_app/apis/user_api.dart';
+import 'package:boardinghouse_app/models/user.dart';
 import 'package:flutter/material.dart';
 
-import 'package:dio/dio.dart';
-
 class InfoUserPage extends StatefulWidget {
-  const InfoUserPage({super.key});
+  const InfoUserPage({Key? key});
 
   @override
   State<InfoUserPage> createState() => _InfoUserPageState();
 }
 
 class _InfoUserPageState extends State<InfoUserPage> {
-  // Future? _user;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _user = UserApi().getAllUser();
-  // }
+  late Future<List<User>?> _userListFuture;
 
-  UserApi users = UserApi();
-
-  // var jsonList;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getUser();
-  // }
-
-  // void getUser() async {
-  //   try {
-  //     var response = await Dio().get("http://10.10.38.179:8000/api/users");
-  //     print(response);
-  //     if (response.statusCode == 200) {
-  //       setState(() {
-  //         jsonList = response.data["data"] as List;
-  //       });
-  //     }
-  //     //
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _userListFuture = UserApi().getUsers();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('show user'),
+        title: Text('Show Users'),
       ),
-      //       body: SingleChildScrollView(
-      //         child: ListView.builder(
-      //             shrinkWrap: true,
-      //             itemCount: 2,
-      //             itemBuilder: (context, index) {
-      //               return Card(
-      //                 child: Column(children: [
-      //                   Text('ebu'),
-      //                   Text("iebi"),
-      //                   Text("iebi"),
-      //                   Text("iebi"),
-      //                 ]),
-      //               );
-      //             }),
-      //       ));
-      // }
-
       body: Container(
-          child: FutureBuilder<List>(
-              future: UserApi().getAllUser(),
-              builder: (context, snapshot) {
-                print(
-                    "//--------------------------------------------------//\n");
-
-                print(snapshot);
-
-                print(
-                    "//--------------------------------------------------//\n");
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                      itemCount: 2,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          child: Column(children: [
-                            Text("name"),
-                            Text("phone"),
-                            Text("email"),
-                            Text("password"),
-                          ]),
-                        );
-                      });
-                } else {
-                  return Center(
-                    child: Text('kcos gif'),
+        child: FutureBuilder<List<User>?>(
+          future: _userListFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else if (snapshot.hasData && snapshot.data != null) {
+              List<User> users = snapshot.data!;
+              return ListView.builder(
+                itemCount: users.length,
+                itemBuilder: (context, index) {
+                  User user = users[index];
+                  return Card(
+                    child: Column(
+                      children: [
+                        Text("Name: ${user.name}"),
+                        Text("Phone: ${user.phone}"),
+                        Text("Email: ${user.email}"),
+                      ],
+                    ),
                   );
-                }
-              })),
+                },
+              );
+            } else {
+              return Center(
+                child: Text('No data available'),
+              );
+            }
+          },
+        ),
+      ),
     );
   }
 }
-
-
-// var getUserInfo = await dio.get('https://localhost:8000/users/me',
-//     options: Options(
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Accept': 'application/json',
-//         'Authorization': 'Bearer ${response.data["token"]} ',
-//       },
-//     ));
-
-// print(getUserInfo);
