@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,8 +16,9 @@ return new class extends Migration
         Schema::create('boarding_houses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug')->nullable();
             $table->string('type')->default(BoardingHouseType::BoardingRoom);
-            $table->String('room_number');// loai phong
+            $table->String('room_number'); // loai phong
             $table->string('acreage'); // diện tích
             $table->string('capacity'); // sức chứa
             $table->string('price'); //giá phòng
@@ -29,12 +31,16 @@ return new class extends Migration
             $table->text('address');
             $table->string('favourite')->default('0');
             $table->string('status')->default('pendding');
+            $table->date('published_at')->nullable();
+
             $table->unsignedBigInteger('user_id');
 
             $table->foreign('user_id')
                 ->references('id')->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
+
+            $table->foreignId('boarding_house_type_id')->nullable()->constrained()->nullOnDelete();
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
