@@ -4,9 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BoardingHouseResource\{
     Pages,
-    RelationManagers
+    RelationManagers,
+    RelationManagers\EvaluateRelationManager
 };
-use App\Filament\Resources\Shop\BrandResource\RelationManagers\ProductsRelationManager;
 use App\Models\BoardingHouse;
 use Filament\Forms;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -63,16 +63,23 @@ class BoardingHouseResource extends Resource
                                     ->required(),
 
                                 Forms\Components\TextInput::make('room_number')
+                                    ->label('Quantity')
+                                    ->helperText('Quantity room of boarding house.')
                                     ->numeric()
                                     ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
-                                    ->required(),
-                                Forms\Components\TextInput::make('acreage')
                                     ->required(),
 
                                 Forms\Components\TextInput::make('capacity')
+                                    ->helperText('Quantity member in room.')
                                     ->numeric()
                                     ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
                                     ->required(),
+
+                                Forms\Components\TextInput::make('acreage'),
+
+                                Forms\Components\TextInput::make('address')
+                                    ->required()
+                                    ->columnSpan('full'),
                             ])
                             ->columns(2),
 
@@ -103,16 +110,24 @@ class BoardingHouseResource extends Resource
                                     ->label('Availability')
                                     ->default(now())
                                     ->required(),
+
+                                Forms\Components\Select::make('user_id')
+                                    ->label('Author')
+                                    ->relationship('user', 'name')
+                                    ->searchable()
+                                    ->required(),
+
                                 Forms\Components\Select::make('boarding_house_type_id')
                                     ->label('Boarding House Type')
                                     ->relationship('boarding_house_type', 'name')
                                     // ->searchable()
                                     ->required()
-                                    ->hiddenOn(ProductsRelationManager::class),
+                                    ->hiddenOn(EvaluateRelationManager::class),
                             ]),
                         Forms\Components\Section::make('Time Management')
                             ->schema([
                                 Forms\Components\TimePicker::make('open_time')
+                                    ->format('H:i')
                                     ->datalist([
                                         '00:00',
                                         '12:00',

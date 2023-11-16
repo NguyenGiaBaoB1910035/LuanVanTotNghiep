@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Enums\UserRole;
+use App\Models\BoardingHouseType;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -39,6 +40,21 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('123456789'),
                 'name' => 'Gia Bao',
                 'role' => UserRole::Admin
+            ],
+        ]);
+
+        BoardingHouseType::insert([
+            [
+                'name' => 'Phòng cho thuê',
+                'slug' => 'phong-cho-thue',
+            ],
+            [
+                'name' => 'Nhà nguyên căn',
+                'slug' => 'nha-nguyen-can',
+            ],
+            [
+                'name' => 'Ký túc xá',
+                'slug' => 'ky-tuc-xa',
             ],
         ]);
 

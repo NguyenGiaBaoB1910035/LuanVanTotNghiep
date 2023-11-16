@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('slug')->nullable();
             $table->string('type')->default(BoardingHouseType::BoardingRoom);
             $table->String('room_number'); // loai phong
-            $table->string('acreage'); // diện tích
+            $table->string('acreage')->nullable(); // diện tích
             $table->string('capacity'); // sức chứa
             $table->string('price'); //giá phòng
             $table->string('deposit_price'); //giá cọc
@@ -52,6 +52,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('boarding_houes');
+        Schema::dropIfExists('boarding_houses');
     }
 };

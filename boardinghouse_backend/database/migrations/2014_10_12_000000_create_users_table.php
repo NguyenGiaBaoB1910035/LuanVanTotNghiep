@@ -40,8 +40,8 @@ return new class extends Migration
     {
         Schema::dropIfExists('posts');
         Schema::dropIfExists('evaluates');
-        Schema::dropIfExists('boarding_house_types');
         Schema::dropIfExists('boarding_houses');
+        Schema::dropIfExists('boarding_house_types');
         Schema::dropIfExists('users');
         Schema::dropIfExists('media');
     }

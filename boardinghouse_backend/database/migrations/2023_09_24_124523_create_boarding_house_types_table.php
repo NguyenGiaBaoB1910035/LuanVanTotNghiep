@@ -28,6 +28,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('boarding_houses');
         Schema::dropIfExists('boarding_house_types');
     }
 };

@@ -14,7 +14,7 @@ use Filament\Panel;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
@@ -75,5 +75,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName
     public function getFilamentName(): string
     {
         return "{$this->name}";
+    }
+
+    public function boarding_houses(): HasMany
+    {
+        return $this->hasMany(BoardingHouse::class, 'user_id');
     }
 }

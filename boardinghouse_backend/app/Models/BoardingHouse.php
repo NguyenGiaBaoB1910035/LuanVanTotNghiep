@@ -5,10 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class BoardingHouse extends Model
+class BoardingHouse extends Model implements HasMedia
 {
     use HasFactory;
+    use InteractsWithMedia;
+
     protected $fillable = [
         'type',
         'name',
@@ -33,5 +39,15 @@ class BoardingHouse extends Model
     public function boarding_house_type(): BelongsTo
     {
         return $this->belongsTo(BoardingHouseType::class, 'boarding_house_type_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function evaluates(): HasMany
+    {
+        return $this->hasMany(Evaluate::class, 'boarding_house_id');
     }
 }

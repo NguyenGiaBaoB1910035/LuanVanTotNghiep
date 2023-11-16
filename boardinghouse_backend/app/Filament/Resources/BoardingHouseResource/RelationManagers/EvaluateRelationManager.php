@@ -13,7 +13,7 @@ use Yepsua\Filament\Forms\Components\Rating;
 
 class EvaluateRelationManager extends RelationManager
 {
-    protected static string $relationship = 'evaluate';
+    protected static string $relationship = 'evaluates';
 
     public function form(Form $form): Form
     {
@@ -26,8 +26,7 @@ class EvaluateRelationManager extends RelationManager
                     ->searchable()
                     ->required(),
 
-                    Rating::make('rating')
-                    ->size(5),
+                Forms\Components\TextInput::make('rating'),
 
                 Forms\Components\MarkdownEditor::make('content')
                     ->required()
