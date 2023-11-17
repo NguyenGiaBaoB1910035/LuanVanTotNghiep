@@ -1,5 +1,16 @@
+import 'dart:async';
+import 'package:boardinghouse_app/repository/repo.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../models/place_model/place_model.dart';
+
+Color color = const Color(0xfffe8903);
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -9,17 +20,338 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  // late GoogleMapController mapController;
+  BitmapDescriptor? currentLocation;
+  TextEditingController placeController = TextEditingController();
 
-  final LatLng _center = const LatLng(10.029971997636826, 105.77060993558173);
+  late final GoogleMapController _controller;
+  Position? _currentPosition;
+  LatLng _currentLatLng = const LatLng(27.671332124757402, 85.3125417636781);
 
-  // void _onMapCreated(GoogleMapController controller) {
-  //   mapController = controller;
+  @override
+  void initState() {
+    getLocation();
+    super.initState();
+  }
+
+  getLocation() async {
+    // WidgetsBinding.instance.addPostFrameCallback((_) async {
+    var pp = await Geolocator.checkPermission();
+    if (pp == LocationPermission.denied) {
+      pp = await Geolocator.requestPermission();
+      if (pp != LocationPermission.whileInUse &&
+          pp != LocationPermission.always) {
+        // Xử lý khi người dùng từ chối cấp quyền truy cập vị trí
+        return;
+      }
+    }
+    // if (pp.name == LocationPermission.always) {
+    _currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    _currentLatLng =
+        LatLng(_currentPosition!.latitude, _currentPosition!.longitude);
+    setState(() {});
+  }
+
+  Widget autoComplete() {
+    return Container(
+      // height: 50,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.rectangle,
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey.withOpacity(0.8),
+                blurRadius: 8.0,
+                spreadRadius: 1,
+                offset: const Offset(0, 4))
+          ],
+          borderRadius: BorderRadius.circular(12)),
+      child: TypeAheadFormField<Description?>(
+        onSuggestionSelected: (suggestion) {
+          setState(() {
+            placeController.text =
+                suggestion?.structured_formatting?.main_text ?? "";
+          });
+        },
+        getImmediateSuggestions: true,
+        keepSuggestionsOnLoading: true,
+        textFieldConfiguration: TextFieldConfiguration(
+            style: GoogleFonts.lato(),
+            controller: placeController,
+            // style: GoogleFonts.poppins(),
+            decoration: InputDecoration(
+              isDense: false,
+              fillColor: Colors.transparent,
+              filled: false,
+              prefixIcon: Icon(CupertinoIcons.search, color: color),
+              suffixIcon: InkWell(
+                  onTap: () {
+                    setState(() {
+                      placeController.clear();
+                    });
+                  },
+                  child: const Icon(Icons.clear, color: Colors.red)),
+              // contentPadding:
+              //     const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+              hintText: "Where are you going?",
+              hintStyle: GoogleFonts.lato(),
+
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+            )),
+        itemBuilder: (context, Description? itemData) {
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.location_on_outlined,
+                  size: 18,
+                  color: Colors.grey,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${itemData?.structured_formatting?.main_text}",
+                      style: const TextStyle(color: Colors.green),
+                    ),
+                    Text("${itemData?.structured_formatting?.secondary_text}"),
+                    const Divider()
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+        noItemsFoundBuilder: (context) {
+          return Container();
+          // return Wrap(
+          //   children: const [
+          //     Center(
+          //         heightFactor: 2,
+          //         child: Text(
+          //           "Location Not Found!!",
+          //           style: TextStyle(
+          //             fontSize: 12,
+          //           ),
+          //         )),
+          //   ],
+          // );
+        },
+        suggestionsCallback: (String pattern) async {
+          var predictionModel =
+              await Repo.placeAutoComplete(placeInput: pattern);
+
+          if (predictionModel != null) {
+            return predictionModel.predictions!.where((element) => element
+                .description!
+                .toLowerCase()
+                .contains(pattern.toLowerCase()));
+          } else {
+            return [];
+          }
+        },
+      ),
+    );
+  }
+
+  // Widget locationsWidget() {
+  //   return Container(
+  //     margin: EdgeInsets.zero,
+  //     width: double.infinity,
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //       borderRadius: BorderRadius.circular(16),
+  //       boxShadow: const [
+  //         BoxShadow(
+  //             color: Colors.grey,
+  //             blurRadius: 10.0,
+  //             spreadRadius: 1,
+  //             offset: Offset(0, 4))
+  //       ],
+  //     ),
+  //     child: Padding(
+  //       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+  //       child: Column(
+  //         children: [
+  //           Row(
+  //             children: [
+  //               Container(
+  //                 height: 15,
+  //                 width: 15,
+  //                 decoration:
+  //                     BoxDecoration(color: color, shape: BoxShape.circle),
+  //               ),
+  //               const SizedBox(
+  //                 width: 8,
+  //               ),
+  //               const Wrap(
+  //                 direction: Axis.vertical,
+  //                 children: [
+  //                   Text(
+  //                     "Current Location",
+  //                     style: TextStyle(
+  //                       fontSize: 18,
+  //                       fontWeight: FontWeight.bold,
+  //                     ),
+  //                   ),
+  //                   Text(
+  //                     "Samakhusi, Rehdon College",
+  //                     style: TextStyle(
+  //                       fontSize: 16,
+  //                       color: Colors.grey,
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //           Container(
+  //             margin: const EdgeInsets.only(left: 20),
+  //             child: Divider(
+  //               height: 8,
+  //               color: color.withOpacity(0.6),
+  //             ),
+  //           ),
+  //           Row(
+  //             children: [
+  //               Container(
+  //                 height: 15,
+  //                 width: 15,
+  //                 decoration: BoxDecoration(
+  //                     border: Border.all(color: color, width: 4),
+  //                     shape: BoxShape.circle),
+  //               ),
+  //               const SizedBox(
+  //                 width: 8,
+  //               ),
+  //               Wrap(
+  //                 direction: Axis.vertical,
+  //                 children: [
+  //                   const Text(
+  //                     "Destination",
+  //                     style: TextStyle(
+  //                       fontSize: 18,
+  //                       fontWeight: FontWeight.bold,
+  //                     ),
+  //                   ),
+  //                   SizedBox(
+  //                     width: 300,
+  //                     child: Text(
+  //                       placeController.text.isEmpty
+  //                           ? "Select Destination"
+  //                           : placeController.text,
+  //                       overflow: TextOverflow.visible,
+  //                       style: const TextStyle(
+  //                         fontSize: 16,
+  //                         color: Colors.grey,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           )
+  //         ],
+  //       ),
+  //     ),
+  //   );
   // }
 
-  late GoogleMapController _controller;
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     extendBodyBehindAppBar: true,
+  //     extendBody: true,
+  //     resizeToAvoidBottomInset: false,
+  //     body: AnnotatedRegion<SystemUiOverlayStyle>(
+  //       value: SystemUiOverlayStyle.dark,
+  //       child: _currentPosition == null
+  //           ? const Center(child: CircularProgressIndicator()
+  //               //CircularProgressIndicator(),
+  //               )
+  //           : Stack(
+  //               children: [
+  //                 GoogleMap(
+  //                   myLocationButtonEnabled: false,
+  //                   myLocationEnabled: true,
+  //                   zoomControlsEnabled: false,
+  //                   initialCameraPosition:
+  //                       CameraPosition(zoom: 16, target: _currentLatLng),
+  //                   onMapCreated: (controller) async {
+  //                     setState(() {
+  //                       _controller = controller;
+  //                     });
+  //                     String val = "json/google_map_dark_light.json";
+  //                     var c = await rootBundle.loadString(val);
+  //                     _controller.setMapStyle(c);
+  //                   },
+  //                   markers: {
+  //                     Marker(
+  //                         markerId: const MarkerId("1"),
+  //                         // icon: currentLocation!,
+  //                         position: _currentLatLng)
+  //                   },
+  //                 ),
+  //                 Container(
+  //                   margin: const EdgeInsets.only(left: 20, right: 20, top: 40),
+  //                   child: Align(
+  //                     alignment: Alignment.topCenter,
+  //                     child: Column(
+  //                       mainAxisAlignment: MainAxisAlignment.start,
+  //                       children: [
+  //                         autoComplete(),
+  //                         const SizedBox(
+  //                           height: 12,
+  //                         ),
+  //                         locationsWidget(),
+  //                         const Spacer(),
+  //                         confirmButton(),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 )
+  //               ],
+  //             ),
+  //     ),
+  //   );
+  // }
 
-  Future<void> onMapCreated(GoogleMapController controller) async {
+  Widget confirmButton() {
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            backgroundColor: color,
+            minimumSize: const Size(double.infinity, 40)),
+        onPressed: () {
+          _controller.animateCamera(CameraUpdate.newCameraPosition(
+              // const CameraPosition(target: LatLng(0, 0))
+              _kInitialPosition
+              ));
+        },
+        child: Text(
+          "CONFIRM",
+          style: GoogleFonts.lato(
+            fontSize: 18,
+            color: Colors.white,
+          ),
+        ));
+  }
+
+  // TextEditingController _searchController = TextEditingController();
+  // // Completer<GoogleMapController> _controller = Completer();
+  static final LatLng _kMapCenter =
+      LatLng(10.029971997636826, 105.77060993558173);
+  static final CameraPosition _kInitialPosition =
+      CameraPosition(target: _kMapCenter, zoom: 15.0, tilt: 0, bearing: 0);
+  // late GoogleMapController _controller;
+  // Set<Marker> markers = Set<Marker>();
+
+  Future<void> _onMapCreated(GoogleMapController controller) async {
     _controller = controller;
     String value = await DefaultAssetBundle.of(context)
         .loadString('assets/map_style.json');
@@ -45,38 +377,34 @@ class _MapPageState extends State<MapPage> {
           style: TextStyle(color: Color.fromRGBO(0, 177, 237, 1)),
         ),
       ),
-      body: GoogleMap(
-        // mapToolbarEnabled: true,
-        // myLocationButtonEnabled: true,
-        onMapCreated: onMapCreated,
-        initialCameraPosition:
-            CameraPosition(target: _center, zoom: 15, tilt: 0, bearing: 0),
-        myLocationEnabled: true,
-        myLocationButtonEnabled: true,
-        
-        // markers: {
-        //   const Marker(
-        //     markerId: MarkerId('Đại học Cần Thơ'),
-        //     position: LatLng(10.029971997636826, 105.77060993558173),
-        //     infoWindow: InfoWindow(
-        //       title: "'Đại học Cần Thơ",
-        //       // snippet: "Capital of New South Wales",
-        //     ),
-        //   )
-        // },
-      ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   onPressed: _goToTheLake,
-      //   label: const Text('To the lake!'),
-      //   icon: const Icon(Icons.directions_boat),
-      // ),
+      body: Stack(children: [
+        GoogleMap(
+          // onTap: _onMapTapped,
+          onMapCreated: _onMapCreated,
+
+          initialCameraPosition: _kInitialPosition,
+          myLocationEnabled: true,
+          myLocationButtonEnabled: false,
+        ),
+        Container(
+          margin: const EdgeInsets.only(left: 20, right: 20, top: 40),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                autoComplete(),
+                // const SizedBox(
+                //   height: 12,
+                // ),
+                // locationsWidget(),
+                const Spacer(),
+                confirmButton(),
+              ],
+            ),
+          ),
+        )
+      ]),
     );
-
-    
   }
-
-  // Future<void> _goToTheLake() async {
-  //   final GoogleMapController controller = await _controller.future;
-  //   await controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
-  // }
 }

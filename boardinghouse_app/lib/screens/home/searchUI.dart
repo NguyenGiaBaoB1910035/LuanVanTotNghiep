@@ -81,6 +81,7 @@ class _SearchUIState extends State<SearchUI> {
                   ),
                   InkWell(
                     onTap: () {
+                      // Navigator.of(context).pushNamed('mapplace');
                       Navigator.of(context).pushNamed('map');
                     },
                     child: Column(

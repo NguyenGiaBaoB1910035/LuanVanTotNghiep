@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:boardinghouse_app/apis/address_api.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:boardinghouse_app/models/util.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +23,7 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
           state: _currentStep <= 0 ? StepState.editing : StepState.complete,
           isActive: _currentStep >= 0,
           title: const Text('địa chỉ'),
-          content: AddressForm(),
+          content: addressForm(),
         ),
         Step(
           state: _currentStep <= 1 ? StepState.editing : StepState.complete,
@@ -117,92 +120,330 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
 //--------------------------------------------------------------------------------------------------------------//
 //--------------------------------------------------------------------------------------------------------------//
 //--------------------------------------------------------------------------------------------------------------//
+// class addressForm extends StatefulWidget {
+//   @override
+//   _addressFormState createState() => _addressFormState();
+// }
 
-class AddressForm extends StatefulWidget {
+// class _addressFormState extends State<addressForm> {
+//   String? selectedDistrict;
+//   String? selectedWard;
+//   TextEditingController addressController = TextEditingController();
+
+//   List<District> districts = [];
+//   List<Ward> wards = [];
+
+//   // get http => null;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     fetchDistricts();
+//   }
+//   // late http.Client http;
+
+//   // @override
+//   // void initState() {
+//   //   super.initState();
+//   //   http = http.Client();
+//   //   fetchDistricts();
+//   // }
+
+//   // @override
+//   // void dispose() {
+//   //   http.close();
+//   //   super.dispose();
+//   // }
+
+//   Future<void> fetchDistricts() async {
+//     final response =
+//         await http.get(Uri.parse('https://provinces.open-api.vn/api/p/ct'));
+//     if (response.statusCode == 200) {
+//       final Map<String, dynamic> data = json.decode(response.body);
+//       List<dynamic> districtList = data['LtsItem'];
+
+//       setState(() {
+//         districts =
+//             districtList.map((item) => District.fromJson(item)).toList();
+//       });
+//     } else {
+//       throw Exception('Failed to load districts');
+//     }
+//   }
+
+//   Future<void> fetchWards(String districtId) async {
+//     final response = await http
+//         .get(Uri.parse('https://provinces.open-api.vn/api/d/$districtId'));
+//     if (response.statusCode == 200) {
+//       final Map<String, dynamic> data = json.decode(response.body);
+//       List<dynamic> wardList = data['LtsItem'];
+
+//       setState(() {
+//         wards = wardList.map((item) => Ward.fromJson(item)).toList();
+//       });
+//     } else {
+//       throw Exception('Failed to load wards');
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.all(10.0),
+//       child: Column(
+//         // crossAxisAlignment: CrossAxisAlignment.stretch,
+//         children: [
+// DropdownButtonFormField<String>(
+//   value: selectedDistrict,
+//   onChanged: (String? newValue) {
+//     setState(() {
+//       selectedDistrict = newValue;
+//       selectedWard =
+//           null; // Reset selected ward when changing district
+//       fetchWards(newValue!);
+//     });
+//   },
+//   items: districts.map((District district) {
+//     return DropdownMenuItem<String>(
+//       value: district.id,
+//       child: Text(district.name),
+//     );
+//   }).toList(),
+//   decoration: InputDecoration(
+//     labelText: 'Chọn Quận/Huyện',
+//     border: OutlineInputBorder(),
+//   ),
+// ),
+//           SizedBox(height: 16),
+//           DropdownButtonFormField<String>(
+//             value: selectedWard,
+//             onChanged: (String? newValue) {
+//               setState(() {
+//                 selectedWard = newValue;
+//               });
+//             },
+//             items: wards.map((Ward ward) {
+//               return DropdownMenuItem<String>(
+//                 value: ward.id,
+//                 child: Text(ward.name),
+//               );
+//             }).toList(),
+//             decoration: InputDecoration(
+//               labelText: 'Chọn Phường/Xã',
+//               border: OutlineInputBorder(),
+//             ),
+//           ),
+//           SizedBox(height: 16),
+//           TextFormField(
+//             controller: addressController,
+//             decoration: InputDecoration(
+//               labelText: 'Địa Chỉ',
+//               border: OutlineInputBorder(),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+// class District {
+//   final String id;
+//   final String name;
+
+//   District({required this.id, required this.name});
+
+//   factory District.fromJson(Map<String, dynamic> json) {
+//     return District(
+//       id: json['ID'],
+//       name: json['Title'],
+//     );
+//   }
+// }
+
+// class Ward {
+//   final String id;
+//   final String name;
+
+//   Ward({required this.id, required this.name});
+
+//   factory Ward.fromJson(Map<String, dynamic> json) {
+//     return Ward(
+//       id: json['ID'],
+//       name: json['Title'],
+//     );
+//   }
+// }
+class addressForm extends StatefulWidget {
   @override
-  _AddressFormState createState() => _AddressFormState();
+  _addressFormState createState() => _addressFormState();
 }
 
-class _AddressFormState extends State<AddressForm> {
-  String selectedDistrict = 'Quận Ninh Kiều';
-  String selectedWard = '';
-  TextEditingController addressController = TextEditingController();
+class _addressFormState extends State<addressForm> {
+  AddressApi _addressApi = AddressApi();
+  List<District>? _districts;
+  List<Ward>? _wards;
 
-  List<String> districtList = [
-    'Quận Ninh Kiều',
-    'Quận Cái Răng',
-    'Quận Thốt Nốt',
-    'Quận Bình Thủy'
-  ];
-  Map<String, List<String>> wards = {
-    'Quận Ninh Kiều': ['Phường A', 'Phường B'],
-    'Quận Cái Răng': ['Phường X', 'Phường Y'],
-    'Quận Thốt Nốt': ['Phường M', 'Phường N'],
-    'Quận Bình Thủy': ['Phường P', 'Phường Q'],
-  };
+  String? _selectedDistrict;
+  String? _selectedWard;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDistricts();
+  }
+
+  Future<void> _fetchDistricts() async {
+    List<District>? districts = await _addressApi.fetchDistrict();
+    if (districts != null) {
+      setState(() {
+        _districts = districts;
+      });
+    }
+  }
+
+  Future<void> _fetchWards(String districtId) async {
+    List<Ward>? wards = await _addressApi.fetchWard(districtId);
+    if (wards != null) {
+      setState(() {
+        _wards = wards;
+      });
+    }
+  }
+  // String selectedDistrict = 'Quận Ninh Kiều';
+  // String selectedWard = '';
+  // TextEditingController addressController = TextEditingController();
+  // late Future<List<District>?> _districtListFuture;
+  // late Future<List<Ward>?> _wardListFuture;
+  // late District district;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // _userListFuture = UserApi().getUsers();
+  //   _districtListFuture = AddressApi().fetchDistrict();
+  //   _wardListFuture = AddressApi().fetchWard(district.id);
+  // }
+
+  // List<String> districtList = [
+  //   'Quận Ninh Kiều',
+  //   'Quận Cái Răng',
+  //   'Quận Thốt Nốt',
+  //   'Quận Bình Thủy'
+  // ];
+  // Map<String, List<String>> wards = {
+  //   'Quận Ninh Kiều': ['Phường A', 'Phường B'],
+  //   'Quận Cái Răng': ['Phường X', 'Phường Y'],
+  //   'Quận Thốt Nốt': ['Phường M', 'Phường N'],
+  //   'Quận Bình Thủy': ['Phường P', 'Phường Q'],
+  // };
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          DropdownButtonFormField(
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedDistrict = newValue!;
-              });
-            },
-            items: districtList.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value.isNotEmpty ? value : null,
-                child: Text(
-                  value,
-                  style: const TextStyle(fontSize: 20),
-                ),
-              );
-            }).toList(),
-            decoration: const InputDecoration(
-              hintText: 'Chọn Quận/Huyện',
-              labelText: 'Chọn Quận/Huyện',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            onChanged: (String? newValue) {
+            value: _selectedDistrict,
+            items: _districts?.map((district) {
+                  return DropdownMenuItem<String>(
+                    value: district.id,
+                    child: Text(district.name),
+                  );
+                }).toList() ??
+                [],
+            hint: Text('Select District'),
+            onChanged: (value) {
               setState(() {
-                selectedWard = newValue!;
+                _selectedDistrict = value;
+                _selectedWard = null;
+                _fetchWards(value!);
               });
             },
-            items: wards[selectedDistrict]!
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value.isNotEmpty ? value : null,
-                child: Text(
-                  value,
-                  style: const TextStyle(fontSize: 20),
-                ),
-              );
-            }).toList(),
-            value: selectedWard.isNotEmpty ? selectedWard : null,
-            decoration: const InputDecoration(
-              hintText: 'Chọn Phường/Xã',
-              labelText: 'Chọn Phường/Xã',
-              border: OutlineInputBorder(),
-            ),
           ),
-          const SizedBox(height: 16),
-          TextFormField(
-            controller: addressController,
-            decoration: const InputDecoration(
-              labelText: 'Địa Chỉ',
-              border: OutlineInputBorder(),
-            ),
+          SizedBox(height: 16.0),
+          DropdownButtonFormField<String>(
+            value: _selectedWard,
+            items: _wards?.map((ward) {
+                  return DropdownMenuItem<String>(
+                    value: ward.id,
+                    child: Text(ward.name),
+                  );
+                }).toList() ??
+                [],
+            hint: Text('Select Ward'),
+            onChanged: (value) {
+              setState(() {
+                _selectedWard = value;
+              });
+            },
           ),
         ],
       ),
     );
+    // return Padding(
+    //   padding: const EdgeInsets.all(10),
+    //   child: Column(
+    //     children: [
+
+    //       DropdownButtonFormField(
+    //         onChanged: (String? newValue) {
+    //           setState(() {
+    //             selectedDistrict = newValue!;
+    //           });
+    //         },
+    //         items: districtList.map<DropdownMenuItem<String>>((String value) {
+    //           return DropdownMenuItem<String>(
+    //             value: value.isNotEmpty ? value : null,
+    //             child: Text(
+    //               value,
+    //               style: const TextStyle(fontSize: 20),
+    //             ),
+    //           );
+    //         }).toList(),
+    //         decoration: const InputDecoration(
+    //           hintText: 'Chọn Quận/Huyện',
+    //           labelText: 'Chọn Quận/Huyện',
+    //           border: OutlineInputBorder(),
+    //         ),
+    //       ),
+    //       const SizedBox(height: 16),
+    //       DropdownButtonFormField<String>(
+    //         onChanged: (String? newValue) {
+    //           setState(() {
+    //             selectedWard = newValue!;
+    //           });
+    //         },
+    //         items: wards[selectedDistrict]!
+    //             .map<DropdownMenuItem<String>>((String value) {
+    //           return DropdownMenuItem<String>(
+    //             value: value.isNotEmpty ? value : null,
+    //             child: Text(
+    //               value,
+    //               style: const TextStyle(fontSize: 20),
+    //             ),
+    //           );
+    //         }).toList(),
+    //         value: selectedWard.isNotEmpty ? selectedWard : null,
+    //         decoration: const InputDecoration(
+    //           hintText: 'Chọn Phường/Xã',
+    //           labelText: 'Chọn Phường/Xã',
+    //           border: OutlineInputBorder(),
+    //         ),
+    //       ),
+    //       const SizedBox(height: 16),
+    //       TextFormField(
+    //         controller: addressController,
+    //         decoration: const InputDecoration(
+    //           labelText: 'Địa Chỉ',
+    //           border: OutlineInputBorder(),
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    //
   }
 }
 
@@ -264,8 +505,8 @@ class _InforFormState extends State<InforForm> {
               children: <Widget>[
                 buildRoomOption('Phòng cho thuê'),
                 buildRoomOption('Ký túc xá'),
-                buildRoomOption('Phòng nguyên căn'),
-                buildRoomOption('Căn hộ'),
+                buildRoomOption('Nhà nguyên căn'),
+                // buildRoomOption('Căn hộ'),
               ],
             ),
             const SizedBox(

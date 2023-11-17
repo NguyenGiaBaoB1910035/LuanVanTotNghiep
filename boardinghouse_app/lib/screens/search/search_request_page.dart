@@ -19,7 +19,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 5, vsync: this, initialIndex: 4);
+    _tabController = TabController(length: 6, vsync: this, initialIndex: 5);
   }
 
   @override
@@ -78,7 +78,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                       child: Row(
                         children: [
                           Text(
-                            "Loại phòng",
+                            "Khu vực",
                             style: TextStyle(fontSize: 20),
                           ),
                           Icon(Icons.arrow_drop_down)
@@ -95,7 +95,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                       child: Row(
                         children: [
                           Text(
-                            "Giá",
+                            "Loại phòng",
                             style: TextStyle(fontSize: 20),
                           ),
                           Icon(Icons.arrow_drop_down)
@@ -112,7 +112,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                       child: Row(
                         children: [
                           Text(
-                            "Số người",
+                            "Giá",
                             style: TextStyle(fontSize: 20),
                           ),
                           Icon(Icons.arrow_drop_down)
@@ -123,6 +123,23 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   InkWell(
                     onTap: () {
                       _tabController?.animateTo(3);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Số người",
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          Icon(Icons.arrow_drop_down)
+                        ],
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      _tabController?.animateTo(4);
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(15),
@@ -167,6 +184,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 controller: _tabController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
+                  addressPage(),
                   typePage(),
                   Container(
                     color: Colors.white,
@@ -199,7 +217,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                   selectData = true;
                                   selectprice = true;
                                 });
-                                _tabController?.animateTo(4);
+                                _tabController?.animateTo(5);
                                 print(
                                     '${priceRange.start.toStringAsFixed(0)} VND - ${priceRange.end.toStringAsFixed(0)} VND');
                               },
@@ -252,6 +270,97 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     );
   }
 
+//--------------------------------------address page---------------------------------------//
+
+  List<String> listDistrict = [
+    'Ninh Kiều',
+    'Cái Răng',
+    'Bình Thủy',
+    'Ô Môn',
+    'Thốt Nốt',
+    'Cờ Đỏ',
+    'Phong Điền',
+    'Thới Lai',
+    'Vĩnh Thạch',
+  ];
+
+  String selectedDistrict = "";
+
+  Widget addressPage() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 1 / 3,
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 2 / 1,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: listDistrict.length,
+              itemBuilder: (BuildContext context, int index) {
+                final feature = listDistrict[index];
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedDistrict = feature;
+                    });
+                  },
+                  child: Card(
+                    color: selectedDistrict == feature
+                        ? Colors.green
+                        : Colors.white,
+                    child: Center(
+                      child: Text(
+                        feature,
+                        style: TextStyle(
+                          color: selectedDistrict == feature
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(30),
+          child: ElevatedButton(
+            onPressed: () {
+              setState(() {
+                selectData = true;
+                selectaddress = true;
+              });
+
+              _tabController?.animateTo(5);
+              print(selectedDistrict);
+            },
+            child: Container(
+              decoration: const BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: const Center(
+                child: Text(
+                  'Áp dụng',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
 //--------------------------------------type room page---------------------------------------//
 
   Widget typePage() {
@@ -274,7 +383,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   selecttype = true;
                 });
 
-                _tabController?.animateTo(4);
+                _tabController?.animateTo(5);
                 print(selectedRoom);
               },
               child: Container(
@@ -384,7 +493,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                       selectnumber = true;
                       selectData = true;
                     });
-                    _tabController?.animateTo(4);
+                    _tabController?.animateTo(5);
                     print(' ${capacity} / ${selectedGender}');
                   },
                   child: Container(
@@ -518,7 +627,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 setState(() {
                   selectUtil = true;
                 });
-                _tabController?.animateTo(4);
+                _tabController?.animateTo(5);
                 for (Util util in selectedUtils) {
                   print("Util đã chọn: ${util.name}");
                 }
@@ -540,7 +649,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   }
 
 //----------------------------------=========---------------------------------//
-
+  bool selectaddress = false;
   bool selecttype = false;
   bool selectprice = false;
   bool selectnumber = false;
@@ -571,6 +680,61 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
             Container(
               child: Row(
                 children: [
+                  selectaddress
+                      ? Stack(children: [
+                          Container(
+                            margin: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.grey.shade200),
+                            child: selectedRoom != null
+                                ? Text('$selectedDistrict',
+                                    style: TextStyle(fontSize: 15))
+                                : Text(''),
+                          ),
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectaddress = false;
+                                });
+                                if (!selecttype &&
+                                    !selectprice &&
+                                    !selectnumber &&
+                                    !selectaddress) {
+                                  setState(() {
+                                    selectData = false;
+                                  });
+                                }
+                              },
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color:
+                                      Colors.grey, // Màu nền của nút hình tròn
+                                ),
+                                padding: const EdgeInsets.all(
+                                    5), // Điều chỉnh kích thước của nút hình tròn
+                                child: const Text(
+                                  "x",
+                                  style: TextStyle(
+                                    color: Colors.white, // Màu chữ "x"
+                                    fontSize: 8,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ])
+                      : Container(
+                          child: null,
+                        ),
+                  const SizedBox(
+                    width: 5,
+                  ),
                   selecttype
                       ? Stack(children: [
                           Container(
@@ -594,7 +758,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                 });
                                 if (!selecttype &&
                                     !selectprice &&
-                                    !selectnumber) {
+                                    !selectnumber &&
+                                    !selectaddress) {
                                   setState(() {
                                     selectData = false;
                                   });
@@ -648,7 +813,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                 });
                                 if (!selecttype &&
                                     !selectprice &&
-                                    !selectnumber) {
+                                    !selectnumber &&
+                                    !selectaddress) {
                                   setState(() {
                                     selectData = false;
                                   });
@@ -702,7 +868,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                 });
                                 if (!selecttype &&
                                     !selectprice &&
-                                    !selectnumber) {
+                                    !selectnumber &&
+                                    !selectaddress) {
                                   setState(() {
                                     selectData = false;
                                   });
