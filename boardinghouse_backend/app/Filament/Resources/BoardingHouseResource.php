@@ -27,7 +27,7 @@ class BoardingHouseResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $navigationGroup = 'Boarding Hours';
+    protected static ?string $navigationGroup = 'Boarding Houses';
 
     protected static ?string $navigationIcon = 'heroicon-o-bolt';
 
@@ -123,6 +123,11 @@ class BoardingHouseResource extends Resource
                                     // ->searchable()
                                     ->required()
                                     ->hiddenOn(EvaluateRelationManager::class),
+
+                                Forms\Components\Select::make('utils')
+                                    ->relationship('utils', 'name')
+                                    ->multiple()
+                                    ->required(),
                             ]),
                         Forms\Components\Section::make('Time Management')
                             ->schema([
@@ -178,7 +183,7 @@ class BoardingHouseResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\SpatieMediaLibraryImageColumn::make('boarding-house-image')
-                    ->label('Image')
+                    ->label('Image')->limit(1)
                     ->collection('boarding-house-images'),
 
                 Tables\Columns\TextColumn::make('name')

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -49,5 +50,10 @@ class BoardingHouse extends Model implements HasMedia
     public function evaluates(): HasMany
     {
         return $this->hasMany(Evaluate::class, 'boarding_house_id');
+    }
+
+    public function utils(): BelongsToMany
+    {
+        return $this->belongsToMany(Util::class, 'utils_boardings', 'boarding_house_id', 'util_id')->withTimestamps();
     }
 }

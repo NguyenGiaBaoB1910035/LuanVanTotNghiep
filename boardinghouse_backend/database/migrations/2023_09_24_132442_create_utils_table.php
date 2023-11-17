@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('utils', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('icon')->nullable();
+            $table->foreignId('parent_id')->nullable()->constrained('utils')->cascadeOnDelete();
             $table->timestamps();
         });
     }

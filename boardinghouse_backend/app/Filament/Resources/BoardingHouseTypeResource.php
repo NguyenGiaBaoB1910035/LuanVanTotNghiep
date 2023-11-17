@@ -22,7 +22,7 @@ class BoardingHouseTypeResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $navigationGroup = 'Boarding Hours';
+    protected static ?string $navigationGroup = 'Boarding Houses';
 
     protected static ?string $navigationIcon = 'heroicon-o-bookmark-square';
 
