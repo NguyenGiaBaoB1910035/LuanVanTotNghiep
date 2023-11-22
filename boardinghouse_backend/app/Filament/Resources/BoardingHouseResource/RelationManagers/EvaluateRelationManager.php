@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use IbrahimBougaoua\FilamentRatingStar\Actions\RatingStar;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Yepsua\Filament\Forms\Components\Rating;
@@ -26,7 +27,10 @@ class EvaluateRelationManager extends RelationManager
                     ->searchable()
                     ->required(),
 
-                Forms\Components\TextInput::make('rating'),
+                // Forms\Components\TextInput::make('rating'),
+                RatingStar::make('rating')
+                    ->label('Rating')
+                    ->required(),
 
                 Forms\Components\MarkdownEditor::make('content')
                     ->required()

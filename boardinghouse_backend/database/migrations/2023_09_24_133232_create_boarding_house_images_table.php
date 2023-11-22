@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('boarding_house_images', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->unsignedBigInteger('media_id');
             $table->unsignedBigInteger('boarding_house_id');
             $table->timestamps();
 
             $table->foreign('boarding_house_id')
-            ->references('id')->on('boarding_houses')
-            ->onDelete('cascade')
-            ->onUpdate('cascade');
+                ->references('id')->on('boarding_houses')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 

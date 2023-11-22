@@ -8,8 +8,9 @@ use App\Filament\Resources\BoardingHouseResource\{
     RelationManagers\EvaluateRelationManager
 };
 use App\Models\BoardingHouse;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
+use Awcodes\Curator\Components\Tables\CuratorColumn;
 use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -85,11 +86,15 @@ class BoardingHouseResource extends Resource
 
                         Forms\Components\Section::make('Images')
                             ->schema([
-                                SpatieMediaLibraryFileUpload::make('media')
-                                    ->collection('boarding-house-images')
+                                CuratorPicker::make('featured_image_id')
+                                    ->relationship('featured_image', 'id')
+                                    ->label('Featured Image')
+                                    ->orderColumn('order'),
+
+                                CuratorPicker::make('boarding_house_picture_ids')
+                                    ->label('Pictures')
                                     ->multiple()
-                                    ->maxFiles(5)
-                                    ->disableLabel(),
+                                    ->relationship('pictures', 'id'),
                             ])
                             ->collapsible(),
 
@@ -182,9 +187,8 @@ class BoardingHouseResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('boarding-house-image')
-                    ->label('Image')->limit(1)
-                    ->collection('boarding-house-images'),
+                CuratorColumn::make('featured_image')
+                    ->size(40),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Name')

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Awcodes\Curator\Models\Media;
 
 class BoardingHouse extends Model implements HasMedia
 {
@@ -55,5 +56,19 @@ class BoardingHouse extends Model implements HasMedia
     public function utils(): BelongsToMany
     {
         return $this->belongsToMany(Util::class, 'utils_boardings', 'boarding_house_id', 'util_id')->withTimestamps();
+    }
+
+    public function pictures(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(Media::class, 'boarding_house_images', 'boarding_house_id', 'media_id')
+            ->withPivot('order')
+            ->orderBy('order');
+    }
+
+
+    public function featured_image(): BelongsTo
+    {
+        return $this->belongsTo(Media::class, 'featured_image_id', 'id');
     }
 }

@@ -16,6 +16,11 @@ class Evaluate extends Model
         'comment'
     ];
 
+    public function users(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function boarding_house(): BelongsTo
     {
         return $this->belongsTo(BoardingHouse::class, 'boarding_house_id');
