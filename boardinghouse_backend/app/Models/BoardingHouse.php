@@ -16,11 +16,12 @@ class BoardingHouse extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
-
+    protected $appends = ['url_featured_image'];
     protected $fillable = [
         'type',
         'name',
         'slug',
+        'featured_image_id',
         'room_number',
         'acreage',
         'capacity',
@@ -70,5 +71,15 @@ class BoardingHouse extends Model implements HasMedia
     public function featured_image(): BelongsTo
     {
         return $this->belongsTo(Media::class, 'featured_image_id', 'id');
+    }
+
+    public function getUrlFeaturedImage()
+    {
+        return optional($this->featured_image)->path;
+    }
+
+    public function getUrlFeaturedImageAttribute()
+    {
+        return optional($this->featured_image)->path;
     }
 }

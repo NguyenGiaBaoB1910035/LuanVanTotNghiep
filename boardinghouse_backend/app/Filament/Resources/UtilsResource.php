@@ -6,6 +6,7 @@ use App\Filament\Resources\UtilsResource\Pages;
 use App\Filament\Resources\UtilsResource\RelationManagers;
 use App\Models\Util;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -39,8 +40,7 @@ class UtilsResource extends Resource
                         // IconPicker::make('icon')
                         //     ->sets(['heroicons', 'fontawesome-solid']),
 
-                        SpatieMediaLibraryFileUpload::make('icon')
-                            ->label('Icon image'),
+                        FileUpload::make('icon'),
 
                         Forms\Components\TextInput::make('name')
                             ->required()
@@ -70,8 +70,7 @@ class UtilsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('icon')
-                    ->label('Icon'),
+                Tables\Columns\ImageColumn::make('icon')->circular(),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Name')

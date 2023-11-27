@@ -16,9 +16,12 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+
 class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, JWTSubject, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+
+    protected $appends = ['url_avatar'];
 
     /**
      * The attributes that are mass assignable.
@@ -59,12 +62,13 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
         'password' => 'hashed',
     ];
 
-     /**
+    /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
      * @return mixed
      */
-     public function getJWTIdentifier() {
+    public function getJWTIdentifier()
+    {
         return $this->getKey();
     }
 
@@ -73,7 +77,8 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
      *
      * @return array
      */
-    public function getJWTCustomClaims() {
+    public function getJWTCustomClaims()
+    {
         return [];
     }
 
@@ -99,5 +104,14 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
     public function boarding_houses(): HasMany
     {
         return $this->hasMany(BoardingHouse::class, 'user_id');
+    }
+
+    public function getUrlAvatarAttribute()
+    {
+        if ($this->avatar) {
+            return asset('storage/' . $this->avatar);
+        }
+
+        return null;
     }
 }
