@@ -131,8 +131,7 @@ class BoardingHouseResource extends Resource
 
                                 Forms\Components\Select::make('utils')
                                     ->relationship('utils', 'name')
-                                    ->multiple()
-                                    ->required(),
+                                    ->multiple(),
                             ]),
                         Forms\Components\Section::make('Time Management')
                             ->schema([
@@ -142,6 +141,7 @@ class BoardingHouseResource extends Resource
                                         '00:00',
                                         '12:00',
                                     ])
+                                    ->default('00:00')
                                     ->required(),
 
                                 Forms\Components\TimePicker::make('close_time')->after('open_time')
@@ -149,6 +149,7 @@ class BoardingHouseResource extends Resource
                                         '00:00',
                                         '12:00',
                                     ])
+                                    ->default('12:00')
                                     ->required(),
                             ])
                             ->columns(2),

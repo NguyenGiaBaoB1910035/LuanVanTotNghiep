@@ -8,7 +8,9 @@ use App\Enums\UserRole;
 use App\Models\BoardingHouseType;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\File;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,12 +19,30 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        // Tạo symbolic link nếu chưa tồn tại
+        $storageLink = public_path('storage');
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        if (!File::exists($storageLink)) {
+            $this->command->info('Creating storage link...');
+            // Tạo symbolic link
+            Artisan::call('storage:link');
+        }
+
+        // Nếu tệp tin chưa được public
+        $sourcePath = public_path('images/avatar-default.jpg');
+        $destinationPath = storage_path('app/public/images/avatar-default.jpg');
+
+        // Kiểm tra xem tệp tin đã tồn tại trong public hay không
+        if (File::exists($sourcePath)) {
+            // Di chuyển tệp tin từ public đến storage
+            File::move($sourcePath, $destinationPath);
+
+            // Seed dữ liệu vào database
+            // Ví dụ: factory(App\User::class, 10)->create();
+        } else {
+            // Xử lý khi tệp tin không tồn tại trong public
+            $this->command->info('Tệp tin avatar-default.jpg không tồn tại trong public.');
+        }
 
         User::insert([
             [

@@ -16,7 +16,7 @@ class BoardingHouse extends Model implements HasMedia
 {
     use HasFactory;
     use InteractsWithMedia;
-    protected $appends = ['url_featured_image'];
+    protected $appends = ['url_featured_image', 'utils'];
     protected $fillable = [
         'type',
         'name',
@@ -36,6 +36,7 @@ class BoardingHouse extends Model implements HasMedia
         'favourite',
         'status',
         'user_id',
+        'published_at',
         'boarding_house_type_id'
     ];
 
@@ -81,5 +82,10 @@ class BoardingHouse extends Model implements HasMedia
     public function getUrlFeaturedImageAttribute()
     {
         return optional($this->featured_image)->path;
+    }
+
+    public function getUtilsAttribute()
+    {
+        return $this->utils()->get();
     }
 }
