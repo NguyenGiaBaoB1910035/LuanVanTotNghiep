@@ -33,7 +33,8 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
-            // ->brandName('Boarding House Admin')
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->brandName('Boarding House Admin')
             ->favicon(asset('images/logo.png'))
             ->sidebarFullyCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
