@@ -1,3 +1,4 @@
+import 'package:boardinghouse_app/providers/auth_provider.dart';
 import 'package:boardinghouse_app/screens/authu/begin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -18,6 +19,33 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _controllerPhone = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   bool passwordVisible = true;
+
+  final AuthProvider _authProvider = AuthProvider();
+
+  void _handleRegister() async {
+    if (_formkey.currentState!.validate()) {
+      // _formKey.currentState!.save();
+
+      try {
+        // Call the login method from AuthProvider
+        String status = await _authProvider.register(
+          _controllerUsername.text,
+          _controllerEmail.text,
+          _controllerPhone.text,
+          _controllerPassword.text,
+        );
+
+        // Check if the user is logged in
+        if (status == 'success') {
+          // Navigate to the main screen upon successful login
+          Navigator.of(context).pushReplacementNamed('login');
+        }
+      } catch (error) {
+        // Handle login failure (e.g., show an error message)
+        print("Login failed: $error");
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +152,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       validator: MultiValidator([
                         RequiredValidator(errorText: 'Enter first named'),
                         MinLengthValidator(6,
-                            errorText: 'Minimum 3 charecter filled name'),
+                            errorText: 'Minimum 6 charecter filled name'),
                       ]),
                       decoration: InputDecoration(
                           hintText: 'Mật khẩu',
@@ -155,10 +183,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   InkWell(
                     onTap: () {
-                      if (_formkey.currentState!.validate()) {
-                        print('form submiitted');
-                        Navigator.of(context).pushNamed('login');
-                      }
+                      _handleRegister();
+                      // if (_formkey.currentState!.validate()) {
+                      //   print('form submiitted');
+                      //   Navigator.of(context).pushNamed('login');
+                      // }
                     },
                     child: Container(
                         margin: const EdgeInsets.symmetric(vertical: 10),

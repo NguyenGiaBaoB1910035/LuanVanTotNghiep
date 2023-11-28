@@ -82,7 +82,7 @@ class UserResource extends Resource
             ->columns([
                 Stack::make([
                     ImageColumn::make('avatar')->circular(),
-                    TextColumn::make('name')
+                    TextColumn::make('user_name')
                         ->weight(FontWeight::Bold)
                         ->searchable()
                         ->sortable(),

@@ -44,28 +44,20 @@ dependencies:
   provider: ^6.0.5
   form_field_validator: ^1.1.0
   http: ^1.1.0
+  jwt_decoder: ^2.0.1
   image_picker: ^1.0.4
   firebase_storage: ^11.2.8
   flutter_rating_bar: ^4.0.1
 
   google_maps_flutter: ^2.5.0
   geolocator: ^10.1.0
-  # flutter_google_places: ^0.3.0
 
   freezed: ^2.3.2
-  # dio: ^5.0.3
   flutter_typeahead: ^4.8.0
-  # geolocator: ^9.0.2
-  # http: ^0.13.5
   google_fonts: ^4.0.3
   permission_handler: ^11.0.1
 
-  # flutter_google_places_hoc081098: ^1.0.0-nullsafety.5
-  # google_api_headers: ^2.0.3
-  # google_maps_webservice: ^0.0.19
-  # location: ^5.0.3
-  # permission_handler: ^11.0.1
- 
+  profile: ^0.0.1
 
 
 

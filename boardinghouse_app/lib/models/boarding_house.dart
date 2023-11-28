@@ -1,7 +1,12 @@
+import 'package:boardinghouse_app/models/boarding_house_image.dart';
+import 'package:boardinghouse_app/models/boarding_house_type.dart';
+import 'user.dart';
+
 class BoardingHouse {
   int? id;
-  String? type;
   String? name;
+  String? slug;
+  String? type;
   String? roomNumber;
   String? acreage;
   String? capacity;
@@ -15,12 +20,14 @@ class BoardingHouse {
   String? address;
   String? favourite;
   String? status;
-  int? userId;
+  int? userid;
+  User? user;
 
   BoardingHouse({
     this.id,
-    this.type,
     this.name,
+    this.slug,
+    this.type,
     this.roomNumber,
     this.acreage,
     this.capacity,
@@ -34,14 +41,16 @@ class BoardingHouse {
     this.address,
     this.favourite,
     this.status,
-    this.userId,
+    this.userid,
+    this.user
   });
 
   factory BoardingHouse.fromJson(Map<String, dynamic> json) {
     return BoardingHouse(
       id: json['id'],
-      type: json['type'],
       name: json['name'],
+      slug: json['slug'],
+      type: json['type'],
       roomNumber: json['room_number'],
       acreage: json['acreage'],
       capacity: json['capacity'],
@@ -55,7 +64,8 @@ class BoardingHouse {
       address: json['address'],
       favourite: json['favourite'],
       status: json['status'],
-      userId: json['user_id'],
+      userid: json['user_id'],
+      user: User.fromJson(json["user"]),
     );
   }
 }

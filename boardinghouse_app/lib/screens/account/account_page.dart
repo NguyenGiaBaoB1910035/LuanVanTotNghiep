@@ -1,10 +1,34 @@
-// import 'package:boardinghouse_app/screens/favouritepage.dart';
+import 'package:boardinghouse_app/apis/auth_api.dart';
+import 'package:boardinghouse_app/models/user.dart';
+import 'package:boardinghouse_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 
-// import '../authu/begin_page.dart';
-
-class AccountPage extends StatelessWidget {
+class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
+
+  @override
+  State<AccountPage> createState() => _AccountPageState();
+}
+
+class _AccountPageState extends State<AccountPage> {
+  User? _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    try {
+      User user = await AuthApi().getUserProfile();
+      setState(() {
+        _user = user;
+      });
+    } catch (error) {
+      print('Failed to load user profile: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,20 +54,25 @@ class AccountPage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 20),
                       child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: const BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(50))),
-                          child: const CircleAvatar(
-                            backgroundImage: AssetImage(
-                              "assets/images/avatar.jpg",
-                            ),
-                          )),
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(50))),
+                        child: _user?.avatar != null
+                            ? CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage('${_user?.avatar}'),
+                              )
+                            : const CircleAvatar(
+                                backgroundImage:
+                                    AssetImage("assets/images/avatar.jpg"),
+                              ),
+                      ),
                     ),
-                    const Text(
-                      "Gia Bảo",
+                    Text(
+                      '${_user?.userName}',
                       style:
                           TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
                     )
@@ -60,7 +89,8 @@ class AccountPage extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        Navigator.of(context).pushNamed('users');
+                        // Navigator.of(context).pushNamed('users');
+                        Navigator.of(context).pushNamed('profile');
                       },
                       child: const Padding(
                           padding: EdgeInsets.symmetric(vertical: 20),
@@ -97,18 +127,9 @@ class AccountPage extends StatelessWidget {
                             ],
                           )),
                     ),
-                  ],
-                ),
-              ),
-              // -----------------------------------------//
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 5),
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                width: MediaQuery.of(context).size.width,
-                color: Colors.white,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                    const Divider(
+                      color: Colors.black45,
+                    ),
                     InkWell(
                       onTap: () {},
                       child: const Padding(
@@ -126,31 +147,60 @@ class AccountPage extends StatelessWidget {
                             ],
                           )),
                     ),
-                    const Divider(
-                      color: Colors.black45,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).pushNamed('favourite');
-                      },
-                      child: const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Nhà trọ yêu thích",
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              Icon(
-                                Icons.navigate_next,
-                              )
-                            ],
-                          )),
-                    ),
                   ],
                 ),
               ),
+              // -----------------------------------------//
+              // Container(
+              //   margin: const EdgeInsets.symmetric(vertical: 5),
+              //   padding: const EdgeInsets.symmetric(horizontal: 20),
+              //   width: MediaQuery.of(context).size.width,
+              //   color: Colors.white,
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       InkWell(
+              //         onTap: () {},
+              //         child: const Padding(
+              //             padding: EdgeInsets.symmetric(vertical: 20),
+              //             child: Row(
+              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //               children: [
+              //                 Text(
+              //                   "Nhà trọ của tôi",
+              //                   style: TextStyle(fontSize: 20),
+              //                 ),
+              //                 Icon(
+              //                   Icons.navigate_next,
+              //                 )
+              //               ],
+              //             )),
+              //       ),
+              //       const Divider(
+              //         color: Colors.black45,
+              //       ),
+              //       InkWell(
+              //         onTap: () {
+              //           Navigator.of(context).pushNamed('favourite');
+              //         },
+              //         child: const Padding(
+              //             padding: EdgeInsets.symmetric(vertical: 20),
+              //             child: Row(
+              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //               children: [
+              //                 Text(
+              //                   "Nhà trọ yêu thích",
+              //                   style: TextStyle(fontSize: 20),
+              //                 ),
+              //                 Icon(
+              //                   Icons.navigate_next,
+              //                 )
+              //               ],
+              //             )),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               //----------------------------------------//
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 5),
@@ -254,6 +304,7 @@ class AccountPage extends StatelessWidget {
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
                 child: InkWell(
                   onTap: () {
+                    AuthProvider().logout();
                     Navigator.of(context).pushNamed('/');
                   },
                   child: Container(

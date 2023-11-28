@@ -1,8 +1,11 @@
+import 'package:boardinghouse_app/providers/auth_provider.dart';
 import 'package:boardinghouse_app/screens/authu/begin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
 import 'register_page.dart';
+import 'package:provider/provider.dart';
+// import 'package:boardinghouse_app/providers/auth_provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,6 +19,31 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _controllerEmailPhone = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   bool passwordVisible = true;
+
+  final AuthProvider _authProvider = AuthProvider();
+
+  void _handleLogin() async {
+    if (_formkey.currentState!.validate()) {
+      // _formKey.currentState!.save();
+
+      try {
+        // Call the login method from AuthProvider
+        await _authProvider.login(
+          _controllerEmailPhone.text,
+          _controllerPassword.text,
+        );
+
+        // Check if the user is logged in
+        if (_authProvider.authenticated) {
+          // Navigate to the main screen upon successful login
+          Navigator.of(context).pushReplacementNamed('main');
+        }
+      } catch (error) {
+        // Handle login failure (e.g., show an error message)
+        print("Login failed: $error");
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,10 +138,11 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   InkWell(
                     onTap: () {
-                      if (_formkey.currentState!.validate()) {
-                        print('form submiitted');
-                        Navigator.of(context).pushNamed('main');
-                      }
+                      _handleLogin();
+                      // if (_formkey.currentState!.validate()) {
+                      //   print('form submiitted');
+                      //   Navigator.of(context).pushNamed('main');
+                      // }
                     },
                     child: Container(
                         margin: const EdgeInsets.symmetric(vertical: 10),

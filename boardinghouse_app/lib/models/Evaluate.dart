@@ -1,5 +1,8 @@
 // import 'package:flutter/material.dart';
 
+import 'package:boardinghouse_app/models/boarding_house.dart';
+import 'package:boardinghouse_app/models/user.dart';
+
 class Evalute {
   final String username;
   final String? boardinghouse;
@@ -10,18 +13,18 @@ class Evalute {
 }
 
 class Evaluate {
-  int? id;
+  String? id;
   double? rating;
   String? comment;
-  int? userId;
-  int? boardingHouseId;
+  User? user;
+  BoardingHouse? boardingHouse;
 
   Evaluate({
     this.id,
     this.rating,
     this.comment,
-    this.userId,
-    this.boardingHouseId,
+    this.user,
+    this.boardingHouse,
   });
 
   factory Evaluate.fromJson(Map<String, dynamic> json) {
@@ -29,8 +32,10 @@ class Evaluate {
       id: json['id'],
       rating: json['rating']?.toDouble(),
       comment: json['comment'],
-      userId: json['user_id'],
-      boardingHouseId: json['boarding_house_id'],
+      user: json['user'] != null ? User.fromJson(json['user']) : null,
+      boardingHouse: json['boardingHouse'] != null
+          ? BoardingHouse.fromJson(json['boardingHouse'])
+          : null,
     );
   }
 }
