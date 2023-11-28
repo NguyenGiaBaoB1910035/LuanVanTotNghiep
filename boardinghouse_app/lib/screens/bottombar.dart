@@ -1,4 +1,5 @@
 import 'package:boardinghouse_app/screens/account/account_page.dart';
+import 'package:boardinghouse_app/screens/favouritepage.dart';
 // import 'package:boardinghouse_app/screens/favouritepage.dart';
 import 'package:boardinghouse_app/screens/home/homepage.dart';
 import 'package:boardinghouse_app/screens/message/messagepage.dart';
@@ -18,9 +19,9 @@ class _BottomBarState extends State<BottomBar> {
   //     fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black26);
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    // FavouritePage(),
+    FavouritePage(),
     PostPage(),
-    MessagePage(),
+    // MessagePage(),
     AccountPage(),
   ];
 
@@ -35,6 +36,8 @@ class _BottomBarState extends State<BottomBar> {
     return Scaffold(
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed, // This disables animation
+
         backgroundColor: Colors.white,
         showUnselectedLabels: true,
         iconSize: 25,
@@ -47,24 +50,24 @@ class _BottomBarState extends State<BottomBar> {
             ),
             label: 'Trang chủ',
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(
-          //     Icons.favorite_border,
-          //   ),
-          //   label: 'Yêu thích',
-          // ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.favorite_border,
+            ),
+            label: 'Yêu thích',
+          ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.feed_outlined,
             ),
             label: 'Bảng tin',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.message,
-            ),
-            label: 'Tin nhắn',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(
+          //     Icons.message,
+          //   ),
+          //   label: 'Tin nhắn',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.account_circle,

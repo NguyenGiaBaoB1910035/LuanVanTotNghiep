@@ -6,23 +6,29 @@ class Util {
   final String name;
   bool isSelected;
 
-  Util({this.id, required this.icon, required this.name, this.isSelected = false});
+  Util(
+      {this.id,
+      required this.icon,
+      required this.name,
+      this.isSelected = false});
 }
 
-// class Util {
-//   int? id;
-//   String? name;
+class Utils {
+  String? id;
+  String? name;
+  String? imageUrl; // Add a property for the image URL
 
-//   Util({
-//     this.id,
-//     this.name,
-//   });
+  Utils({
+    this.id,
+    this.name,
+    this.imageUrl,
+  });
 
-//   factory Util.fromJson(Map<String, dynamic> json) {
-//     return Util(
-//       id: json['id'],
-//       name: json['name'],
-//     );
-//   }
-// }
-
+  factory Utils.fromJson(Map<String, dynamic> json) {
+    return Utils(
+      id: json['id'],
+      name: json['name'],
+      imageUrl: json['imageUrl'], // Update to the actual key for the image URL
+    );
+  }
+}

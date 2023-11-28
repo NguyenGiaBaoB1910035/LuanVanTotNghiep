@@ -1,19 +1,24 @@
 class BoardingHouseImage {
-  int? id;
-  String? name;
-  int? boardingHouseId;
+  String? id;
+  String? imageUrl;
 
   BoardingHouseImage({
     this.id,
-    this.name,
-    this.boardingHouseId,
+    this.imageUrl,
   });
 
   factory BoardingHouseImage.fromJson(Map<String, dynamic> json) {
     return BoardingHouseImage(
       id: json['id'],
-      name: json['name'],
-      boardingHouseId: json['boarding_house_id'],
+      imageUrl: json['imageUrl'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'imageUrl': imageUrl,
+    };
+  }
 }
+

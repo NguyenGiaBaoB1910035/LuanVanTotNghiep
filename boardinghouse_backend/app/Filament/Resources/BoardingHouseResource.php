@@ -157,12 +157,12 @@ class BoardingHouseResource extends Resource
                             ->schema([
                                 Forms\Components\TextInput::make('price')
                                     ->numeric()
-                                    ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
+                                    ->rules(['regex:/^\d{6,8}(\.\d{0,2})?$/'])
                                     ->required(),
 
                                 Forms\Components\TextInput::make('deposit_price')
                                     ->numeric()
-                                    ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
+                                    ->rules(['regex:/^\d{6,8}(\.\d{0,2})?$/'])
                                     ->required(),
 
                                 Forms\Components\TextInput::make('electric_price')
