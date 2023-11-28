@@ -30,12 +30,13 @@ class DatabaseSeeder extends Seeder
 
         // Nếu tệp tin chưa được public
         $sourcePath = public_path('images/avatar-default.jpg');
-        $destinationPath = storage_path('app/public/images/avatar-default.jpg');
+        $destinationPath = storage_path('app/public/avatar-default.jpg');
+
 
         // Kiểm tra xem tệp tin đã tồn tại trong public hay không
         if (File::exists($sourcePath)) {
             // Di chuyển tệp tin từ public đến storage
-            File::move($sourcePath, $destinationPath);
+            File::copy($sourcePath, $destinationPath);
 
             // Seed dữ liệu vào database
             // Ví dụ: factory(App\User::class, 10)->create();
