@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 class BoardingHouse extends Model
 {
     use HasFactory;
-    protected $appends = ['url_featured_image', 'utils'];
+    protected $appends = ['url_featured_image', 'utils', 'pictures'];
     protected $fillable = [
         'type',
         'name',
@@ -78,11 +78,16 @@ class BoardingHouse extends Model
     {
         if (empty($this->featured_image) || !$this->featured_image) return;
 
-        return Storage::url(optional($this->featured_image)->path);
+        return url(Storage::url(optional($this->featured_image)->path));
     }
 
     public function getUtilsAttribute()
     {
         return $this->utils()->get();
+    }
+
+    public function getPicturesAttribute()
+    {
+        return $this->pictures()->get();
     }
 }
