@@ -6,13 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Util extends Model implements HasMedia
+class Util extends Model
 {
     use HasFactory;
-    use InteractsWithMedia;
     protected $appends = ['url_icon'];
     protected $fillable = [
         'name',

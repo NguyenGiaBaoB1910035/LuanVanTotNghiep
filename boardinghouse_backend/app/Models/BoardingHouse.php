@@ -6,16 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\MediaLibrary\InteractsWithMedia;
 use Awcodes\Curator\Models\Media;
+use Illuminate\Support\Facades\Storage;
 
-class BoardingHouse extends Model implements HasMedia
+class BoardingHouse extends Model
 {
     use HasFactory;
-    use InteractsWithMedia;
     protected $appends = ['url_featured_image', 'utils'];
     protected $fillable = [
         'type',
@@ -63,9 +60,7 @@ class BoardingHouse extends Model implements HasMedia
     public function pictures(): BelongsToMany
     {
         return $this
-            ->belongsToMany(Media::class, 'boarding_house_images', 'boarding_house_id', 'media_id')
-            ->withPivot('order')
-            ->orderBy('order');
+            ->belongsToMany(Media::class, 'boarding_house_images', 'boarding_house_id', 'media_id');
     }
 
 
@@ -81,7 +76,9 @@ class BoardingHouse extends Model implements HasMedia
 
     public function getUrlFeaturedImageAttribute()
     {
-        return optional($this->featured_image)->path;
+        if (empty($this->featured_image) || !$this->featured_image) return;
+
+        return Storage::url(optional($this->featured_image)->path);
     }
 
     public function getUtilsAttribute()

@@ -88,8 +88,7 @@ class BoardingHouseResource extends Resource
                             ->schema([
                                 CuratorPicker::make('featured_image_id')
                                     ->relationship('featured_image', 'id')
-                                    ->label('Featured Image')
-                                    ->orderColumn('order'),
+                                    ->label('Featured Image'),
 
                                 CuratorPicker::make('boarding_house_picture_ids')
                                     ->label('Pictures')
@@ -157,22 +156,22 @@ class BoardingHouseResource extends Resource
                             ->schema([
                                 Forms\Components\TextInput::make('price')
                                     ->numeric()
-                                    ->rules(['regex:/^\d{6,8}(\.\d{0,2})?$/'])
+                                    ->rules(['regex:/^\d{1,8}(\.\d{0,2})?$/'])
                                     ->required(),
 
                                 Forms\Components\TextInput::make('deposit_price')
                                     ->numeric()
-                                    ->rules(['regex:/^\d{6,8}(\.\d{0,2})?$/'])
+                                    ->rules(['regex:/^\d{1,8}(\.\d{0,2})?$/'])
                                     ->required(),
 
                                 Forms\Components\TextInput::make('electric_price')
                                     ->numeric()
-                                    ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
+                                    ->rules(['regex:/^\d{1,8}(\.\d{0,2})?$/'])
                                     ->required(),
 
                                 Forms\Components\TextInput::make('water_price')
                                     ->numeric()
-                                    ->rules(['regex:/^\d{1,6}(\.\d{0,2})?$/'])
+                                    ->rules(['regex:/^\d{1,8}(\.\d{0,2})?$/'])
                                     ->required(),
                             ])
                             ->columns(1)
