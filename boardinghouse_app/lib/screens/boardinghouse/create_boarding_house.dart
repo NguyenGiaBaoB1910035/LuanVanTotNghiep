@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:boardinghouse_app/models/boarding_house.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -140,12 +141,14 @@ class InforForm extends StatefulWidget {
 }
 
 class _InforFormState extends State<InforForm> {
+  BoardingHouse? _boardingHouse;
+
   String selectedRoom = 'Phòng cho thuê';
   String name = '';
   String address = '';
   int quantity = 1;
   int capacity = 1;
-  String selectedGender = 'Tất cả';
+  // String selectedGender = 'Tất cả';
   double area = 0.0;
   double cost = 0.0;
   double deposit = 0.0;
@@ -155,6 +158,34 @@ class _InforFormState extends State<InforForm> {
   TimeOfDay closeTime = TimeOfDay.now();
   String description = '';
 
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  TextEditingController txtTypeController = TextEditingController();
+  TextEditingController txtNameController = TextEditingController();
+  TextEditingController txtAddressController = TextEditingController();
+  TextEditingController txtQuantityController = TextEditingController();
+  TextEditingController txtCapacityController = TextEditingController();
+  TextEditingController txtAraeController = TextEditingController();
+  TextEditingController txtCostController = TextEditingController();
+  TextEditingController txtDepositController = TextEditingController();
+  TextEditingController txtElectriController = TextEditingController();
+  TextEditingController txtWaterController = TextEditingController();
+  TextEditingController txtOpenTimeController = TextEditingController();
+  TextEditingController txtCloseTimeController = TextEditingController();
+  TextEditingController txtDescriptionController = TextEditingController();
+
+  File? _imageFile;
+  final _picker = ImagePicker();
+
+  Future getImage() async {
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -163,6 +194,35 @@ class _InforFormState extends State<InforForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            GestureDetector(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 180,
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1),
+                  image:
+                      // _imageFile == null
+
+                      //     ? _boardingHouse!.image != null
+                      //         ? DecorationImage(
+                      //             image: NetworkImage('${_boardingHouse!.image}'),
+                      //             fit: BoxFit.cover)
+                      //         : null
+                      // :
+                      DecorationImage(
+                          image: FileImage(_imageFile ?? File('')),
+                          // image: AssetImage("assets/images/avatar.jpg"),
+                          fit: BoxFit.cover),
+                  // color: Colors.amber
+                ),
+              ),
+              onTap: () {
+                getImage();
+              },
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             const Text('Loại phòng:'),
             Column(
               children: <Widget>[
@@ -224,18 +284,18 @@ class _InforFormState extends State<InforForm> {
                 });
               },
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text('Giới tính'),
-            Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                buildGenderOption('Tất cả'),
-                buildGenderOption('Nam'),
-                buildGenderOption('Nữ'),
-              ],
-            ),
+            // const SizedBox(
+            //   height: 20,
+            // ),
+            // const Text('Giới tính'),
+            // Column(
+            //   // mainAxisAlignment: MainAxisAlignment.center,
+            //   children: <Widget>[
+            //     buildGenderOption('Tất cả'),
+            //     buildGenderOption('Nam'),
+            //     buildGenderOption('Nữ'),
+            //   ],
+            // ),
             const SizedBox(
               height: 20,
             ),
@@ -369,22 +429,22 @@ class _InforFormState extends State<InforForm> {
     );
   }
 
-  Widget buildGenderOption(String gender) {
-    return Row(
-      children: <Widget>[
-        Radio(
-          value: gender,
-          groupValue: selectedGender,
-          onChanged: (value) {
-            setState(() {
-              selectedGender = value.toString();
-            });
-          },
-        ),
-        Text(gender),
-      ],
-    );
-  }
+  // Widget buildGenderOption(String gender) {
+  //   return Row(
+  //     children: <Widget>[
+  //       Radio(
+  //         value: gender,
+  //         groupValue: selectedGender,
+  //         onChanged: (value) {
+  //           setState(() {
+  //             selectedGender = value.toString();
+  //           });
+  //         },
+  //       ),
+  //       Text(gender),
+  //     ],
+  //   );
+  // }
 }
 
 //--------------------------------------------------------------------------------------------------------------//

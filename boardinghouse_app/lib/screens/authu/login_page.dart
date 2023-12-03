@@ -46,32 +46,10 @@ class _LoginPageState extends State<LoginPage> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.setString('token', user.token ?? '');
     await pref.setInt('userId', user.id ?? 0);
-    Navigator.of(context).pushReplacementNamed('main');
+    // Navigator.of(context).pushReplacementNamed('main');
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => BottomBar()), (route) => false);
   }
-
-  // void _handleLogin() async {
-  //   if (_formkey.currentState!.validate()) {
-  //     // _formKey.currentState!.save();
-
-  //     try {
-  //       // Call the login method from AuthProvider
-  //       await _authProvider.login(
-  //         _controllerEmailPhone.text,
-  //         _controllerPassword.text,
-  //       );
-
-  //       // Check if the user is logged in
-  //       if (_authProvider.authenticated) {
-  //         // Navigate to the main screen upon successful login
-  //         Navigator.of(context).pushReplacementNamed('main');
-  //         print("chuyển qua trang chủ");
-  //       }
-  //     } catch (error) {
-  //       // Handle login failure (e.g., show an error message)
-  //       print("Login failed: $error");
-  //     }
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -287,11 +265,13 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Color.fromRGBO(0, 177, 237, 1)),
                           ),
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const RegisterPage()));
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                'register', (Route<dynamic> route) => false);
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) =>
+                            //             const RegisterPage()));
                           },
                         ),
                       ],

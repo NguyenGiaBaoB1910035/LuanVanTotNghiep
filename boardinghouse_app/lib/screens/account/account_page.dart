@@ -3,6 +3,7 @@ import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/apis/user_api.dart';
 import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:boardinghouse_app/models/user.dart';
+import 'package:boardinghouse_app/screens/authu/login_page.dart';
 // import 'package:boardinghouse_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -26,11 +27,17 @@ class _AccountPageState extends State<AccountPage> {
         // txtNameController.text = user!.name ?? '';
       });
     } else if (response.error == unauthorized) {
-      logout()
-          .then((value) => {Navigator.of(context).pushNamed('edit_profile')});
+      logout().then((value) => {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => LoginPage()),
+                (route) => false)
+          });
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('${response.error}')));
+      // Navigator.of(context).pushAndRemoveUntil(
+      //     MaterialPageRoute(builder: (context) => LoginPage()),
+      //     (route) => false);
     }
   }
 

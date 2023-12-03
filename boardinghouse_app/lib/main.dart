@@ -9,6 +9,7 @@ import 'package:boardinghouse_app/screens/authu/register_page.dart';
 import 'package:boardinghouse_app/screens/boardinghouse/boarding_house_detail_page.dart';
 import 'package:boardinghouse_app/screens/bottombar.dart';
 import 'package:boardinghouse_app/screens/favouritepage.dart';
+import 'package:boardinghouse_app/screens/loading.dart';
 import 'package:boardinghouse_app/screens/post/create_post.dart';
 import 'package:boardinghouse_app/screens/search/PlaceSearchScreen.dart';
 import 'package:boardinghouse_app/screens/search/map_page.dart';
@@ -44,8 +45,9 @@ class MyApp extends StatelessWidget {
                 // primarySwatch: Colors.blue,
                 ),
             // home: const BeginPage(),
-            initialRoute: '/',
+            initialRoute: 'loading',
             routes: {
+              'loading': (context) => Loading(),
               '/': (context) => const BeginPage(),
               'login': (context) => const LoginPage(),
               'register': (context) => const RegisterPage(),

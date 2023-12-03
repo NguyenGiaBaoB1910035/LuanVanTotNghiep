@@ -9,34 +9,34 @@ class Evalute {
   final String comment;
   final int rating;
 
-  Evalute({required this.username, this.boardinghouse, required this.comment, required this.rating});
+  Evalute(
+      {required this.username,
+      this.boardinghouse,
+      required this.comment,
+      required this.rating});
 }
 
 class Evaluate {
-  String? id;
-  double? rating;
+  int? id;
+  int? rating;
   String? comment;
   User? user;
-  BoardingHouse? boardingHouse;
+  // BoardingHouse? boardingHouse;
 
   Evaluate({
     this.id,
     this.rating,
     this.comment,
     this.user,
-    this.boardingHouse,
+    // this.boardingHouse,
   });
 
   factory Evaluate.fromJson(Map<String, dynamic> json) {
     return Evaluate(
       id: json['id'],
-      rating: json['rating']?.toDouble(),
+      rating: json['rating'],
       comment: json['comment'],
-      user: json['user'] != null ? User.fromJson(json['user']) : null,
-      boardingHouse: json['boardingHouse'] != null
-          ? BoardingHouse.fromJson(json['boardingHouse'])
-          : null,
+      user: User(id: json['user']['id'], userName: json['user']['user_name']),
     );
   }
 }
-

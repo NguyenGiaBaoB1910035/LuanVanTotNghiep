@@ -9,6 +9,11 @@ class ApiConstants {
 
   static const String apiUser = '$baseUrl/users';
   static const String apiBoardingHouse = '$baseUrl/boarding-houses';
+
+  static const String apiUtil = '$baseUrl/...';
+  static const String apiBoardingHouseType = '$baseUrl/...';
+  static const String apiPost = '$baseUrl/...';
+  static const String apiEvaluate = '$baseUrl/...';
 }
 
 const serverError = 'Server error';

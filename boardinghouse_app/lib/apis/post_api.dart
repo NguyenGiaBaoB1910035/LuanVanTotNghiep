@@ -1,79 +1,144 @@
 import 'dart:convert';
-import 'dart:math';
-import 'package:boardinghouse_app/apis/auth_api.dart';
+import 'package:boardinghouse_app/apis/user_api.dart';
+import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/models/port.dart';
 
-class PostApi {
-  Future<List<Post>?> getAllPost() async {
-    try {
-      var url = Uri.parse(ApiConstants.apiBoardingHouse);
-      var response = await http.get(url);
+Future<ApiResponse> getPosts() async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.get(Uri.parse(ApiConstants.apiPost), headers: {
+      "Content-Type": "application/json",
+      'Authorization': 'Bearer $token'
+    });
 
-      // In ra nội dung phản hồi từ máy chủ dưới dạng chuỗi
-      print("Response from server: ${response.body}");
-
-      if (response.statusCode == 200) {
-        Map<String, dynamic> jsonData = json.decode(response.body);
-        List<dynamic> postData = jsonData['data'];
-        List<Post> posts =
-            postData.map((postJson) => Post.fromJson(postJson)).toList();
-
-        return posts;
-      } else {
-        throw Exception('PostApi: Failed to getPost');
-
-        // Xử lý khi phản hồi không thành công
-        // log("Failed to fetch data: ${response.statusCode}");
-        // return null;
-      }
-    } catch (e) {
-      print(e);
-      rethrow;
-      // Xử lý khi có lỗi
-      // log("Error fetching data: $e");
-      // return null;
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['posts']
+            .map((p) => Post.fromJson(p))
+            .toList();
+        // we get list of posts, so we need to map each item to post model
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
     }
+  } catch (e) {
+    apiResponse.error = serverError;
   }
+  return apiResponse;
+}
 
-  Future<String> createPost(
-      String content, int userId, int boardingHouseId) async {
-    try {
-      String token = await AuthApi().getToken();
-      // int userId = await AuthApi().getUserId();
-      var url = Uri.parse(ApiConstants.apiRegister);
+// Create post
+Future<ApiResponse> createPost(int boardingHouseId, String content) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.post(
+      Uri.parse(ApiConstants.apiPost),
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer $token'
+      },
+      body: json.encode(
+        {
+          'content': content,
+        },
+      ),
+    );
 
-      var response = await http.post(
-        url,
+    // here if the image is null we just send the body, if not null we send the image too
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body);
+        break;
+      case 422:
+        final errors = jsonDecode(response.body)['errors'];
+        apiResponse.error = errors[errors.keys.elementAt(0)][0];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        print(response.body);
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+// Edit post
+Future<ApiResponse> editPost(int postId, String content) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.put(Uri.parse('$ApiConstants.apiPost/$postId'),
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer $token'
         },
-        body: json.encode(
-          {
-            'user_id': userId,
-            'content': content,
-            'boarding_house_id': boardingHouseId
-          },
-        ),
-      );
+        body: {
+          'content': content
+        });
 
-      print("Response from server: ${response.body}");
-
-      if (response.statusCode == 201) {
-        final responseJson = json.decode(response.body);
-        String status = responseJson['status'];
-
-        return status;
-      } else {
-        // Xử lý lỗi nếu cần thiết
-        throw Exception('PostAPi: Failed to createPost');
-      }
-    } catch (error) {
-      print(error);
-      rethrow;
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
     }
+  } catch (e) {
+    apiResponse.error = serverError;
   }
+  return apiResponse;
+}
+
+// Delete post
+Future<ApiResponse> deletePost(int postId) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http
+        .delete(Uri.parse('$ApiConstants.apiPost/$postId'), headers: {
+      "Content-Type": "application/json",
+      'Authorization': 'Bearer $token'
+    });
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
 }

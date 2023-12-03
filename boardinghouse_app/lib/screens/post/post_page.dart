@@ -1,4 +1,4 @@
-import 'package:boardinghouse_app/components/card_post.dart';
+import 'package:boardinghouse_app/screens/components/card_post.dart';
 import 'package:flutter/material.dart';
 
 class PostPage extends StatefulWidget {

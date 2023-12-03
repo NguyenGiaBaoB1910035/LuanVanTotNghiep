@@ -18,7 +18,7 @@ class _SuggestPageState extends State<SuggestPage> {
   @override
   void initState() {
     super.initState();
-    _boardinghouseListFuture = BoardingHouseApi().getBoardingHouses();
+    _boardinghouseListFuture = getAllBoardingHouses();
   }
 
   @override
