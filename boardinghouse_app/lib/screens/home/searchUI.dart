@@ -29,23 +29,43 @@ class _SearchUIState extends State<SearchUI> {
           ),
           child: Column(
             children: [
-              Container(
-                  margin: const EdgeInsets.all(10),
-                  decoration: const BoxDecoration(
-                      color: Color(0xF5F5F5F5),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15),
-                      )),
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      icon: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Icon(Icons.search),
-                      ),
-                      hintText: "Tìm theo tên đường, địa điểm",
-                      border: InputBorder.none,
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).pushNamed('search');
+                },
+                child: Container(
+                    padding: EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
+                    decoration: const BoxDecoration(
+                        color: Color(0xF5F5F5F5),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(15),
+                        )),
+                    child: const Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Icon(Icons.search),
+                        ),
+                        Text(
+                          "Tìm theo tên đường, địa điểm",
+                          style: TextStyle(fontSize: 16),
+                          textAlign: TextAlign.center,
+                        )
+                      ],
+                    )
+                    // TextFormField(
+                      // decoration: const InputDecoration(
+                      //   icon: Padding(
+                      //     padding: EdgeInsets.symmetric(horizontal: 20),
+                      //     child: Icon(Icons.search),
+                      //   ),
+                      //   hintText: "Tìm theo tên đường, địa điểm",
+                      //   border: InputBorder.none,
+                    //   ),
+                    // )
                     ),
-                  )),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

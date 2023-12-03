@@ -1,7 +1,12 @@
+import 'package:boardinghouse_app/apis/user_api.dart';
+import 'package:boardinghouse_app/models/api_response.dart';
+import 'package:boardinghouse_app/models/user.dart';
 import 'package:boardinghouse_app/providers/auth_provider.dart';
 import 'package:boardinghouse_app/screens/authu/begin_page.dart';
+import 'package:boardinghouse_app/screens/bottombar.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'register_page.dart';
 import 'package:provider/provider.dart';
@@ -19,31 +24,54 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _controllerEmailPhone = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   bool passwordVisible = true;
+  bool loading = false;
 
   final AuthProvider _authProvider = AuthProvider();
 
-  void _handleLogin() async {
-    if (_formkey.currentState!.validate()) {
-      // _formKey.currentState!.save();
-
-      try {
-        // Call the login method from AuthProvider
-        await _authProvider.login(
-          _controllerEmailPhone.text,
-          _controllerPassword.text,
-        );
-
-        // Check if the user is logged in
-        if (_authProvider.authenticated) {
-          // Navigate to the main screen upon successful login
-          Navigator.of(context).pushReplacementNamed('main');
-        }
-      } catch (error) {
-        // Handle login failure (e.g., show an error message)
-        print("Login failed: $error");
-      }
+  void _loginUser() async {
+    ApiResponse response =
+        await login(_controllerEmailPhone.text, _controllerPassword.text);
+    if (response.error == null) {
+      _saveAndRedirectToHome(response.data as User);
+    } else {
+      setState(() {
+        loading = false;
+      });
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
     }
   }
+
+  void _saveAndRedirectToHome(User user) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString('token', user.token ?? '');
+    await pref.setInt('userId', user.id ?? 0);
+    Navigator.of(context).pushReplacementNamed('main');
+  }
+
+  // void _handleLogin() async {
+  //   if (_formkey.currentState!.validate()) {
+  //     // _formKey.currentState!.save();
+
+  //     try {
+  //       // Call the login method from AuthProvider
+  //       await _authProvider.login(
+  //         _controllerEmailPhone.text,
+  //         _controllerPassword.text,
+  //       );
+
+  //       // Check if the user is logged in
+  //       if (_authProvider.authenticated) {
+  //         // Navigate to the main screen upon successful login
+  //         Navigator.of(context).pushReplacementNamed('main');
+  //         print("chuyển qua trang chủ");
+  //       }
+  //     } catch (error) {
+  //       // Handle login failure (e.g., show an error message)
+  //       print("Login failed: $error");
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +166,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   InkWell(
                     onTap: () {
-                      _handleLogin();
+                      _loginUser();
+                      // _handleLogin();
                       // if (_formkey.currentState!.validate()) {
                       //   print('form submiitted');
                       //   Navigator.of(context).pushNamed('main');

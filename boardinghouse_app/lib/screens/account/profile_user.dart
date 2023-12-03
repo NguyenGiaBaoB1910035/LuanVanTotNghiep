@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:boardinghouse_app/apis/auth_api.dart';
+import 'package:boardinghouse_app/apis/constant.dart';
+import 'package:boardinghouse_app/apis/user_api.dart';
+import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:boardinghouse_app/models/user.dart';
 
 import 'package:flutter/material.dart';
@@ -14,35 +17,61 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late User _user;
-  File? _imageFile;
-  final _picker = ImagePicker();
+  User? _user;
+  bool loading = true;
+
+  void getUser() async {
+    ApiResponse response = await getUserDetail();
+    if (response.error == null) {
+      setState(() {
+        _user = response.data as User;
+        loading = false;
+        // txtNameController.text = user!.name ?? '';
+      });
+    } else if (response.error == unauthorized) {
+      logout()
+          .then((value) => {Navigator.of(context).pushNamed('edit_profile')});
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _loadUserProfile();
+    // _loadUserProfile();
+    getUser();
   }
+  // late User _user;
+  // File? _imageFile;
+  // final _picker = ImagePicker();
 
-  Future getImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
-    }
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _loadUserProfile();
+  // }
 
-  Future<void> _loadUserProfile() async {
-    try {
-      User user = await AuthApi().getUserProfile();
-      setState(() {
-        _user = user;
-      });
-    } catch (error) {
-      print('Failed to load user profile: $error');
-    }
-  }
+  // Future getImage() async {
+  //   final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       _imageFile = File(pickedFile.path);
+  //     });
+  //   }
+  // }
+
+  // Future<void> _loadUserProfile() async {
+  //   try {
+  //     User user = await AuthApi().getUserProfile();
+  //     setState(() {
+  //       _user = user;
+  //     });
+  //   } catch (error) {
+  //     print('Failed to load user profile: $error');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -73,19 +102,18 @@ class _ProfilePageState extends State<ProfilePage> {
             height: 110,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(60),
-                image: _imageFile == null
-                    ? _user.avatar != null
-                        ? DecorationImage(
-                            image: NetworkImage('${_user.avatar}'),
-                            fit: BoxFit.cover)
-                        : null
-                    : DecorationImage(
-                        image: FileImage(_imageFile ?? File('')),
+                image: _user!.avatar != null
+                    ? DecorationImage(
+                        image: NetworkImage('${_user!.avatar}'),
+                        fit: BoxFit.cover)
+                    : const DecorationImage(
+                        // image: FileImage(_imageFile ?? File('')),
+                        image: AssetImage("assets/images/avatar.jpg"),
                         fit: BoxFit.cover),
                 color: Colors.amber),
           ),
           onTap: () {
-            getImage();
+            // getImage();
           },
         )),
         SizedBox(
@@ -93,7 +121,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         Center(
           child: Text(
-            '${_user.userName}',
+            '${_user?.userName}',
             style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
         ),
@@ -108,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
               size: 35,
             ),
             title: Text(
-              '${_user.email}',
+              '${_user?.email}',
               style: TextStyle(fontSize: 20),
             ),
           ),
@@ -121,7 +149,7 @@ class _ProfilePageState extends State<ProfilePage> {
               size: 35,
             ),
             title: Text(
-              '${_user.phone}',
+              '${_user?.phone}',
               style: TextStyle(fontSize: 20),
             ),
           ),
@@ -133,9 +161,9 @@ class _ProfilePageState extends State<ProfilePage> {
               Icons.person,
               size: 35,
             ),
-            title: _user.name != null
+            title: _user?.name != null
                 ? Text(
-                    '${_user.name}',
+                    '${_user?.name}',
                     style: TextStyle(fontSize: 20),
                   )
                 : Text(
@@ -151,9 +179,9 @@ class _ProfilePageState extends State<ProfilePage> {
               Icons.transgender,
               size: 35,
             ),
-            title: _user.gender != null
+            title: _user?.gender != null
                 ? Text(
-                    '${_user.gender}',
+                    '${_user?.gender}',
                     style: TextStyle(fontSize: 20),
                   )
                 : Text(
@@ -169,9 +197,9 @@ class _ProfilePageState extends State<ProfilePage> {
               Icons.place,
               size: 35,
             ),
-            title: _user.address != null
+            title: _user?.address != null
                 ? Text(
-                    '${_user.address}',
+                    '${_user?.address}',
                     style: TextStyle(fontSize: 20),
                   )
                 : Text(
@@ -188,9 +216,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return IconButton(
       icon: const Icon(Icons.edit, color: Color.fromRGBO(0, 177, 237, 1)),
       onPressed: () {
-        // Navigator.of(context).pushNamed(
-
-        // );
+        Navigator.of(context).pushNamed('edit_profile');
       },
     );
   }

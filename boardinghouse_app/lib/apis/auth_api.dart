@@ -39,7 +39,7 @@ class AuthApi {
         throw Exception('AthuApi: Failed to authenticate');
       }
     } catch (error) {
-      print(error);
+      print("login_api failed: $error");
       rethrow;
     }
   }

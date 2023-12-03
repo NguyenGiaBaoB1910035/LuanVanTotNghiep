@@ -25,14 +25,12 @@ class _HomePageState extends State<HomePage> {
             fit: BoxFit.fitWidth,
           ),
         ),
-        child: Column(
-            children: [
-              SearchUI(), 
-              TrendsUI(), 
-              OutstandingUI(),
-              SuggestUI()
-
-            ]),
+        child: Column(children: [
+          SearchUI(),
+          TrendsUI(),
+          // OutstandingUI(),
+          SuggestUI()
+        ]),
       ),
     );
   }

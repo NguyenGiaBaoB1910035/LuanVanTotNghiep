@@ -37,5 +37,6 @@ Route::group([
     Route::post('/refresh', 'AuthController@refresh');
     Route::get('/user-profile','AuthController@userProfile');
     Route::post('/change-pass', 'AuthController@changePassWord');
+    Route::put('/update-profile', 'AuthController@update');
 });
 

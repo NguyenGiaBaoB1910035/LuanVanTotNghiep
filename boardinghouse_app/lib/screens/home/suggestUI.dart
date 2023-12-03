@@ -23,7 +23,7 @@ class SuggestUI extends StatelessWidget {
                 padding: EdgeInsets.only(top: 10),
                 child: Text(
                   "Phòng gợi ý",
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: 20),
                 ),
               ),
               GridView.count(

@@ -115,4 +115,68 @@ class AuthController extends Controller
         ], 201);
     }
 
+     //update proflie
+    /*public function update(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_name' => 'required|string',
+            'name' => 'required|string',
+            'gender' => 'required|string',
+            'address' => 'required|string',
+            'birthday' => 'required|string',
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $attrs = $validator->validated();
+        $userId = auth()->user()->id;
+
+        $dataToUpdate = [
+            'user_name' => $attrs['user_name'],
+            'name' => $attrs['name'],
+            'gender' => $attrs['gender'],
+            'address' => $attrs['address'],
+            'birthday' => $attrs['birthday'],
+        ];
+
+        if ($request->hasFile('image')) {
+            $image = $this->saveImage($request->file('image'), 'profiles');
+            $dataToUpdate['image'] = $image;
+        }
+
+        auth()->user()->update($dataToUpdate);
+
+        return response([
+            'message' => 'User updated.',
+            'user' => auth()->user(),
+        ], 200);
+    }*/
+
+    // update user
+    public function update(Request $request)
+    {
+        $attrs = $request->validate([
+            'name' => 'required|string',
+            'gender' => 'required|string',
+            'address' => 'required|string',
+        ]);
+
+        $image = $this->saveImage($request->avatar, 'profiles');
+
+        auth()->user()->update([
+            'name' => $attrs['name'],
+            'gender' => $attrs['gender'],
+            'address' => $attrs['address'],
+            'avatar' => $image
+        ]);
+
+        return response([
+            'message' => 'User updated.',
+            'user' => auth()->user()
+        ], 201);
+    }
+
 }

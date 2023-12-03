@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:boardinghouse_app/apis/auth_api.dart';
 import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/models/boarding_house.dart';
 import 'package:http/http.dart' as http;
@@ -16,8 +17,10 @@ class BoardingHouseApi {
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonData = json.decode(response.body);
         List<dynamic> boardinghouseData = jsonData['data'];
-        List<BoardingHouse> boardinghouses =
-            boardinghouseData.map((boardinghouseJson) => BoardingHouse.fromJson(boardinghouseJson)).toList();
+        List<BoardingHouse> boardinghouses = boardinghouseData
+            .map((boardinghouseJson) =>
+                BoardingHouse.fromJson(boardinghouseJson))
+            .toList();
 
         return boardinghouses;
       } else {
@@ -29,6 +32,71 @@ class BoardingHouseApi {
       // Xử lý khi có lỗi
       log("Error fetching data: $e");
       return null;
+    }
+  }
+
+  Future<String> createBoardingHouse(
+      String type,
+      String name,
+      String roomNumber,
+      String acreage,
+      String capacity,
+      String price,
+      String depositPrice,
+      String electricPrice,
+      String waterPrice,
+      String openTime,
+      String closeTime,
+      String description,
+      String address,
+      int userId) async {
+    try {
+      String token = await AuthApi().getToken();
+      // int userId = await AuthApi().getUserId();
+      var url = Uri.parse(ApiConstants.apiRegister);
+
+      var response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer $token'
+        },
+        body: json.encode(
+          {
+            'type': type,
+            'name': name,
+            // 'slug',
+            // 'featured_image_id',
+            'room_number': roomNumber,
+            'acreage': acreage,
+            'capacity': capacity,
+            'price': price,
+            'deposit_price': depositPrice,
+            'electric_price': electricPrice,
+            'water_price': waterPrice,
+            'open_time': openTime,
+            'close_time': closeTime,
+            'description': depositPrice,
+            'address': address,
+            'user_id': userId,
+          },
+        ),
+      );
+
+      print("Response from server: ${response.body}");
+
+      if (response.statusCode == 201) {
+        final responseJson = json.decode(response.body);
+        String status = responseJson['status'];
+
+        return status;
+      } else {
+        // Xử lý lỗi nếu cần thiết
+        throw Exception('BoardingHouseApi: Failed to createBoardingHouse');
+      }
+    } catch (error) {
+      print(error);
+      rethrow;
     }
   }
 }

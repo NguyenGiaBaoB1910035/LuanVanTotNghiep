@@ -1,7 +1,11 @@
+import 'package:boardinghouse_app/apis/user_api.dart';
+import 'package:boardinghouse_app/models/api_response.dart';
+import 'package:boardinghouse_app/models/user.dart';
 import 'package:boardinghouse_app/providers/auth_provider.dart';
 import 'package:boardinghouse_app/screens/authu/begin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login_page.dart';
 
@@ -19,33 +23,56 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _controllerPhone = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   bool passwordVisible = true;
+  bool loading = false;
 
   final AuthProvider _authProvider = AuthProvider();
 
-  void _handleRegister() async {
-    if (_formkey.currentState!.validate()) {
-      // _formKey.currentState!.save();
-
-      try {
-        // Call the login method from AuthProvider
-        String status = await _authProvider.register(
-          _controllerUsername.text,
-          _controllerEmail.text,
-          _controllerPhone.text,
-          _controllerPassword.text,
-        );
-
-        // Check if the user is logged in
-        if (status == 'success') {
-          // Navigate to the main screen upon successful login
-          Navigator.of(context).pushReplacementNamed('login');
-        }
-      } catch (error) {
-        // Handle login failure (e.g., show an error message)
-        print("Login failed: $error");
-      }
+  void _registerUser() async {
+    ApiResponse response = await register(_controllerUsername.text,
+        _controllerEmail.text, _controllerPhone.text, _controllerPassword.text);
+    if (response.error == null) {
+      _saveAndRedirectToHome(response.data as User);
+    } else {
+      setState(() {
+        loading = !loading;
+      });
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
     }
   }
+
+  // Save and redirect to home
+  void _saveAndRedirectToHome(User user) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString('token', user.token ?? '');
+    await pref.setInt('userId', user.id ?? 0);
+    Navigator.of(context).pushReplacementNamed('login');
+  }
+
+  // void _handleRegister() async {
+  //   if (_formkey.currentState!.validate()) {
+  //     // _formKey.currentState!.save();
+
+  //     try {
+  //       // Call the login method from AuthProvider
+  //       String status = await _authProvider.register(
+  //         _controllerUsername.text,
+  //         _controllerEmail.text,
+  //         _controllerPhone.text,
+  //         _controllerPassword.text,
+  //       );
+
+  //       // Check if the user is logged in
+  //       if (status == 'success') {
+  //         // Navigate to the main screen upon successful login
+  //         Navigator.of(context).pushReplacementNamed('login');
+  //       }
+  //     } catch (error) {
+  //       // Handle login failure (e.g., show an error message)
+  //       print("Login failed: $error");
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -183,7 +210,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   InkWell(
                     onTap: () {
-                      _handleRegister();
+                      _registerUser();
+                      // _handleRegister();
                       // if (_formkey.currentState!.validate()) {
                       //   print('form submiitted');
                       //   Navigator.of(context).pushNamed('login');

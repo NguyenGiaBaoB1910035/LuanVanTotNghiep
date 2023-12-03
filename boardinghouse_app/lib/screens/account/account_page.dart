@@ -1,6 +1,9 @@
-import 'package:boardinghouse_app/apis/auth_api.dart';
+// import 'package:boardinghouse_app/apis/auth_api.dart';
+import 'package:boardinghouse_app/apis/constant.dart';
+import 'package:boardinghouse_app/apis/user_api.dart';
+import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:boardinghouse_app/models/user.dart';
-import 'package:boardinghouse_app/providers/auth_provider.dart';
+// import 'package:boardinghouse_app/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 
 class AccountPage extends StatefulWidget {
@@ -12,23 +15,42 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   User? _user;
+  bool loading = true;
+
+  void getUser() async {
+    ApiResponse response = await getUserDetail();
+    if (response.error == null) {
+      setState(() {
+        _user = response.data as User;
+        loading = false;
+        // txtNameController.text = user!.name ?? '';
+      });
+    } else if (response.error == unauthorized) {
+      logout()
+          .then((value) => {Navigator.of(context).pushNamed('edit_profile')});
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _loadUserProfile();
+    // _loadUserProfile();
+    getUser();
   }
 
-  Future<void> _loadUserProfile() async {
-    try {
-      User user = await AuthApi().getUserProfile();
-      setState(() {
-        _user = user;
-      });
-    } catch (error) {
-      print('Failed to load user profile: $error');
-    }
-  }
+  // Future<void> _loadUserProfile() async {
+  //   try {
+  //     User user = await AuthApi().getUserProfile();
+  //     setState(() {
+  //       _user = user;
+  //     });
+  //   } catch (error) {
+  //     print('Failed to load user profile: $error');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -304,8 +326,10 @@ class _AccountPageState extends State<AccountPage> {
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
                 child: InkWell(
                   onTap: () {
-                    AuthProvider().logout();
-                    Navigator.of(context).pushNamed('/');
+                    logout().then(
+                        (value) => {Navigator.of(context).pushNamed('/')});
+                    // AuthProvider().logout();
+                    // Navigator.of(context).pushNamed('/');
                   },
                   child: Container(
                     height: 40,
