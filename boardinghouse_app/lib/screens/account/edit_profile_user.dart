@@ -51,7 +51,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   // get user detail
   void getUser() async {
-    ApiResponse response = await getUserDetail();
+    int userId = await getUserId();
+    ApiResponse response = await getUserDetail(userId);
     if (response.error == null) {
       setState(() {
         _user = response.data as User;

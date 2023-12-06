@@ -25,7 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   bool passwordVisible = true;
   bool loading = false;
 
-  final AuthProvider _authProvider = AuthProvider();
+  // final AuthProvider _authProvider = AuthProvider();
 
   void _registerUser() async {
     ApiResponse response = await register(_controllerUsername.text,

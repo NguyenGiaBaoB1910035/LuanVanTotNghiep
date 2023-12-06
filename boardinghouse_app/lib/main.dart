@@ -33,124 +33,126 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (context) => AuthProvider()),
-        ],
-        child: Consumer<AuthProvider>(builder: (ctx, authManager, child) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'SEBOA',
-            theme: ThemeData(
-                // primarySwatch: Colors.blue,
-                ),
-            // home: const BeginPage(),
-            initialRoute: 'loading',
-            routes: {
-              'loading': (context) => Loading(),
-              '/': (context) => const BeginPage(),
-              'login': (context) => const LoginPage(),
-              'register': (context) => const RegisterPage(),
-              //-------//
-              'main': (context) => const BottomBar(),
-              'home': (context) => const HomePage(),
-              'outstanding': (context) => const OutstandingPage(),
-              'suggest': (context) => const SuggestPage(),
-              'search': (context) => SearchPage(),
-              'map': (context) => const MapPage(),
-              //------//
-              'post': (context) => const PostPage(),
-              'createpost': (context) => const CreatePost(),
-              // 'users': (context) => InfoUserPage(),
-              //-----//
-              'account': (context) => const AccountPage(),
-              'profile': (context) => const ProfilePage(),
-              'edit_profile': (context) => const EditProfilePage(),
-              'favourite': (context) => const FavouritePage(),
-              //-----//
-              'postquickly': (context) => const PostQuicklyPage(),
-              'createBH': (context) => const CreateBoardingHousePage(),
-              //-----//
-              'boardinghousedetail': (context) =>
-                  const BoardingHouseDetailPage(),
-              //-----//
-              'mapplace': (context) => PlaceSearchScreen(),
-            },
+    return
+        // MultiProvider(
+        //     providers: [
+        //       ChangeNotifierProvider(create: (context) => AuthProvider()),
+        //     ],
+        //     child: Consumer<AuthProvider>(builder: (ctx, authManager, child) {
+        //       return
+        MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'SEBOA',
+      theme: ThemeData(
+          // primarySwatch: Colors.blue,
+          ),
+      // home: const BeginPage(),
+      initialRoute: '/',
+      routes: {
+        // 'loading': (context) => Loading(),
+        '/': (context) => const BeginPage(),
+        'login': (context) => const LoginPage(),
+        'register': (context) => const RegisterPage(),
+        //-------//
+        'main': (context) => const BottomBar(),
+        'home': (context) => const HomePage(),
+        'outstanding': (context) => const OutstandingPage(),
+        'suggest': (context) => const SuggestPage(),
+        'search': (context) => SearchPage(),
+        'map': (context) => const MapPage(),
+        //------//
+        'post': (context) => const PostPage(),
+        'createpost': (context) => const CreatePost(),
+        // 'users': (context) => InfoUserPage(),
+        //-----//
+        'account': (context) => const AccountPage(),
+        'profile': (context) => const ProfilePage(),
+        'edit_profile': (context) => const EditProfilePage(),
+        'favourite': (context) => const FavouritePage(),
+        //-----//
+        'postquickly': (context) => const PostQuicklyPage(),
+        'createBH': (context) => const CreateBoardingHousePage(),
+        //-----//
+        'boardinghousedetail': (context) => const BoardingHouseDetailPage(),
+        //-----//
+        'mapplace': (context) => PlaceSearchScreen(),
+      },
 
-            // initialRoute: '/',
-            // routes: {
-            //   '/': (context) => const BeginPage(),
-            //   'login': (context) => const LoginPage(),
-            //   'register': (context) => const RegisterPage(),
-            //   //-------//
-            //   'main': (context) {
-            //     if (isLoggedIn()) {
-            //       return const BottomBar();
-            //     } else {
-            //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
-            //       return const LoginPage();
-            //     }
-            //   },
-            //   'home': (context) => const HomePage(),
-            //   'outstanding': (context) {
-            //     if (isLoggedIn()) {
-            //       return const OutstandingPage();
-            //     } else {
-            //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
-            //       return const LoginPage();
-            //     }
-            //   },
-            //   'suggest': (context) {
-            //     if (isLoggedIn()) {
-            //       return const SuggestPage();
-            //     } else {
-            //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
-            //       return const LoginPage();
-            //     }
-            //   },
-            //   'search': (context) {
-            //     if (isLoggedIn()) {
-            //       return SearchPage();
-            //     } else {
-            //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
-            //       return const LoginPage();
-            //     }
-            //   },
-            //   'map': (context) {
-            //     if (isLoggedIn()) {
-            //       return const MapPage();
-            //     } else {
-            //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
-            //       return const LoginPage();
-            //     }
-            //   },
-            //   //------//
-            //   'post': (context) {
-            //     if (isLoggedIn()) {
-            //       return const PostPage();
-            //     } else {
-            //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
-            //       return const LoginPage();
-            //     }
-            //   },
-            //   'createpost': (context) {
-            //     if (isLoggedIn()) {
-            //       return const CreatePost();
-            //     } else {
-            //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
-            //       return const LoginPage();
-            //     }
-            //   },
-            //   'users': (context) {
-            //     if (isLoggedIn()) {
-            //       return InfoUserPage();
-            //     } else {
-            //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
-            //       return const LoginPage();
-            //     }
-            //   },
-            // }
-          );
-        }));
+      // initialRoute: '/',
+      // routes: {
+      //   '/': (context) => const BeginPage(),
+      //   'login': (context) => const LoginPage(),
+      //   'register': (context) => const RegisterPage(),
+      //   //-------//
+      //   'main': (context) {
+      //     if (isLoggedIn()) {
+      //       return const BottomBar();
+      //     } else {
+      //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
+      //       return const LoginPage();
+      //     }
+      //   },
+      //   'home': (context) => const HomePage(),
+      //   'outstanding': (context) {
+      //     if (isLoggedIn()) {
+      //       return const OutstandingPage();
+      //     } else {
+      //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
+      //       return const LoginPage();
+      //     }
+      //   },
+      //   'suggest': (context) {
+      //     if (isLoggedIn()) {
+      //       return const SuggestPage();
+      //     } else {
+      //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
+      //       return const LoginPage();
+      //     }
+      //   },
+      //   'search': (context) {
+      //     if (isLoggedIn()) {
+      //       return SearchPage();
+      //     } else {
+      //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
+      //       return const LoginPage();
+      //     }
+      //   },
+      //   'map': (context) {
+      //     if (isLoggedIn()) {
+      //       return const MapPage();
+      //     } else {
+      //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
+      //       return const LoginPage();
+      //     }
+      //   },
+      //   //------//
+      //   'post': (context) {
+      //     if (isLoggedIn()) {
+      //       return const PostPage();
+      //     } else {
+      //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
+      //       return const LoginPage();
+      //     }
+      //   },
+      //   'createpost': (context) {
+      //     if (isLoggedIn()) {
+      //       return const CreatePost();
+      //     } else {
+      //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
+      //       return const LoginPage();
+      //     }
+      //   },
+      //   'users': (context) {
+      //     if (isLoggedIn()) {
+      //       return InfoUserPage();
+      //     } else {
+      //       // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập.
+      //       return const LoginPage();
+      //     }
+      //   },
+      // }
+    );
   }
+  // ));
 }
+// }

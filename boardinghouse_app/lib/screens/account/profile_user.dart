@@ -21,7 +21,8 @@ class _ProfilePageState extends State<ProfilePage> {
   bool loading = true;
 
   void getUser() async {
-    ApiResponse response = await getUserDetail();
+    int userId = await getUserId();
+    ApiResponse response = await getUserDetail(userId);
     if (response.error == null) {
       setState(() {
         _user = response.data as User;

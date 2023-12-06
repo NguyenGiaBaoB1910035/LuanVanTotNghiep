@@ -26,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
   bool passwordVisible = true;
   bool loading = false;
 
-  final AuthProvider _authProvider = AuthProvider();
+  // final AuthProvider _authProvider = AuthProvider();
 
   void _loginUser() async {
     ApiResponse response =

@@ -16,6 +16,9 @@ class ApiConstants {
   static const String apiEvaluate = '$baseUrl/...';
 }
 
+const baseUrl = 'http://10.0.2.2:8000/api';
+const apiUser = baseUrl + '/users';
+
 const serverError = 'Server error';
 const unauthorized = 'Unauthorized';
 const somethingWentWrong = 'Something went wrong, try again!';

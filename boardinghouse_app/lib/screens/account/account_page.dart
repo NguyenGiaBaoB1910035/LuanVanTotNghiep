@@ -19,12 +19,17 @@ class _AccountPageState extends State<AccountPage> {
   bool loading = true;
 
   void getUser() async {
-    ApiResponse response = await getUserDetail();
+    String token = await getToken();
+    int userId = await getUserId();
+
+    print(token);
+    print(userId);
+
+    ApiResponse response = await getUserDetail(userId);
     if (response.error == null) {
       setState(() {
         _user = response.data as User;
         loading = false;
-        // txtNameController.text = user!.name ?? '';
       });
     } else if (response.error == unauthorized) {
       logout().then((value) => {
@@ -35,6 +40,8 @@ class _AccountPageState extends State<AccountPage> {
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('${response.error}')));
+
+      print("error account_page");
       // Navigator.of(context).pushAndRemoveUntil(
       //     MaterialPageRoute(builder: (context) => LoginPage()),
       //     (route) => false);
@@ -44,20 +51,9 @@ class _AccountPageState extends State<AccountPage> {
   @override
   void initState() {
     super.initState();
-    // _loadUserProfile();
     getUser();
+    // getUserTest();
   }
-
-  // Future<void> _loadUserProfile() async {
-  //   try {
-  //     User user = await AuthApi().getUserProfile();
-  //     setState(() {
-  //       _user = user;
-  //     });
-  //   } catch (error) {
-  //     print('Failed to load user profile: $error');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +81,7 @@ class _AccountPageState extends State<AccountPage> {
                       child: Container(
                         width: 50,
                         height: 50,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             color: Colors.blue,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(50))),
@@ -102,8 +98,8 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                     Text(
                       '${_user?.userName}',
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600, fontSize: 20),
                     )
                   ],
                 ),
@@ -179,58 +175,7 @@ class _AccountPageState extends State<AccountPage> {
                   ],
                 ),
               ),
-              // -----------------------------------------//
-              // Container(
-              //   margin: const EdgeInsets.symmetric(vertical: 5),
-              //   padding: const EdgeInsets.symmetric(horizontal: 20),
-              //   width: MediaQuery.of(context).size.width,
-              //   color: Colors.white,
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     children: [
-              //       InkWell(
-              //         onTap: () {},
-              //         child: const Padding(
-              //             padding: EdgeInsets.symmetric(vertical: 20),
-              //             child: Row(
-              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //               children: [
-              //                 Text(
-              //                   "Nhà trọ của tôi",
-              //                   style: TextStyle(fontSize: 20),
-              //                 ),
-              //                 Icon(
-              //                   Icons.navigate_next,
-              //                 )
-              //               ],
-              //             )),
-              //       ),
-              //       const Divider(
-              //         color: Colors.black45,
-              //       ),
-              //       InkWell(
-              //         onTap: () {
-              //           Navigator.of(context).pushNamed('favourite');
-              //         },
-              //         child: const Padding(
-              //             padding: EdgeInsets.symmetric(vertical: 20),
-              //             child: Row(
-              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //               children: [
-              //                 Text(
-              //                   "Nhà trọ yêu thích",
-              //                   style: TextStyle(fontSize: 20),
-              //                 ),
-              //                 Icon(
-              //                   Icons.navigate_next,
-              //                 )
-              //               ],
-              //             )),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              //----------------------------------------//
+
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 5),
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -276,26 +221,6 @@ class _AccountPageState extends State<AccountPage> {
                             ],
                           )),
                     ),
-                    // const Divider(
-                    //   color: Colors.black45,
-                    // ),
-                    // InkWell(
-                    //   onTap: () {},
-                    //   child: const Padding(
-                    //       padding: EdgeInsets.symmetric(vertical: 20),
-                    //       child: Row(
-                    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //         children: [
-                    //           Text(
-                    //             "Chính sách bảo mật",
-                    //             style: TextStyle(fontSize: 20),
-                    //           ),
-                    //           Icon(
-                    //             Icons.navigate_next,
-                    //           )
-                    //         ],
-                    //       )),
-                    // ),
                   ],
                 ),
               ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:boardinghouse_app/apis/auth_api.dart';
 import 'package:boardinghouse_app/apis/user_api.dart';
 import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:http/http.dart' as http;

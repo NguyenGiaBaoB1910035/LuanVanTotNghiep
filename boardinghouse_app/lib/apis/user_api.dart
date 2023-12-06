@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'auth_api.dart';
 import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:boardinghouse_app/models/user.dart';
 import 'package:http/http.dart' as http;
-import 'dart:developer';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<ApiResponse> login(String login, String password) async {
@@ -26,6 +25,7 @@ Future<ApiResponse> login(String login, String password) async {
     switch (response.statusCode) {
       case 201:
         apiResponse.data = User.fromJson(jsonDecode(response.body));
+
         break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];
@@ -81,17 +81,18 @@ Future<ApiResponse> register(
   return apiResponse;
 }
 
-// User
-Future<ApiResponse> getUserDetail() async {
+// get User
+Future<ApiResponse> getUserDetail(int userId) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.get(Uri.parse(ApiConstants.apiUserProfile),
+    final response = await http.get(Uri.parse('$apiUser/$userId'),
+        // final response = await http.get(Uri.parse(ApiConstants.apiUserProfile),
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer $token'
         });
-    print("Response from server: ${response.body}");
+    // print("Response from server: ${response.body}");
 
     switch (response.statusCode) {
       case 200:
@@ -106,9 +107,42 @@ Future<ApiResponse> getUserDetail() async {
     }
   } catch (e) {
     apiResponse.error = serverError;
+    print(e);
   }
   return apiResponse;
 }
+
+// // get User
+// Future<ApiResponse> getUserDetail() async {
+//   ApiResponse apiResponse = ApiResponse();
+//   try {
+//     String token = await getToken();
+//     // final response = await http.get(
+//     //   Uri.parse('$ApiConstants.apiUser/$userId'),
+//     final response = await http.get(Uri.parse(ApiConstants.apiUserProfile),
+//         headers: {
+//           "Content-Type": "application/json",
+//           'Authorization': 'Bearer $token'
+//         });
+//     // print("Response from server: ${response.body}");
+
+//     switch (response.statusCode) {
+//       case 200:
+//         apiResponse.data = User.fromJson(json.decode(response.body));
+//         break;
+//       case 401:
+//         apiResponse.error = unauthorized;
+//         break;
+//       default:
+//         apiResponse.error = somethingWentWrong;
+//         break;
+//     }
+//   } catch (e) {
+//     apiResponse.error = serverError;
+//     print(e);
+//   }
+//   return apiResponse;
+// }
 
 // Update user
 Future<ApiResponse> updateUser(
@@ -139,7 +173,7 @@ Future<ApiResponse> updateUser(
     // user can update his/her name or name and image
 
     switch (response.statusCode) {
-      case 201:
+      case 200:
         apiResponse.data = jsonDecode(response.body)['message'];
         break;
       case 401:
@@ -179,32 +213,3 @@ String? getStringImage(File? file) {
   if (file == null) return null;
   return base64Encode(file.readAsBytesSync());
 }
-
-// class UserApi {
-//   Future<List<User>?> getUsers() async {
-//     try {
-//       var url = Uri.parse(ApiConstants.apiUser);
-//       var response = await http.get(url);
-
-//       // In ra nội dung phản hồi từ máy chủ dưới dạng chuỗi
-//       print("Response from server: ${response.body}");
-
-//       if (response.statusCode == 200) {
-//         Map<String, dynamic> jsonData = json.decode(response.body);
-//         List<dynamic> userData = jsonData['data'];
-//         List<User> users =
-//             userData.map((userJson) => User.fromJson(userJson)).toList();
-
-//         return users;
-//       } else {
-//         // Xử lý khi phản hồi không thành công
-//         log("Failed to fetch data: ${response.statusCode}");
-//         return null;
-//       }
-//     } catch (e) {
-//       // Xử lý khi có lỗi
-//       log("Error fetching data: $e");
-//       return null;
-//     }
-//   }
-// }
