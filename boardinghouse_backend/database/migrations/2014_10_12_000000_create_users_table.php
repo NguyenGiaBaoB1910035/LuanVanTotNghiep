@@ -19,8 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone')->unique();
             $table->string('password');
-            /*$table->string('avatar')->default('avatar-default.jpg');*/
-            $table->string('avatar')->nullable();
+            $table->string('avatar')->default('avatar-default.jpg');
             $table->string('role')->default(UserRole::Customer);
             $table->string('name')->nullable();
             $table->string('gender')->nullable();

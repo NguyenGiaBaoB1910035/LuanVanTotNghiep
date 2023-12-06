@@ -112,6 +112,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
             return asset('storage/' . $this->avatar);
         }
 
-        return null;
+        return asset('storage/' . 'avatar-default.jpg');
     }
 }
