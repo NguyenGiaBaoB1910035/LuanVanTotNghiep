@@ -1,4 +1,4 @@
-import 'package:boardinghouse_app/components/card_boarding_house_detail.dart';
+import 'package:boardinghouse_app/screens/components/card_boarding_house_detail.dart';
 // import 'package:boardinghouse_app/screens/home/outstandingpage.dart';
 import 'package:flutter/material.dart';
 

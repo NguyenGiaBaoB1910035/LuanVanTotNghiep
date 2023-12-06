@@ -1,4 +1,4 @@
-import 'package:boardinghouse_app/components/card_boarding_house_detail.dart';
+import 'package:boardinghouse_app/screens/components/card_boarding_house_detail.dart';
 // import 'package:boardinghouse_app/screens/home/suggestpage.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +23,7 @@ class SuggestUI extends StatelessWidget {
                 padding: EdgeInsets.only(top: 10),
                 child: Text(
                   "Phòng gợi ý",
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: 20),
                 ),
               ),
               GridView.count(

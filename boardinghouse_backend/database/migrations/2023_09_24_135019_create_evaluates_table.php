@@ -18,7 +18,7 @@ return new class extends Migration
             $table->morphs('evaluateable');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('boarding_house_id');
-            $table->string('ratings');
+            $table->int('ratings');
             $table->string('comment')->nullable();
 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));

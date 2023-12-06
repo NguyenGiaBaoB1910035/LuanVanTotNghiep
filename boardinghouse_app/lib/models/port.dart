@@ -2,7 +2,7 @@ import 'package:boardinghouse_app/models/boarding_house.dart';
 import 'package:boardinghouse_app/models/user.dart';
 
 class Post {
-  String? id;
+  int? id;
   User? user;
   BoardingHouse? boardingHouse;
   String? content;
@@ -22,11 +22,19 @@ class Post {
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
-       id: json['id'],
-      user: json['user'] != null ? User.fromJson(json['user']) : null,
-      boardingHouse: json['boardingHouse'] != null
-          ? BoardingHouse.fromJson(json['boardingHouse'])
-          : null,
+      id: json['id'],
+      user: User(
+        id: json['user']['id'],
+        userName: json['user']['user_name'],
+        avatar: json['user']['avatar'],
+      ),
+      boardingHouse: BoardingHouse(
+          id: json['boardingHouse']['id'],
+          name: json['boardingHouse']['name'],
+          image: json['boardingHouse']['featured_image_id'], //???
+          type: json['boardingHouse']['type'],
+          price: json['boardingHouse']['price'] //???
+          ),
       content: json['content'],
       dateCreated: json['date_created'] != null
           ? DateTime.parse(json['date_created'])
@@ -38,5 +46,3 @@ class Post {
     );
   }
 }
-
-

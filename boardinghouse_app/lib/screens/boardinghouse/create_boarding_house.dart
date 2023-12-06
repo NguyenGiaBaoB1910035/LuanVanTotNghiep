@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:boardinghouse_app/models/boarding_house.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,20 +23,28 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
         Step(
           state: _currentStep <= 0 ? StepState.editing : StepState.complete,
           isActive: _currentStep >= 0,
-          title: const Text('địa chỉ'),
-          content: addressForm(),
-        ),
-        Step(
-          state: _currentStep <= 1 ? StepState.editing : StepState.complete,
-          isActive: _currentStep >= 1,
           title: const Text('Thông tin'),
           content: const InforForm(),
         ),
         Step(
-          state: _currentStep <= 2 ? StepState.editing : StepState.complete,
-          isActive: _currentStep >= 2,
+          state: _currentStep <= 1 ? StepState.editing : StepState.complete,
+          isActive: _currentStep >= 1,
           title: const Text('Tiện ích'),
           content: const UtilForm(),
+        ),
+        Step(
+          state: _currentStep <= 2 ? StepState.editing : StepState.complete,
+          isActive: _currentStep >= 2,
+          title: const Text('Kết quả'),
+          content: const Center(
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Text(
+                "Nhà trọ của bạn đã được tạo, \n vui lòng chờ Quản trị viên liên hệ xác nhận trước khi đưa lên ứng dụng để đảm bảo tính chính xác",
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
         ),
       ];
 
@@ -98,12 +107,15 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
                         : const Text('Tiếp tục'),
                   ),
                 ),
-                const SizedBox(width: 10),
                 if (_currentStep > 0)
+                  // const SizedBox(width: 10),
                   Expanded(
-                    child: ElevatedButton(
-                      onPressed: controlsDetails?.onStepCancel,
-                      child: const Text('Trở lại'),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: ElevatedButton(
+                        onPressed: controlsDetails?.onStepCancel,
+                        child: const Text('Trở lại'),
+                      ),
                     ),
                   )
               ],
@@ -121,113 +133,6 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
 //--------------------------------------------------------------------------------------------------------------//
 //--------------------------------------------------------------------------------------------------------------//
 
-class addressForm extends StatefulWidget {
-  @override
-  _addressFormState createState() => _addressFormState();
-}
-
-class _addressFormState extends State<addressForm> {
-// String selectedDistrict = 'Quận Ninh Kiều';
-// String selectedWard = '';
-  TextEditingController addressController = TextEditingController();
-// late Future<List<District>?> _districtListFuture;
-// late Future<List<Ward>?> _wardListFuture;
-// late District district;
-
-// @override
-// void initState() {
-//   super.initState();
-//   // _userListFuture = UserApi().getUsers();
-//   _districtListFuture = AddressApi().fetchDistrict();
-//   _wardListFuture = AddressApi().fetchWard(district.id);
-// }
-
-// List<String> districtList = [
-//   'Quận Ninh Kiều',
-//   'Quận Cái Răng',
-//   'Quận Thốt Nốt',
-//   'Quận Bình Thủy'
-// ];
-// Map<String, List<String>> wards = {
-//   'Quận Ninh Kiều': ['Phường A', 'Phường B'],
-//   'Quận Cái Răng': ['Phường X', 'Phường Y'],
-//   'Quận Thốt Nốt': ['Phường M', 'Phường N'],
-//   'Quận Bình Thủy': ['Phường P', 'Phường Q'],
-// };
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-//       DropdownButtonFormField(
-//         onChanged: (String? newValue) {
-//           setState(() {
-//             selectedDistrict = newValue!;
-//           });
-//         },
-//         items: districtList.map<DropdownMenuItem<String>>((String value) {
-//           return DropdownMenuItem<String>(
-//             value: value.isNotEmpty ? value : null,
-//             child: Text(
-//               value,
-//               style: const TextStyle(fontSize: 20),
-//             ),
-//           );
-//         }).toList(),
-//         decoration: const InputDecoration(
-//           hintText: 'Chọn Quận/Huyện',
-//           labelText: 'Chọn Quận/Huyện',
-//           border: OutlineInputBorder(),
-//         ),
-//       ),
-//       const SizedBox(height: 16),
-//       DropdownButtonFormField<String>(
-//         onChanged: (String? newValue) {
-//           setState(() {
-//             selectedWard = newValue!;
-//           });
-//         },
-//         items: wards[selectedDistrict]!
-//             .map<DropdownMenuItem<String>>((String value) {
-//           return DropdownMenuItem<String>(
-//             value: value.isNotEmpty ? value : null,
-//             child: Text(
-//               value,
-//               style: const TextStyle(fontSize: 20),
-//             ),
-//           );
-//         }).toList(),
-//         value: selectedWard.isNotEmpty ? selectedWard : null,
-//         decoration: const InputDecoration(
-//           hintText: 'Chọn Phường/Xã',
-//           labelText: 'Chọn Phường/Xã',
-//           border: OutlineInputBorder(),
-//         ),
-//       ),
-          const SizedBox(height: 16),
-          TextFormField(
-            controller: addressController,
-            decoration: const InputDecoration(
-              labelText: 'Địa Chỉ',
-              border: OutlineInputBorder(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-//
-
-//--------------------------------------------------------------------------------------------------------------//
-//--------------------------------------------------------------------------------------------------------------//
-//--------------------------------------------------------------------------------------------------------------//
-//--------------------------------------------------------------------------------------------------------------//
-//--------------------------------------------------------------------------------------------------------------//
-
 class InforForm extends StatefulWidget {
   const InforForm({super.key});
 
@@ -236,10 +141,14 @@ class InforForm extends StatefulWidget {
 }
 
 class _InforFormState extends State<InforForm> {
+  BoardingHouse? _boardingHouse;
+
   String selectedRoom = 'Phòng cho thuê';
+  String name = '';
+  String address = '';
   int quantity = 1;
   int capacity = 1;
-  String selectedGender = 'Tất cả';
+  // String selectedGender = 'Tất cả';
   double area = 0.0;
   double cost = 0.0;
   double deposit = 0.0;
@@ -249,23 +158,33 @@ class _InforFormState extends State<InforForm> {
   TimeOfDay closeTime = TimeOfDay.now();
   String description = '';
 
-  // double maxPrice = 1000000.0;
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  TextEditingController txtTypeController = TextEditingController();
+  TextEditingController txtNameController = TextEditingController();
+  TextEditingController txtAddressController = TextEditingController();
+  TextEditingController txtQuantityController = TextEditingController();
+  TextEditingController txtCapacityController = TextEditingController();
+  TextEditingController txtAraeController = TextEditingController();
+  TextEditingController txtCostController = TextEditingController();
+  TextEditingController txtDepositController = TextEditingController();
+  TextEditingController txtElectriController = TextEditingController();
+  TextEditingController txtWaterController = TextEditingController();
+  TextEditingController txtOpenTimeController = TextEditingController();
+  TextEditingController txtCloseTimeController = TextEditingController();
+  TextEditingController txtDescriptionController = TextEditingController();
 
-  // void handleSubmit() {
-  //   // Xử lý dữ liệu ở đây
-  //   print('Phòng: $selectedRoom');
-  //   print('Số lượng: $quantity');
-  //   print('Sức chứa: $capacity');
-  //   print('Giới tính: $selectedGender');
-  //   print('Diện tích: $area');
-  //   print('Chi phí: $cost');
-  //   print('Đặt cọc: $deposit');
-  //   print('Giá điện: $electricityPrice');
-  //   print('Giá nước: $waterPrice');
-  //   print('Giờ mở cửa: $openTime');
-  //   print('Giờ đóng cửa: $closeTime');
-  //   print('Mô tả: $description');
-  // }
+  File? _imageFile;
+  final _picker = ImagePicker();
+
+  Future getImage() async {
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -275,6 +194,35 @@ class _InforFormState extends State<InforForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            GestureDetector(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 180,
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1),
+                  image:
+                      // _imageFile == null
+
+                      //     ? _boardingHouse!.image != null
+                      //         ? DecorationImage(
+                      //             image: NetworkImage('${_boardingHouse!.image}'),
+                      //             fit: BoxFit.cover)
+                      //         : null
+                      // :
+                      DecorationImage(
+                          image: FileImage(_imageFile ?? File('')),
+                          // image: AssetImage("assets/images/avatar.jpg"),
+                          fit: BoxFit.cover),
+                  // color: Colors.amber
+                ),
+              ),
+              onTap: () {
+                getImage();
+              },
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             const Text('Loại phòng:'),
             Column(
               children: <Widget>[
@@ -293,7 +241,20 @@ class _InforFormState extends State<InforForm> {
               // keyboardType: TextInputTyp.,
               onChanged: (value) {
                 setState(() {
-                  capacity = int.parse(value);
+                  name = value;
+                });
+              },
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            const Text("Địa chỉ"),
+            TextFormField(
+              // decoration: InputDecoration(labelText: 'Sức chứa'),
+              // keyboardType: TextInputTyp.,
+              onChanged: (value) {
+                setState(() {
+                  address = value;
                 });
               },
             ),
@@ -323,18 +284,18 @@ class _InforFormState extends State<InforForm> {
                 });
               },
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text('Giới tính'),
-            Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                buildGenderOption('Tất cả'),
-                buildGenderOption('Nam'),
-                buildGenderOption('Nữ'),
-              ],
-            ),
+            // const SizedBox(
+            //   height: 20,
+            // ),
+            // const Text('Giới tính'),
+            // Column(
+            //   // mainAxisAlignment: MainAxisAlignment.center,
+            //   children: <Widget>[
+            //     buildGenderOption('Tất cả'),
+            //     buildGenderOption('Nam'),
+            //     buildGenderOption('Nữ'),
+            //   ],
+            // ),
             const SizedBox(
               height: 20,
             ),
@@ -468,22 +429,22 @@ class _InforFormState extends State<InforForm> {
     );
   }
 
-  Widget buildGenderOption(String gender) {
-    return Row(
-      children: <Widget>[
-        Radio(
-          value: gender,
-          groupValue: selectedGender,
-          onChanged: (value) {
-            setState(() {
-              selectedGender = value.toString();
-            });
-          },
-        ),
-        Text(gender),
-      ],
-    );
-  }
+  // Widget buildGenderOption(String gender) {
+  //   return Row(
+  //     children: <Widget>[
+  //       Radio(
+  //         value: gender,
+  //         groupValue: selectedGender,
+  //         onChanged: (value) {
+  //           setState(() {
+  //             selectedGender = value.toString();
+  //           });
+  //         },
+  //       ),
+  //       Text(gender),
+  //     ],
+  //   );
+  // }
 }
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -521,6 +482,10 @@ class _UtilFormState extends State<UtilForm> {
           const UploadImage(),
           SizedBox(
             height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text("Chọn các tiện ích nhà trọ bạn cung cấp!"),
           ),
           GridView.builder(
             physics: const NeverScrollableScrollPhysics(),
@@ -617,6 +582,13 @@ class _UploadImageState extends State<UploadImage> {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(10),
+          child: Text("Chọn thêm ảnh và video về nhà trọ của bạn!"),
+        ),
+        // const SizedBox(
+        //   height: 10,
+        // ),
+        Padding(
+          padding: const EdgeInsets.all(10),
           child: Container(
               width: MediaQuery.of(context).size.width,
               height: 150,
@@ -677,7 +649,7 @@ class _UploadImageState extends State<UploadImage> {
                       ),
                     )
                   : const Center(
-                      child: Text(' Chọn ảnh'),
+                      child: Text('Chọn ảnh và video'),
                     )),
         ),
         const SizedBox(
@@ -705,7 +677,7 @@ class _UploadImageState extends State<UploadImage> {
                   width: 15,
                 ),
                 Text(
-                  "upload image",
+                  "Tải lên",
                   // style: TextStyle(fontSize: 15),
                 )
               ],

@@ -1,7 +1,7 @@
 // import 'package:boardinghouse_app/screens/bottombar.dart';
 import 'package:flutter/material.dart';
 
-import '../components/card_boarding_house_detail.dart';
+import 'components/card_boarding_house_detail.dart';
 
 class FavouritePage extends StatelessWidget {
   const FavouritePage({super.key});
