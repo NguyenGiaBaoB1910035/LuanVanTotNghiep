@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Resources\BoardingHouseTypeResource\Api\BoardingHouseTypeApiService;
 use App\Filament\Resources\UserResource\Api\UserApiService;
 use App\Filament\Resources\BoardingHouseResource\Api\BoardingHouseApiService;
 use App\Filament\Resources\AuthResource\Api\Handlers\AuthHandler;
@@ -24,6 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 UserApiService::routes();
 BoardingHouseApiService::routes();
+BoardingHouseTypeApiService::routes();
 
 Route::group([
     'middleware' => 'api',

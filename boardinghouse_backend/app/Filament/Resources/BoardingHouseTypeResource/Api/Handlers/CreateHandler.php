@@ -1,24 +1,20 @@
 <?php
-
-namespace App\Filament\Resources\BoardingHouseResource\Api\Handlers;
+namespace App\Filament\Resources\BoardingHouseTypeResource\Api\Handlers;
 
 use Illuminate\Http\Request;
 use Rupadana\ApiService\Http\Handlers;
-use App\Filament\Resources\BoardingHouseResource;
-use Illuminate\Support\Facades\Storage;
+use App\Filament\Resources\BoardingHouseTypeResource;
 
-class CreateHandler extends Handlers
-{
+class CreateHandler extends Handlers {
     public static string | null $uri = '/';
-    public static string | null $resource = BoardingHouseResource::class;
+    public static string | null $resource = BoardingHouseTypeResource::class;
 
     public static function getMethod()
     {
         return Handlers::POST;
     }
 
-    public static function getModel()
-    {
+    public static function getModel() {
         return static::$resource::getModel();
     }
 
@@ -27,10 +23,6 @@ class CreateHandler extends Handlers
         $model = new (static::getModel());
 
         $model->fill($request->all());
-
-        $image = $request->featured_image;
-
-        // Storage::put();
 
         $model->save();
 

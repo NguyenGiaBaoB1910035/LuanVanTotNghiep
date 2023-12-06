@@ -1,14 +1,14 @@
 <?php
-namespace App\Filament\Resources\BoardingHouseResource\Api;
+namespace App\Filament\Resources\BoardingHouseTypeResource\Api;
 
 use Rupadana\ApiService\ApiService;
-use App\Filament\Resources\BoardingHouseResource;
+use App\Filament\Resources\BoardingHouseTypeResource;
 use Illuminate\Routing\Router;
 
 
-class BoardingHouseApiService extends ApiService
+class BoardingHouseTypeApiService extends ApiService
 {
-    protected static string | null $resource = BoardingHouseResource::class;
+    protected static string | null $resource = BoardingHouseTypeResource::class;
 
     public static function allRoutes(Router $router)
     {
@@ -17,6 +17,5 @@ class BoardingHouseApiService extends ApiService
         Handlers\DeleteHandler::route($router);
         Handlers\PaginationHandler::route($router);
         Handlers\DetailHandler::route($router);
-        Handlers\UploadPicturesHandler::route($router);
     }
 }

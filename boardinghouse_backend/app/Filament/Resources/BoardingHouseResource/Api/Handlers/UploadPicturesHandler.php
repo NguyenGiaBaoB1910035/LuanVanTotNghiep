@@ -5,11 +5,12 @@ namespace App\Filament\Resources\BoardingHouseResource\Api\Handlers;
 use Illuminate\Http\Request;
 use Rupadana\ApiService\Http\Handlers;
 use App\Filament\Resources\BoardingHouseResource;
-use Illuminate\Support\Facades\Storage;
 
-class CreateHandler extends Handlers
+class UploadPicturesHandler extends Handlers
 {
-    public static string | null $uri = '/';
+    // domain/api/boarding-house/upload-pictures/2
+
+    public static string | null $uri = '/upload-pictures/{id}';
     public static string | null $resource = BoardingHouseResource::class;
 
     public static function getMethod()
@@ -28,12 +29,8 @@ class CreateHandler extends Handlers
 
         $model->fill($request->all());
 
-        $image = $request->featured_image;
-
-        // Storage::put();
-
         $model->save();
 
-        return static::sendSuccessResponse($model, "Successfully Create Resource");
+        return static::sendSuccessResponse($model, "Successfully Upload Pictures Boarding House");
     }
 }
