@@ -5,8 +5,14 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Enums\UserRole;
+use App\Models\BoardingHouse;
+use App\Models\BoardingHouseImage;
 use App\Models\BoardingHouseType;
+use App\Models\Media;
 use App\Models\User;
+use App\Models\Util;
+use App\Models\UtilBoardingHouse;
+use Database\Factories\CuratorMediaFactory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
@@ -26,6 +32,7 @@ class DatabaseSeeder extends Seeder
             $this->command->info('Creating storage link...');
             // Tạo symbolic link
             Artisan::call('storage:link');
+            $this->command->info('Created storage link');
         }
 
         // Nếu tệp tin chưa được public
@@ -70,6 +77,14 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Gia Bao',
                 'role' => UserRole::Admin
             ],
+            [
+                'user_name' => 'nbao202',
+                'email' => 'nbao202@gmail.com',
+                'phone' => '0377808172',
+                'password' => Hash::make('123456789'),
+                'name' => 'Gia Bao',
+                'role' => UserRole::Customer
+            ],
         ]);
 
         BoardingHouseType::insert([
@@ -88,5 +103,12 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory(50)->create();
+
+        Media::factory()->count(13)->create();
+        Util::factory()->count(10)->create();
+
+        BoardingHouse::factory()->count(10)->create();
+        UtilBoardingHouse::factory()->count(10)->create();
+        BoardingHouseImage::factory()->count(10)->create();
     }
 }

@@ -54,7 +54,7 @@ class BoardingHouse extends Model
 
     public function utils(): BelongsToMany
     {
-        return $this->belongsToMany(Util::class, 'utils_boardings', 'boarding_house_id', 'util_id')->withTimestamps();
+        return $this->belongsToMany(Util::class, 'util_boarding_houses', 'boarding_house_id', 'util_id')->withTimestamps();
     }
 
     public function pictures(): BelongsToMany

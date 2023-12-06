@@ -22,20 +22,10 @@ class UserFactory extends Factory
             'user_name' => $this->faker->unique()->name,
             'email' => $this->faker->unique()->email,
             'phone' => $this->faker->unique()->phoneNumber,
-            'password' => $this->faker->name,
             'name' => $this->faker->name,
             'password' => Hash::make('123456'), // password
             'remember_token' => Str::random(10),
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
-    }
 }

@@ -17,6 +17,11 @@ return new class extends Migration
             $table->unsignedBigInteger('boarding_house_id');
             $table->timestamps();
 
+            $table->foreign('media_id')
+                ->references('id')->on('media')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
             $table->foreign('boarding_house_id')
                 ->references('id')->on('boarding_houses')
                 ->onDelete('cascade')

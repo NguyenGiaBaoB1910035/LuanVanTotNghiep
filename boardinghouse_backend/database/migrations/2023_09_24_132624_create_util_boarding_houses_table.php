@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('utils_boardings', function (Blueprint $table) {
+        Schema::create('util_boarding_houses', function (Blueprint $table) {
             $table->primary(['util_id', 'boarding_house_id']);
             $table->foreignId('util_id')->nullable();
             $table->foreignId('boarding_house_id')->nullable();
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('utils_boardings');
+        Schema::dropIfExists('util_boarding_houses');
     }
 };
