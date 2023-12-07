@@ -10,18 +10,26 @@ Future<ApiResponse> getUtil() async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.get(Uri.parse(ApiConstants.apiUtil), headers: {
+    final response = await http.get(Uri.parse(apiUtil), headers: {
       "Content-Type": "application/json",
       'Authorization': 'Bearer $token'
     });
 
+    print('responsr from server getUtil');
+    print(response.body);
+
     switch (response.statusCode) {
       case 200:
-        apiResponse.data = jsonDecode(response.body)['util']
-            .map((p) => Utils.fromJson(p))
-            .toList();
-        // we get list of posts, so we need to map each item to post model
-        apiResponse.data as List<dynamic>;
+        if (jsonDecode(response.body)['data'] != null) {
+          // Mapping từ danh sách JSON thành danh sách đối tượng BoardingHouseType
+          List<Utils> utils = (jsonDecode(response.body)['data'] as List)
+              .map((utilsJson) => Utils.fromJson(utilsJson))
+              .toList();
+          // Gán danh sách vào apiResponse.data
+          apiResponse.data = utils;
+          print('apiResponse.data');
+          print(apiResponse.data);
+        }
         break;
       case 401:
         apiResponse.error = unauthorized;
@@ -32,6 +40,7 @@ Future<ApiResponse> getUtil() async {
     }
   } catch (e) {
     apiResponse.error = serverError;
+    print(e);
   }
   return apiResponse;
 }

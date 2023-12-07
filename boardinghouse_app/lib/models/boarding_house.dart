@@ -18,7 +18,7 @@ class BoardingHouse {
   String? address;
   String? favourite;
   String? status;
-  // int? userid;
+  int? userid;
   User? user;
 
   BoardingHouse(
@@ -39,7 +39,7 @@ class BoardingHouse {
       this.address,
       this.favourite,
       this.status,
-      // this.userid,
+      this.userid,
       this.user});
 
   factory BoardingHouse.fromJson(Map<String, dynamic> json) {
@@ -61,7 +61,7 @@ class BoardingHouse {
       address: json['address'],
       favourite: json['favourite'],
       status: json['status'],
-      // userid: json['user_id'],
+      userid: json['user_id'],
       user: User(
         id: json['user']['id'],
         userName: json['user']['user_name'],

@@ -24,12 +24,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final _picker = ImagePicker();
   TextEditingController txtNameController = TextEditingController();
   TextEditingController txtGenderController = TextEditingController();
-
   TextEditingController txtAddressController = TextEditingController();
-
-  // TextEditingController txtBirthdayController = TextEditingController();
-
-  // TextEditingController txtNameController = TextEditingController();
 
   // Future getImage() async {
   //   final pickedFile = await _picker.getImage(source: ImageSource.gallery);
@@ -53,6 +48,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void getUser() async {
     int userId = await getUserId();
     ApiResponse response = await getUserDetail(userId);
+    print('edit profile:');
     if (response.error == null) {
       setState(() {
         _user = response.data as User;
@@ -74,7 +70,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   //update profile
   void updateProfile() async {
+    int userId = await getUserId();
     ApiResponse response = await updateUser(
+        userId,
         txtNameController.text,
         txtGenderController.text,
         txtAddressController.text,
@@ -134,9 +132,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(60),
                   image: _imageFile == null
-                      ? _user!.avatar != null
+                      ? _user!.urlAvatar != null
                           ? DecorationImage(
-                              image: NetworkImage('${_user!.avatar}'),
+                              image: NetworkImage('${_user!.urlAvatar}'),
                               fit: BoxFit.cover)
                           : null
                       : DecorationImage(

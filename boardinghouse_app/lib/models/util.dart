@@ -14,21 +14,23 @@ class Util {
 }
 
 class Utils {
-  String? id;
+  int? id;
   String? name;
-  String? imageUrl; // Add a property for the image URL
+  String? imageUrl;
+  bool isSelected;
 
   Utils({
     this.id,
     this.name,
     this.imageUrl,
+    this.isSelected = false,
   });
 
   factory Utils.fromJson(Map<String, dynamic> json) {
     return Utils(
       id: json['id'],
       name: json['name'],
-      imageUrl: json['imageUrl'], // Update to the actual key for the image URL
+      imageUrl: json['url_icon'], // Update to the actual key for the image URL
     );
   }
 }

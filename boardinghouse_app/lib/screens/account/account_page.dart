@@ -19,32 +19,29 @@ class _AccountPageState extends State<AccountPage> {
   bool loading = true;
 
   void getUser() async {
-    String token = await getToken();
-    int userId = await getUserId();
+    try {
+      int userId = await getUserId();
+      print('userId');
+      print(userId);
+      ApiResponse response = await getUserDetail(userId);
 
-    print(token);
-    print(userId);
-
-    ApiResponse response = await getUserDetail(userId);
-    if (response.error == null) {
-      setState(() {
-        _user = response.data as User;
-        loading = false;
-      });
-    } else if (response.error == unauthorized) {
-      logout().then((value) => {
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => LoginPage()),
-                (route) => false)
-          });
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('${response.error}')));
-
-      print("error account_page");
-      // Navigator.of(context).pushAndRemoveUntil(
-      //     MaterialPageRoute(builder: (context) => LoginPage()),
-      //     (route) => false);
+      if (response.error == null) {
+        setState(() {
+          _user = response.data as User;
+          loading = false;
+        });
+      } else if (response.error == unauthorized) {
+        logout().then((value) => {
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  (route) => false)
+            });
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+      }
+    } catch (e) {
+      print('Error in getUser: $e');
     }
   }
 
@@ -85,10 +82,10 @@ class _AccountPageState extends State<AccountPage> {
                             color: Colors.blue,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(50))),
-                        child: _user?.avatar != null
+                        child: _user?.urlAvatar != null
                             ? CircleAvatar(
                                 backgroundImage:
-                                    NetworkImage('${_user?.avatar}'),
+                                    NetworkImage('${_user?.urlAvatar}'),
                               )
                             : const CircleAvatar(
                                 backgroundImage:

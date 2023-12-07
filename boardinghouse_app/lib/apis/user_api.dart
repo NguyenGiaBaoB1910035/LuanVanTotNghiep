@@ -86,71 +86,50 @@ Future<ApiResponse> getUserDetail(int userId) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.get(Uri.parse('$apiUser/$userId'),
-        // final response = await http.get(Uri.parse(ApiConstants.apiUserProfile),
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': 'Bearer $token'
-        });
-    // print("Response from server: ${response.body}");
+    final response = await http.get(Uri.parse('$apiUser/$userId'), headers: {
+      "Content-Type": "application/json",
+      'Authorization': 'Bearer $token'
+    });
 
-    switch (response.statusCode) {
-      case 200:
-        apiResponse.data = User.fromJson(json.decode(response.body));
-        break;
-      case 401:
-        apiResponse.error = unauthorized;
-        break;
-      default:
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+
+      if (responseBody.containsKey('data')) {
+        final userData = responseBody['data'];
+
+        if (userData != null) {
+          final userInputData = {'user': userData};
+          apiResponse.data = User.fromJson(userInputData);
+        } else {
+          apiResponse.error = somethingWentWrong;
+          print('Error tempp is null');
+        }
+      } else {
         apiResponse.error = somethingWentWrong;
-        break;
+        print('Error: Response body does not contain "data"');
+      }
+    } else if (response.statusCode == 401) {
+      apiResponse.error = unauthorized;
+    } else {
+      apiResponse.error = somethingWentWrong;
     }
   } catch (e) {
     apiResponse.error = serverError;
-    print(e);
+    print('Error in getUserDetail: $e');
   }
+
   return apiResponse;
 }
 
-// // get User
-// Future<ApiResponse> getUserDetail() async {
-//   ApiResponse apiResponse = ApiResponse();
-//   try {
-//     String token = await getToken();
-//     // final response = await http.get(
-//     //   Uri.parse('$ApiConstants.apiUser/$userId'),
-//     final response = await http.get(Uri.parse(ApiConstants.apiUserProfile),
-//         headers: {
-//           "Content-Type": "application/json",
-//           'Authorization': 'Bearer $token'
-//         });
-//     // print("Response from server: ${response.body}");
-
-//     switch (response.statusCode) {
-//       case 200:
-//         apiResponse.data = User.fromJson(json.decode(response.body));
-//         break;
-//       case 401:
-//         apiResponse.error = unauthorized;
-//         break;
-//       default:
-//         apiResponse.error = somethingWentWrong;
-//         break;
-//     }
-//   } catch (e) {
-//     apiResponse.error = serverError;
-//     print(e);
-//   }
-//   return apiResponse;
-// }
-
 // Update user
 Future<ApiResponse> updateUser(
+  int userId,
+  
     String name, String gender, String address, String? image) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.put(Uri.parse(ApiConstants.apiUpdateUser),
+    final response = await http.put(Uri.parse('$apiUser/$userId'),
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer $token'

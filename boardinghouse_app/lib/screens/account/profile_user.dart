@@ -23,6 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void getUser() async {
     int userId = await getUserId();
     ApiResponse response = await getUserDetail(userId);
+    print('profile:');
     if (response.error == null) {
       setState(() {
         _user = response.data as User;
@@ -103,9 +104,9 @@ class _ProfilePageState extends State<ProfilePage> {
             height: 110,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(60),
-                image: _user!.avatar != null
+                image: _user!.urlAvatar != null
                     ? DecorationImage(
-                        image: NetworkImage('${_user!.avatar}'),
+                        image: NetworkImage('${_user!.urlAvatar}'),
                         fit: BoxFit.cover)
                     : const DecorationImage(
                         // image: FileImage(_imageFile ?? File('')),
