@@ -8,13 +8,13 @@ use App\Filament\Resources\BoardingHouseResource\{
     RelationManagers\EvaluateRelationManager
 };
 use App\Models\BoardingHouse;
-use Awcodes\Curator\Components\Forms\CuratorPicker;
-use Awcodes\Curator\Components\Tables\CuratorColumn;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -86,14 +86,12 @@ class BoardingHouseResource extends Resource
 
                         Forms\Components\Section::make('Images')
                             ->schema([
-                                CuratorPicker::make('featured_image_id')
-                                    ->relationship('featured_image', 'id')
-                                    ->label('Featured Image'),
+                                FileUpload::make('featured_image'),
 
-                                CuratorPicker::make('boarding_house_picture_ids')
-                                    ->label('Pictures')
-                                    ->multiple()
-                                    ->relationship('pictures', 'id'),
+                                FileUpload::make('images')
+                                    ->label('Other Images')
+                                    ->multiple(),
+
                             ])
                             ->collapsible(),
 
@@ -187,8 +185,8 @@ class BoardingHouseResource extends Resource
     {
         return $table
             ->columns([
-                CuratorColumn::make('featured_image')
-                    ->size(40),
+
+                ImageColumn::make('featured_image'),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label('Name')
@@ -276,11 +274,6 @@ class BoardingHouseResource extends Resource
 
     public static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->with(['brand']);
+        return parent::getGlobalSearchEloquentQuery()->with(['brand', 'images']);
     }
-
-    // public static function getNavigationBadge(): ?string
-    // {
-    //     return static::$model::whereColumn('qty', '<', 'security_stock')->count();
-    // }
 }

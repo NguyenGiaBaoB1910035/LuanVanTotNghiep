@@ -7,18 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Awcodes\Curator\Models\Media;
 use Illuminate\Support\Facades\Storage;
 
 class BoardingHouse extends Model
 {
     use HasFactory;
-    protected $appends = ['url_featured_image', 'utils', 'pictures'];
+    protected $appends = ['url_featured_image', 'utils', 'images'];
     protected $fillable = [
         'type',
         'name',
         'slug',
-        'featured_image_id',
+        'featured_image',
         'room_number',
         'acreage',
         'capacity',
@@ -57,28 +56,17 @@ class BoardingHouse extends Model
         return $this->belongsToMany(Util::class, 'util_boarding_houses', 'boarding_house_id', 'util_id')->withTimestamps();
     }
 
-    public function pictures(): BelongsToMany
+    public function images(): HasMany
     {
-        return $this
-            ->belongsToMany(Media::class, 'boarding_house_images', 'boarding_house_id', 'media_id');
+        return $this->hasMany(BoardingHouseImage::class, 'boarding_house_id');
     }
 
-
-    public function featured_image(): BelongsTo
-    {
-        return $this->belongsTo(Media::class, 'featured_image_id', 'id');
-    }
-
-    public function getUrlFeaturedImage()
-    {
-        return optional($this->featured_image)->path;
-    }
 
     public function getUrlFeaturedImageAttribute()
     {
         if (empty($this->featured_image) || !$this->featured_image) return;
 
-        return url(Storage::url(optional($this->featured_image)->path));
+        return url(Storage::url($this->featured_image));
     }
 
     public function getUtilsAttribute()
@@ -86,8 +74,8 @@ class BoardingHouse extends Model
         return $this->utils()->get();
     }
 
-    public function getPicturesAttribute()
+    public function getImagesAttribute()
     {
-        return $this->pictures()->get();
+        return $this->images()->pluck('path')->toArray();
     }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->nullable();
-            $table->bigInteger('featured_image_id')->nullable();
+            $table->string('featured_image')->nullable();
             $table->String('room_number'); // loai phong
             $table->string('acreage')->nullable(); // diện tích
             $table->string('capacity'); // sức chứa

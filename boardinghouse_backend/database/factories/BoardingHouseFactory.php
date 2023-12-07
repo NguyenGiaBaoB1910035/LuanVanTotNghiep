@@ -19,12 +19,12 @@ class BoardingHouseFactory extends Factory
     public function definition(): array
     {
         // Get a random Media record
-        $featuredImage = Media::inRandomOrder()->first();
+        $imagePath = storage_path('app/public/media');
         return [
             'name' => $this->faker->word,
             'slug' => $this->faker->slug,
-            'featured_image_id' => $featuredImage,
-            'room_number' => $this->faker->word,
+            'featured_image' => $this->faker->image($imagePath, 640, 480, null, false),
+            'room_number' => $this->faker->randomNumber(2),
             'acreage' => $this->faker->randomFloat(2, 50, 200),
             'capacity' => $this->faker->randomNumber(2),
             'price' => $this->faker->randomNumber(4),

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('name');
-            $table->string('content');
+            $table->longText('content');
             $table->unsignedBigInteger('boarding_house_id')->nullable();
             $table->date('date_created')->default(Carbon::now());
             $table->date('date_updated')->default(Carbon::now());
