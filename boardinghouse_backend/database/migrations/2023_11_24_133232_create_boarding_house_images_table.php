@@ -13,14 +13,9 @@ return new class extends Migration
     {
         Schema::create('boarding_house_images', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('media_id');
             $table->unsignedBigInteger('boarding_house_id');
+            $table->string('path');
             $table->timestamps();
-
-            $table->foreign('media_id')
-                ->references('id')->on('media')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
 
             $table->foreign('boarding_house_id')
                 ->references('id')->on('boarding_houses')

@@ -7,7 +7,7 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use App\Filament\Pages\Auth\EditProfile;
-use Awcodes\Curator\CuratorPlugin;
+use App\Filament\Auth\Login;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -28,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(Login::class)
             ->profile(EditProfile::class)
             ->colors([
                 'primary' => Color::Amber,
@@ -60,16 +60,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ])
-            ->plugins([
-                CuratorPlugin::make()
-                    ->label('Media')
-                    ->pluralLabel('Media')
-                    ->navigationIcon('heroicon-o-photo')
-                    ->navigationGroup('Content')
-                    ->navigationSort(3)
-                    ->navigationCountBadge()
-                    ->resource(\App\Filament\Resources\MediaResource::class)
             ]);
     }
 }

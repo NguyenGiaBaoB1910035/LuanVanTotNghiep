@@ -2,8 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\BoardingHouse;
 use App\Models\BoardingHouseImage;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Storage;
 
 class BoardingHouseImageFactory extends Factory
 {
@@ -14,13 +16,11 @@ class BoardingHouseImageFactory extends Factory
      */
     public function definition(): array
     {
+        $imagePath = storage_path('app/public');
+
         return [
-            'media_id' => function () {
-                return \App\Models\Media::factory()->create()->id;
-            },
-            'boarding_house_id' => function () {
-                return \App\Models\BoardingHouse::factory()->create()->id;
-            },
+            'path' => $this->faker->image($imagePath, 640, 480, null, false),
+            'boarding_house_id' => BoardingHouse::inRandomOrder()->pluck('id')->first(),
             'created_at' => now(),
             'updated_at' => now(),
         ];

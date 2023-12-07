@@ -104,11 +104,10 @@ class DatabaseSeeder extends Seeder
 
         User::factory(50)->create();
 
-        Media::factory()->count(13)->create();
         Util::factory()->count(10)->create();
 
         BoardingHouse::factory()->count(10)->create();
-        UtilBoardingHouse::factory()->count(10)->create();
-        BoardingHouseImage::factory()->count(10)->create();
+        UtilBoardingHouse::factory()->count(30)->create();
+        BoardingHouseImage::factory()->count(50)->create();
     }
 }

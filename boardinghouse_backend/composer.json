@@ -8,12 +8,10 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.1",
-        "awcodes/filament-curator": "^3.1",
+        "php": "^8.2",
         "bensampo/laravel-enum": "^6.6",
         "blade-ui-kit/blade-icons": "^1.5",
         "filament/filament": "3.0-stable",
-        "filament/spatie-laravel-media-library-plugin": "3.0-stable",
         "guava/filament-icon-picker": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
         "ibrahimbougaoua/filament-rating-star": "^0.0.1",
