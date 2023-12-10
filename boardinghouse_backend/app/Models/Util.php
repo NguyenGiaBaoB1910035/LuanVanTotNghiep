@@ -16,9 +16,9 @@ class Util extends Model
         'icon',
     ];
 
-    public function boarding_houses(): BelongsToMany
+    public function boardingHouses()
     {
-        return $this->belongsToMany(BoardingHouse::class, 'util_boarding_houses', 'boarding_house_id', 'util_id');
+        return $this->belongsToMany(BoardingHouse::class, 'boarding_house_util');
     }
 
     public function getUrlIconAttribute()

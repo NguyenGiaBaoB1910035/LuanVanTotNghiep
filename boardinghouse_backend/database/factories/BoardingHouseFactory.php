@@ -19,7 +19,7 @@ class BoardingHouseFactory extends Factory
     public function definition(): array
     {
         // Get a random Media record
-        $imagePath = storage_path('app/public/media');
+        $imagePath = storage_path('app/public');
         return [
             'name' => $this->faker->word,
             'slug' => $this->faker->slug,

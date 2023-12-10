@@ -8,15 +8,14 @@ use App\Enums\UserRole;
 use App\Models\BoardingHouse;
 use App\Models\BoardingHouseImage;
 use App\Models\BoardingHouseType;
-use App\Models\Media;
+use App\Models\BoardingHouseUtil;
 use App\Models\User;
 use App\Models\Util;
-use App\Models\UtilBoardingHouse;
-use Database\Factories\CuratorMediaFactory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class DatabaseSeeder extends Seeder
 {
@@ -26,16 +25,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Tạo symbolic link nếu chưa tồn tại
-        $storageLink = public_path('storage');
+        $storage_link = public_path('storage');
 
-        if (!File::exists($storageLink)) {
+        if (!File::exists($storage_link)) {
             $this->command->info('Creating storage link...');
             // Tạo symbolic link
             Artisan::call('storage:link');
             $this->command->info('Created storage link');
         }
 
-        // Nếu tệp tin chưa được public
         $sourcePath = public_path('images/avatar-default.jpg');
         $destinationPath = storage_path('app/public/avatar-default.jpg');
 
@@ -102,12 +100,26 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-        User::factory(50)->create();
+        // Util::insert([
+        //     [
+        //         'name' => 'Wifi',
+        //         'icon' => 'null',
+        //     ],
+        //     [
+        //         'name' => '???',
+        //         'icon' => 'null',
+        //     ],
+        //     [
+        //         'name' => '???',
+        //         'icon' => 'null',
+        //     ],
+        // ]);
 
-        Util::factory()->count(10)->create();
+        // User::factory(50)->create();
+        Util::factory(10)->create();
 
-        BoardingHouse::factory()->count(10)->create();
-        UtilBoardingHouse::factory()->count(30)->create();
-        BoardingHouseImage::factory()->count(50)->create();
+        BoardingHouse::factory(5)->create();
+        BoardingHouseUtil::factory(5)->create();
+        // BoardingHouseImage::factory(5)->create();
     }
 }

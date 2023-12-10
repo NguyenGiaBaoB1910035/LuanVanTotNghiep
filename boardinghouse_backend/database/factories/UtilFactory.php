@@ -16,9 +16,11 @@ class UtilFactory extends Factory
     public function definition(): array
     {
         $imagePath = storage_path('app/public');
+
         return [
             'name' => $this->faker->word,
-            'icon' => $this->faker->image($imagePath, 640, 480, null, false),
+            // 'icon' => $this->faker->image($imagePath, 640, 480, null, false),
+            'icon' => 'null',
             'parent_id' => null,
             'created_at' => now(),
             'updated_at' => now(),

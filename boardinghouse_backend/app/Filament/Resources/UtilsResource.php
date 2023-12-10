@@ -7,16 +7,12 @@ use App\Filament\Resources\UtilsResource\RelationManagers;
 use App\Models\Util;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
-use Guava\FilamentIconPicker\Forms\IconPicker;
-use Guava\FilamentIconPicker\Tables\IconColumn;
 
 class UtilsResource extends Resource
 {
@@ -36,9 +32,6 @@ class UtilsResource extends Resource
             ->schema([
                 Forms\Components\Section::make()
                     ->schema([
-
-                        // IconPicker::make('icon')
-                        //     ->sets(['heroicons', 'fontawesome-solid']),
 
                         FileUpload::make('icon'),
 

@@ -116,7 +116,7 @@ class BoardingHouseResource extends Resource
                                 Forms\Components\Select::make('user_id')
                                     ->label('Author')
                                     ->relationship('user', 'name')
-                                    ->searchable()
+                                    // ->searchable()
                                     ->required(),
 
                                 Forms\Components\Select::make('boarding_house_type_id')
@@ -127,8 +127,11 @@ class BoardingHouseResource extends Resource
                                     ->hiddenOn(EvaluateRelationManager::class),
 
                                 Forms\Components\Select::make('utils')
+                                    ->label('Utilities')
                                     ->relationship('utils', 'name')
-                                    ->multiple(),
+                                    ->multiple()
+                                    ->searchable(),
+
                             ]),
                         Forms\Components\Section::make('Time Management')
                             ->schema([
