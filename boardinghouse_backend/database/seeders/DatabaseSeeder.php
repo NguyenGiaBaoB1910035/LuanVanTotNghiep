@@ -119,7 +119,7 @@ class DatabaseSeeder extends Seeder
         Util::factory(10)->create();
 
         BoardingHouse::factory(5)->create();
-        BoardingHouseUtil::factory(5)->create();
+        // BoardingHouseUtil::factory(5)->create();
         // BoardingHouseImage::factory(5)->create();
     }
 }

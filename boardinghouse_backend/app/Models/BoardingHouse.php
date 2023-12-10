@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 
 class BoardingHouse extends Model
 {
@@ -56,6 +57,16 @@ class BoardingHouse extends Model
     {
         return $this->hasMany(Evaluate::class, 'boarding_house_id');
     }
+
+    public function storeFile(UploadedFile $file, string $folder)
+    {
+        $path = $file->storePublicly($folder, ['disk' => 'public']);
+
+        $this->images()->create([
+            'path' => $path,
+        ]);
+    }
+
 
     public function images(): HasMany
     {

@@ -44,7 +44,8 @@ class UserResource extends Resource
             ->schema([
                 Card::make()
                     ->schema([
-                        FileUpload::make('avatar'),
+                        FileUpload::make('avatar')
+                            ->imageEditor(),
                         Card::make()
                             ->schema([
                                 Select::make('role')

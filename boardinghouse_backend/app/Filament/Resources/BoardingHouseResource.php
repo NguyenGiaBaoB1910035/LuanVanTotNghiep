@@ -8,6 +8,7 @@ use App\Filament\Resources\BoardingHouseResource\{
     RelationManagers\EvaluateRelationManager
 };
 use App\Models\BoardingHouse;
+use App\Models\Util;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
@@ -86,10 +87,12 @@ class BoardingHouseResource extends Resource
 
                         Forms\Components\Section::make('Images')
                             ->schema([
-                                FileUpload::make('featured_image'),
+                                FileUpload::make('featured_image')
+                                    ->imageEditor(),
 
-                                FileUpload::make('images')
+                                FileUpload::make('imagess')
                                     ->label('Other Images')
+                                    ->imageEditor()
                                     ->multiple(),
 
                             ])
@@ -126,13 +129,12 @@ class BoardingHouseResource extends Resource
                                     ->required()
                                     ->hiddenOn(EvaluateRelationManager::class),
 
-                                Forms\Components\Select::make('utils')
-                                    ->label('Utilities')
+                                Forms\Components\CheckboxList::make('utils')
                                     ->relationship('utils', 'name')
-                                    ->multiple()
-                                    ->searchable(),
+                                    ->searchable()
+                                    ->columns(2),
 
-                            ]),
+                            ])->collapsible(),
                         Forms\Components\Section::make('Time Management')
                             ->schema([
                                 Forms\Components\TimePicker::make('open_time')
