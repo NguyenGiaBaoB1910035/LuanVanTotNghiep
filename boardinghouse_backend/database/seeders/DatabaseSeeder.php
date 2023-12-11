@@ -102,6 +102,53 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
+        Util::insert([
+            [
+                'name' => 'Wifi',
+                'icon' => 'Wifi.png',
+            ],
+            [
+                'name' => 'Nhà xe',
+                'icon' => 'Nha-xe.png',
+            ],
+            [
+                'name' => 'Thú cưng',
+                'icon' => 'Thu-cung.png',
+            ],
+            [
+                'name' => 'Giờ tự do',
+                'icon' => 'Gio-tu-do.png',
+            ],
+            [
+                'name' => 'Điều hòa',
+                'icon' => 'Dieu-hoa.png',
+            ],
+            [
+                'name' => 'TV',
+                'icon' => 'TV.png',
+            ],
+            [
+                'name' => 'Tủ lạnh',
+                'icon' => 'Tu-lanh.png',
+            ],
+            [
+                'name' => 'Giường',
+                'icon' => 'Giuong.png',
+            ],
+            [
+                'name' => 'Gác lửng',
+                'icon' => 'Gac-lung.',
+            ],
+            [
+                'name' => 'Ban công',
+                'icon' => 'Ban-cong.png',
+            ],
+            [
+                'name' => 'Máy giặt',
+                'icon' => 'May-giat.png',
+            ],
+        ]);
+
         User::factory(50)->create();
 
         Util::factory()->count(10)->create();
