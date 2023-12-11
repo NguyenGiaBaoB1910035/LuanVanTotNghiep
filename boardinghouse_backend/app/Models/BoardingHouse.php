@@ -12,11 +12,13 @@ use Illuminate\Support\Facades\Storage;
 class BoardingHouse extends Model
 {
     use HasFactory;
-    protected $appends = ['url_featured_image', 'utils', 'images'];
+
+    protected $appends = ['url_featured_image', 'utils', 'all_images'];
     protected $fillable = [
         'type',
         'name',
         'slug',
+        'images',
         'featured_image',
         'room_number',
         'acreage',
@@ -35,6 +37,8 @@ class BoardingHouse extends Model
         'published_at',
         'boarding_house_type_id'
     ];
+
+    protected $casts = ['images' => 'array'];
 
     public function boarding_house_type(): BelongsTo
     {
@@ -56,10 +60,6 @@ class BoardingHouse extends Model
         return $this->belongsToMany(Util::class, 'util_boarding_houses', 'boarding_house_id', 'util_id')->withTimestamps();
     }
 
-    public function images(): HasMany
-    {
-        return $this->hasMany(BoardingHouseImage::class, 'boarding_house_id');
-    }
 
 
     public function getUrlFeaturedImageAttribute()
@@ -74,8 +74,10 @@ class BoardingHouse extends Model
         return $this->utils()->get();
     }
 
-    public function getImagesAttribute()
+    public function getAllImagesAttribute()
     {
-        return $this->images()->pluck('path')->toArray();
+        return $this->images->map(function ($image) {
+            return url(Storage::url($image->path));
+        })->toArray();
     }
 }

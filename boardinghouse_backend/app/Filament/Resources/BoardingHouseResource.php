@@ -90,6 +90,9 @@ class BoardingHouseResource extends Resource
 
                                 FileUpload::make('images')
                                     ->label('Other Images')
+                                    ->preserveFilenames()
+                                    ->imageEditor()
+                                    ->acceptedFileTypes(['image/*'])
                                     ->multiple(),
 
                             ])
