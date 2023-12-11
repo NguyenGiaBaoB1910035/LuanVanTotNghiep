@@ -609,11 +609,12 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
                                 width: 30,
                                 height: 30,
                                 decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image:
-                                            NetworkImage('${feature.imageUrl}'),
-                                        fit: BoxFit.cover),
-                                    color: Colors.amber),
+                                  image: DecorationImage(
+                                      image:
+                                          NetworkImage('${feature.imageUrl}'),
+                                      fit: BoxFit.cover),
+                                  // color: Colors.amber
+                                ),
                               ),
                               const SizedBox(
                                 width: 10,
