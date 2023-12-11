@@ -81,21 +81,38 @@ class DatabaseSeeder extends Seeder
             $this->command->info('Created storage link');
         }
 
-        // Nếu tệp tin chưa được public
         $sourcePath = public_path('images/avatar-default.jpg');
         $destinationPath = storage_path('app/public/avatar-default.jpg');
 
 
-        // Kiểm tra xem tệp tin đã tồn tại trong public hay không
         if (File::exists($sourcePath)) {
-            // Di chuyển tệp tin từ public đến storage
             File::copy($sourcePath, $destinationPath);
-
-            // Seed dữ liệu vào database
-            // Ví dụ: factory(App\User::class, 10)->create();
         } else {
-            // Xử lý khi tệp tin không tồn tại trong public
             $this->command->info('Tệp tin avatar-default.jpg không tồn tại trong public.');
+        }
+
+        // Đường dẫn thư mục chứa các tệp tin icon trong public
+        $sourceDirectory = public_path('images/utils');
+
+        // Kiểm tra xem thư mục tồn tại
+        if (File::exists($sourceDirectory)) {
+            // Lấy danh sách tệp tin trong thư mục public/utils/
+            $iconFiles = File::files($sourceDirectory);
+
+            foreach ($iconFiles as $iconFile) {
+                // Tên tệp tin
+                $filename = pathinfo($iconFile, PATHINFO_FILENAME);
+
+                // Đường dẫn đến thư mục storage/app/public/utils/ với tên tệp tin giữ nguyên
+                $destinationPath = storage_path("app/public/{$filename}.{$iconFile->getExtension()}");
+
+                // Di chuyển tệp tin từ public/utils/ đến storage/app/public/
+                File::copy($iconFile, $destinationPath);
+            }
+
+            $this->command->info('Copied icon files to storage/app/public/');
+        } else {
+            $this->command->info('Thư mục images/utils/ không tồn tại.');
         }
 
         User::insert([
