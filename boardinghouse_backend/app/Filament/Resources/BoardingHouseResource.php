@@ -132,7 +132,6 @@ class BoardingHouseResource extends Resource
 
                                 Forms\Components\CheckboxList::make('utils')
                                     ->relationship('utils', 'name')
-                                    ->multiple()
                                     ->searchable()
                                     ->columns(2),
                             ]),
