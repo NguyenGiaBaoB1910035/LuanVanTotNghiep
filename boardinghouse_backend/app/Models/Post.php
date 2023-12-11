@@ -13,22 +13,41 @@ class Post extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'featured_image',
         'content',
         'boarding_house_id',
         'date_created',
         'date_updated',
+        'status',
         'view',
     ];
 
     protected $dates = ['date_created', 'date_updated'];
 
-    public function user(): BelongsTo
+    public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
     public function boardingHouse(): BelongsTo
     {
-        return $this->belongsTo(BoardingHouse::class, 'boarding_house_id');
+        return $this->belongsTo(BoardingHouse::class, 'boarding_house_id')->where('status', true);
+    }
+
+
+    public function getUserAttribute()
+    {
+        return User::findOrFail($this->user_id);
+    }
+
+    public function getBoardingHouseAttribute()
+    {
+        $boardingHouse = BoardingHouse::findOrFail($this->boarding_house_id);
+
+        if ($boardingHouse->status) {
+            return $boardingHouse;
+        }
+
+        return null;
     }
 }

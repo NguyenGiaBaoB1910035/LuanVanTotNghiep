@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('boarding_houses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug')->nullable();
             $table->string('featured_image')->nullable();
             $table->longText('images')->nullable();
             $table->String('room_number'); // loai phong
@@ -31,7 +30,7 @@ return new class extends Migration
             $table->longText('description');
             $table->text('address');
             $table->string('favourite')->default('0');
-            $table->string('status')->default('pendding');
+            $table->string('status')->default(false);
             $table->date('published_at')->nullable();
 
             $table->unsignedBigInteger('user_id');
