@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 import 'auth_api.dart';
 import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:boardinghouse_app/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image/image.dart';
+import 'dart:typed_data';
 
 Future<ApiResponse> login(String login, String password) async {
   ApiResponse apiResponse = ApiResponse();
@@ -189,6 +192,24 @@ Future<bool> logout() async {
 
 // Get base64 encoded image
 String? getStringImage(File? file) {
-  if (file == null) return null;
+  if (file == null) return null ;
   return base64Encode(file.readAsBytesSync());
 }
+
+
+// String? getStringImage(File? file, {String format = 'jpeg'}) {
+//   if (file == null) return '';
+
+//   // Đọc dữ liệu từ tệp
+//   List<int> imageBytes = file.readAsBytesSync();
+
+//   // Chuyển đổi thành Uint8List
+//   Uint8List uint8List = Uint8List.fromList(imageBytes);
+
+//   // Thay đổi định dạng hình ảnh
+//   Image image = decodeImage(uint8List)!;
+//   List<int> convertedBytes = encodePng(image); // Thay đổi định dạng thành PNG
+
+//   // Chuyển đổi thành chuỗi base64
+//   return base64Encode(convertedBytes);
+// }

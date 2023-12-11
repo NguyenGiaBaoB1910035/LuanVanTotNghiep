@@ -23,7 +23,6 @@ class CreateBoardingHousePage extends StatefulWidget {
 class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
   // BoardingHouse? _boardingHouse;
   String selectedRoom = 'Phòng cho thuê';
-  int _selectedTypeId = 0;
   String name = '';
   String address = '';
   int quantity = 1;
@@ -33,13 +32,15 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
   double deposit = 0.0;
   double electricityPrice = 0.0;
   double waterPrice = 0.0;
-  // TimeOfDay openTime = TimeOfDay.now();
-  // TimeOfDay closeTime = TimeOfDay.now();
   String description = '';
+  DateTime openTime = DateTime.now();
+  DateTime closeTime = DateTime.now();
+  DateTime publishedAt = DateTime.now();
+
+  bool _loading = false;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  int _typeId = 0;
-  // final TextEditingController _txtTypeController = TextEditingController();
+  int _typeId = 1;
   final TextEditingController _txtNameController = TextEditingController();
   final TextEditingController _txtAddressController = TextEditingController();
   final TextEditingController _txtQuantityController = TextEditingController();
@@ -49,8 +50,6 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
   final TextEditingController _txtDepositController = TextEditingController();
   final TextEditingController _txtElectriController = TextEditingController();
   final TextEditingController _txtWaterController = TextEditingController();
-  // final TextEditingController _txtOpenTimeController = TextEditingController();
-  // final TextEditingController _txtCloseTimeController = TextEditingController();
   final TextEditingController _txtDescriptionController =
       TextEditingController();
 
@@ -68,14 +67,11 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
   }
 
   void _createBoardingHouse() async {
-    int userId = await getUserId();
-    String? image = getStringImage(_imageFile);
-
-    //    TimeOfDay openTimeOfDay = TimeOfDay.fromDateTime(openTime);
-    // TimeOfDay closeTimeOfDay = TimeOfDay.fromDateTime(closeTime);
-    // String? image = _imageFile == null ? null : getStringImage(_imageFile);
+    print("có chạy cái này nha");
+    int _userId = await getUserId();
+    String? _image = getStringImage(_imageFile);
     ApiResponse response = await createBoardingHouse(
-        userId,
+        _userId,
         _typeId,
         _txtNameController.text,
         _txtAddressController.text,
@@ -86,12 +82,11 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
         _txtDepositController.text,
         _txtElectriController.text,
         _txtWaterController.text,
-        //     openTimeOfDay.format(context),  // Convert DateTime to TimeOfDay and format
-        // closeTimeOfDay.format(context), // Convert DateTime to TimeOfDay and format
-        // _txtOpenTimeController.text,
-        // _txtCloseTimeController.text,
+        openTime,
+        closeTime,
+        publishedAt,
         _txtDescriptionController.text,
-        image!);
+        _image!);
 
     if (response.error == null) {
       Navigator.of(context).pop();
@@ -101,7 +96,7 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('${response.error}')));
       setState(() {
-        // _loading = !_loading;
+        _loading = !_loading;
       });
     }
   }
@@ -389,6 +384,42 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
                     const SizedBox(
                       height: 20,
                     ),
+                    ListTile(
+                      title: const Text('Giờ mở cửa'),
+                      trailing: Text(_formatTime(openTime)),
+                      onTap: () async {
+                        final selectedTime = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.fromDateTime(openTime),
+                        );
+                        if (selectedTime != null) {
+                          setState(() {
+                            openTime = _combineDateAndTime(
+                              openTime,
+                              selectedTime,
+                            );
+                          });
+                        }
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Giờ đóng cửa'),
+                      trailing: Text(_formatTime(closeTime)),
+                      onTap: () async {
+                        final selectedTime = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.fromDateTime(closeTime),
+                        );
+                        if (selectedTime != null) {
+                          setState(() {
+                            closeTime = _combineDateAndTime(
+                              closeTime,
+                              selectedTime,
+                            );
+                          });
+                        }
+                      },
+                    ),
                     // ListTile(
                     //   title: const Text('Giờ mở cửa'),
                     //   trailing: Text(openTime.format(context)),
@@ -401,9 +432,6 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
                     //       setState(() {
                     //         openTime = selectedTime;
 
-                    //         // Update text controller value when openTime changes
-                    //         _txtOpenTimeController.text =
-                    //             openTime.format(context);
                     //       });
                     //     }
                     //   },
@@ -420,16 +448,13 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
                     //       setState(() {
                     //         closeTime = selectedTime;
 
-                    //         // Update text controller value when closeTime changes
-                    //         _txtCloseTimeController.text =
-                    //             closeTime.format(context);
                     //       });
                     //     }
                     //   },
                     // ),
-                    // const SizedBox(
-                    //   height: 20,
-                    // ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     const Text('Mô tả'),
                     TextFormField(
                       controller: _txtDescriptionController,
@@ -774,27 +799,6 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
     );
   }
 
-  // Widget buildRoomOption(String roomName) {
-  //   int? typeId = getBoardingHouseTypeIdByName(
-  //       roomName); // Use the function to get typeId
-
-  //   return Row(
-  //     children: <Widget>[
-  //       Radio(
-  //         value: typeId,
-  //         groupValue:
-  //             _selectedTypeId, // Make sure to define _selectedTypeId in your State
-  //         onChanged: (value) {
-  //           setState(() {
-  //             _selectedTypeId = value as int; // Cast value to int
-  //           });
-  //         },
-  //       ),
-  //       Text(roomName),
-  //     ],
-  //   );
-  // }
-
   Widget buildRoomOption(String roomName) {
     return Row(
       children: <Widget>[
@@ -811,149 +815,12 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
       ],
     );
   }
+
+  String _formatTime(DateTime time) {
+    return '${time.hour}:${time.minute.toString().padLeft(2, '0')}';
+  }
+
+  DateTime _combineDateAndTime(DateTime date, TimeOfDay time) {
+    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
+  }
 }
-
-//--------------------------------------------------------------------------------------------------------------//
-//--------------------------------------------------------------------------------------------------------------//
-//--------------------------------------------------------------------------------------------------------------//
-//--------------------------------------------------------------------------------------------------------------//
-//--------------------------------------------------------------------------------------------------------------//
-
-// class UploadImage extends StatefulWidget {
-//   const UploadImage({super.key});
-
-//   @override
-//   State<UploadImage> createState() => _UploadImageState();
-// }
-
-// class _UploadImageState extends State<UploadImage> {
-//   final ImagePicker imagePicker = ImagePicker();
-//   List<XFile> imageFileList = [];
-//   void selectImages() async {
-//     final List<XFile>? selectedImages = await imagePicker.pickMultiImage();
-//     if (selectedImages!.isNotEmpty) {
-//       imageFileList!.addAll(selectedImages);
-//     }
-//     setState(() {});
-//   }
-
-//   void deleteImage(int index) {
-//     setState(() {
-//       if (index >= 0 && index < imageFileList.length) {
-//         imageFileList.removeAt(index);
-//       }
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: <Widget>[
-//         Padding(
-//           padding: const EdgeInsets.all(10),
-//           child: Text("Chọn thêm ảnh và video về nhà trọ của bạn!"),
-//         ),
-//         // const SizedBox(
-//         //   height: 10,
-//         // ),
-//         Padding(
-//           padding: const EdgeInsets.all(10),
-//           child: Container(
-//               width: MediaQuery.of(context).size.width,
-//               height: 150,
-//               decoration: BoxDecoration(border: Border.all(width: 1)),
-//               child: imageFileList.length != 0
-//                   ? Padding(
-//                       padding: const EdgeInsets.all(10),
-//                       child: GridView.builder(
-//                         itemCount: imageFileList!.length,
-//                         itemBuilder: (context, index) {
-//                           // return Image.file(
-//                           //   File(imageFileList[index].path),
-//                           //   fit: BoxFit.cover,
-//                           // );
-//                           return Stack(
-//                             children: [
-//                               Container(
-//                                 width: MediaQuery.of(context).size.width,
-//                                 height: MediaQuery.of(context).size.height,
-//                                 child: Image.file(
-//                                   File(imageFileList[index].path),
-//                                   fit: BoxFit.cover,
-//                                 ),
-//                               ),
-//                               Positioned(
-//                                 top: 0,
-//                                 right: 0,
-//                                 child: GestureDetector(
-//                                   onTap: () {
-//                                     deleteImage(index);
-//                                   },
-//                                   child: Container(
-//                                     decoration: const BoxDecoration(
-//                                       shape: BoxShape.circle,
-//                                       color: Colors
-//                                           .grey, // Màu nền của nút hình tròn
-//                                     ),
-//                                     padding: const EdgeInsets.all(
-//                                         5), // Điều chỉnh kích thước của nút hình tròn
-//                                     child: const Text(
-//                                       "x",
-//                                       style: TextStyle(
-//                                         color: Colors.white, // Màu chữ "x"
-//                                         fontSize: 10,
-//                                       ),
-//                                     ),
-//                                   ),
-//                                 ),
-//                               ),
-//                             ],
-//                           );
-//                         },
-//                         gridDelegate:
-//                             const SliverGridDelegateWithFixedCrossAxisCount(
-//                                 crossAxisCount: 4,
-//                                 mainAxisSpacing: 10,
-//                                 crossAxisSpacing: 10),
-//                       ),
-//                     )
-//                   : const Center(
-//                       child: Text('Chọn ảnh và video'),
-//                     )),
-//         ),
-//         const SizedBox(
-//           height: 10,
-//         ),
-//         Padding(
-//           padding: const EdgeInsets.symmetric(horizontal: 50),
-//           child: ElevatedButton(
-//             style: ElevatedButton.styleFrom(
-//                 minimumSize: Size.fromHeight(40),
-//                 backgroundColor: Colors.white,
-//                 foregroundColor: Colors.black,
-//                 textStyle: TextStyle(fontSize: 15)),
-//             onPressed: () {
-//               selectImages();
-//             },
-//             child: const Row(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 Icon(
-//                   Icons.image_outlined,
-//                   size: 22,
-//                 ),
-//                 SizedBox(
-//                   width: 15,
-//                 ),
-//                 Text(
-//                   "Tải lên",
-//                   // style: TextStyle(fontSize: 15),
-//                 )
-//               ],
-//             ),
-//           ),
-//         )
-//       ],
-//     );
-//   }
-// }
