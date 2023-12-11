@@ -4,6 +4,8 @@ use App\Filament\Resources\BoardingHouseTypeResource\Api\BoardingHouseTypeApiSer
 use App\Filament\Resources\UserResource\Api\UserApiService;
 use App\Filament\Resources\BoardingHouseResource\Api\BoardingHouseApiService;
 use App\Filament\Resources\UtilsResource\Api\UtilsApiService;
+use App\Filament\Resources\PostResource\Api\PostApiService;
+use App\Filament\Resources\EvaluateResource\Api\EvaluateApiService;
 use App\Filament\Resources\AuthResource\Api\Handlers\AuthHandler;
 use App\Http\Controllers\UserController;
 
@@ -28,6 +30,8 @@ UserApiService::routes();
 BoardingHouseApiService::routes();
 BoardingHouseTypeApiService::routes();
 UtilsApiService::routes();
+PostApiService::routes();
+EvaluateApiService::routes();
 
 Route::group([
     'middleware' => 'api',
@@ -36,11 +40,10 @@ Route::group([
 
 ], function ($router) {
     Route::post('/login', 'AuthController@login');
-    Route::post('/register','AuthController@register');
+    Route::post('/register', 'AuthController@register');
     Route::post('/logout', 'AuthController@logout');
     Route::post('/refresh', 'AuthController@refresh');
-    Route::get('/user-profile','AuthController@userProfile');
+    Route::get('/user-profile', 'AuthController@userProfile');
     Route::post('/change-pass', 'AuthController@changePassWord');
     Route::put('/update-profile', 'AuthController@update');
 });
-

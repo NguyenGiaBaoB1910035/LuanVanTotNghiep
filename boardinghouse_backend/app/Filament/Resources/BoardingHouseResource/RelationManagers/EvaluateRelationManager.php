@@ -9,6 +9,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use IbrahimBougaoua\FilamentRatingStar\Actions\RatingStar;
 use IbrahimBougaoua\FilamentRatingStar\Columns\RatingStarColumn;
+use Filament\Support\Enums\IconPosition;
+
 
 class EvaluateRelationManager extends RelationManager
 {
@@ -43,8 +45,10 @@ class EvaluateRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('User'),
 
-                RatingStarColumn::make('ratings')
-                    ->label('Rating'),
+                Tables\Columns\TextColumn::make('ratings')
+                    ->icon('heroicon-o-star')
+                    ->iconPosition(IconPosition::After)
+                    ->color('warning'),
 
                 Tables\Columns\TextColumn::make('content')
                     ->label('Content'),

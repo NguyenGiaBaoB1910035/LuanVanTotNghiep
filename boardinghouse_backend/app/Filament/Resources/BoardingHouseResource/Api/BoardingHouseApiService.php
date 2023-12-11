@@ -18,5 +18,6 @@ class BoardingHouseApiService extends ApiService
         Handlers\PaginationHandler::route($router);
         Handlers\DetailHandler::route($router);
         Handlers\UploadPicturesHandler::route($router);
+        Handlers\SearchHandler::route($router);
     }
 }

@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use IbrahimBougaoua\FilamentRatingStar\Actions\RatingStar;
 use IbrahimBougaoua\FilamentRatingStar\Columns\RatingStarColumn;
+use Filament\Support\Enums\IconPosition;
 
 class EvaluateResource extends Resource
 {
@@ -71,10 +72,10 @@ class EvaluateResource extends Resource
                     ->sortable()
                     ->toggleable(),
 
-                RatingStarColumn::make('ratings')
-                    ->label('Rating')
-                    ->sortable()
-                    ->toggleable(),
+                Tables\Columns\TextColumn::make('ratings')
+                    ->icon('heroicon-o-star')
+                    ->iconPosition(IconPosition::After)
+                    ->color('warning'),
 
                 Tables\Columns\TextColumn::make('content')
                     ->label('Content')
@@ -85,9 +86,10 @@ class EvaluateResource extends Resource
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                // Tables\Actions\CreateAction::make(),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
