@@ -13,7 +13,7 @@ class BoardingHouse extends Model
 {
     use HasFactory;
 
-    protected $appends = ['url_featured_image', 'utils', 'all_images'];
+    protected $appends = ['url_featured_image', 'utils', 'boarding_house_type', 'user'];
     protected $fillable = [
         'type',
         'name',
@@ -60,13 +60,11 @@ class BoardingHouse extends Model
         return $this->belongsToMany(Util::class, 'util_boarding_houses', 'boarding_house_id', 'util_id')->withTimestamps();
     }
 
-
-
     public function getUrlFeaturedImageAttribute()
     {
         if (empty($this->featured_image) || !$this->featured_image) return;
 
-        return url(Storage::url('media/'.$this->featured_image));
+        return url(Storage::url('media/' . $this->featured_image));
     }
 
     public function getUtilsAttribute()
@@ -74,10 +72,13 @@ class BoardingHouse extends Model
         return $this->utils()->get();
     }
 
-    public function getAllImagesAttribute()
+    public function getBoardingHouseTypeAttribute()
     {
-        return $this->images->map(function ($image) {
-            return url(Storage::url($image->path));
-        })->toArray();
+        return BoardingHouseType::find($this->boarding_house_type_id)->first();
+    }
+
+    public function getUserAttribute()
+    {
+        return User::find($this->user_id)->first();
     }
 }

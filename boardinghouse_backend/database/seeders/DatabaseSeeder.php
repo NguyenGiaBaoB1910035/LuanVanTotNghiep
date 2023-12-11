@@ -25,6 +25,52 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $utils = [
+            [
+                'name' => 'Wifi',
+                'icon' => 'Wifi.png',
+            ],
+            [
+                'name' => 'Nhà xe',
+                'icon' => 'Nha-xe.png',
+            ],
+            [
+                'name' => 'Thú cưng',
+                'icon' => 'Thu-cung.png',
+            ],
+            [
+                'name' => 'Giờ tự do',
+                'icon' => 'Gio-tu-do.png',
+            ],
+            [
+                'name' => 'Điều hòa',
+                'icon' => 'Dieu-hoa.png',
+            ],
+            [
+                'name' => 'TV',
+                'icon' => 'TV.png',
+            ],
+            [
+                'name' => 'Tủ lạnh',
+                'icon' => 'Tu-lanh.png',
+            ],
+            [
+                'name' => 'Giường',
+                'icon' => 'Giuong.png',
+            ],
+            [
+                'name' => 'Gác lửng',
+                'icon' => 'Gac-lung.',
+            ],
+            [
+                'name' => 'Ban công',
+                'icon' => 'Ban-cong.png',
+            ],
+            [
+                'name' => 'Máy giặt',
+                'icon' => 'May-giat.png',
+            ],
+        ];
         // Tạo symbolic link nếu chưa tồn tại
         $storageLink = public_path('storage');
 
@@ -102,59 +148,11 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-        Util::insert([
-            [
-                'name' => 'Wifi',
-                'icon' => 'Wifi.png',
-            ],
-            [
-                'name' => 'Nhà xe',
-                'icon' => 'Nha-xe.png',
-            ],
-            [
-                'name' => 'Thú cưng',
-                'icon' => 'Thu-cung.png',
-            ],
-            [
-                'name' => 'Giờ tự do',
-                'icon' => 'Gio-tu-do.png',
-            ],
-            [
-                'name' => 'Điều hòa',
-                'icon' => 'Dieu-hoa.png',
-            ],
-            [
-                'name' => 'TV',
-                'icon' => 'TV.png',
-            ],
-            [
-                'name' => 'Tủ lạnh',
-                'icon' => 'Tu-lanh.png',
-            ],
-            [
-                'name' => 'Giường',
-                'icon' => 'Giuong.png',
-            ],
-            [
-                'name' => 'Gác lửng',
-                'icon' => 'Gac-lung.',
-            ],
-            [
-                'name' => 'Ban công',
-                'icon' => 'Ban-cong.png',
-            ],
-            [
-                'name' => 'Máy giặt',
-                'icon' => 'May-giat.png',
-            ],
-        ]);
+        Util::insert($utils);
 
         User::factory(50)->create();
 
-        Util::factory()->count(10)->create();
-
-        BoardingHouse::factory()->count(10)->create();
-        UtilBoardingHouse::factory()->count(30)->create();
-        BoardingHouseImage::factory()->count(50)->create();
+        BoardingHouse::factory(10)->create();
+        UtilBoardingHouse::factory(15)->create();
     }
 }
