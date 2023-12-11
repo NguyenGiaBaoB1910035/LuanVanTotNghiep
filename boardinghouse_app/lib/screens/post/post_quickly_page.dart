@@ -26,7 +26,7 @@ class PostQuicklyPage extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              Navigator.of(context).pushNamed('createBH');
+              Navigator.of(context).pushNamed('createBHP');
             },
             child: Container(
               margin: const EdgeInsets.all(20),

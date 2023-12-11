@@ -13,11 +13,10 @@ Future<ApiResponse> getBoardingHouses() async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.get(Uri.parse(ApiConstants.apiBoardingHouse),
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': 'Bearer $token'
-        });
+    final response = await http.get(Uri.parse(apiBoardingHouse), headers: {
+      "Content-Type": "application/json",
+      'Authorization': 'Bearer $token'
+    });
 
     switch (response.statusCode) {
       case 200:
@@ -41,6 +40,7 @@ Future<ApiResponse> getBoardingHouses() async {
 }
 
 Future<ApiResponse> createBoardingHouse(
+    int userId,
     String type,
     String name,
     String address,
@@ -53,21 +53,22 @@ Future<ApiResponse> createBoardingHouse(
     String waterPrice,
     String openTime,
     String closeTime,
+    String description,
     String image) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
     final response = await http.post(
-      Uri.parse(ApiConstants.apiBoardingHouse),
+      Uri.parse(apiBoardingHouse),
       headers: {
         "Content-Type": "application/json",
         'Authorization': 'Bearer $token'
       },
       body: json.encode(
         {
+          'user_id': userId,
           'type': type,
           'name': name,
-          // 'slug',
           'featured_image_id': image,
           'room_number': roomNumber,
           'acreage': acreage,
@@ -78,9 +79,8 @@ Future<ApiResponse> createBoardingHouse(
           'water_price': waterPrice,
           'open_time': openTime,
           'close_time': closeTime,
-          'description': depositPrice,
+          'description': description,
           'address': address,
-          // 'user_id': userId,
         },
       ),
     );
@@ -179,11 +179,12 @@ Future<ApiResponse> deleteBoardingHouse(int boardingHouseId) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http
-        .delete(Uri.parse('$ApiConstants.apiBoardingHouse/$boardingHouseId'), headers: {
-      "Content-Type": "application/json",
-      'Authorization': 'Bearer $token'
-    });
+    final response = await http.delete(
+        Uri.parse('$ApiConstants.apiBoardingHouse/$boardingHouseId'),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer $token'
+        });
 
     switch (response.statusCode) {
       case 200:
@@ -206,32 +207,30 @@ Future<ApiResponse> deleteBoardingHouse(int boardingHouseId) async {
 }
 
 //get all boardinghouse
-Future<List<BoardingHouse>?> getAllBoardingHouses() async {
-  try {
-    var url = Uri.parse(ApiConstants.apiBoardingHouse);
-    var response = await http.get(url);
+// Future<List<BoardingHouse>?> getBoardingHouseTypes() async {
+//   try {
+//     var url = Uri.parse(ApiConstants.apiBoardingHouse);
+//     var response = await http.get(url);
 
-    // In ra nội dung phản hồi từ máy chủ dưới dạng chuỗi
-    print("Response from server: ${response.body}");
+//     // In ra nội dung phản hồi từ máy chủ dưới dạng chuỗi
+//     print("Response from server: ${response.body}");
 
-    if (response.statusCode == 200) {
-      Map<String, dynamic> jsonData = json.decode(response.body);
-      List<dynamic> boardinghouseData = jsonData['data'];
-      List<BoardingHouse> boardinghouses = boardinghouseData
-          .map((boardinghouseJson) => BoardingHouse.fromJson(boardinghouseJson))
-          .toList();
+//     if (response.statusCode == 200) {
+//       Map<String, dynamic> jsonData = json.decode(response.body);
+//       List<dynamic> boardinghouseData = jsonData['data'];
+//       List<BoardingHouse> boardinghouses = boardinghouseData
+//           .map((boardinghouseJson) => BoardingHouse.fromJson(boardinghouseJson))
+//           .toList();
 
-      return boardinghouses;
-    } else {
-      // Xử lý khi phản hồi không thành công
-      log("Failed to fetch data: ${response.statusCode}");
-      return null;
-    }
-  } catch (e) {
-    // Xử lý khi có lỗi
-    log("Error fetching data: $e");
-    return null;
-  }
-}
-
-
+//       return boardinghouses;
+//     } else {
+//       // Xử lý khi phản hồi không thành công
+//       log("Failed to fetch data: ${response.statusCode}");
+//       return null;
+//     }
+//   } catch (e) {
+//     // Xử lý khi có lỗi
+//     log("Error fetching data: $e");
+//     return null;
+//   }
+// }

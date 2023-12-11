@@ -1,6 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:boardinghouse_app/apis/boarding_house_api.dart';
+import 'package:boardinghouse_app/apis/boarding_house_type_api.dart';
+import 'package:boardinghouse_app/apis/constant.dart';
+import 'package:boardinghouse_app/apis/user_api.dart';
+import 'package:boardinghouse_app/apis/util_api.dart';
+import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:boardinghouse_app/models/boarding_house.dart';
+import 'package:boardinghouse_app/models/boarding_house_type.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,15 +15,20 @@ import 'package:boardinghouse_app/models/util.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class CreateBoardingHousePage extends StatefulWidget {
-  const CreateBoardingHousePage({Key? key}) : super(key: key);
+class CreateBoardingHouse extends StatefulWidget {
+  const CreateBoardingHouse({Key? key}) : super(key: key);
 
   @override
-  _CreateBoardingHousePageState createState() =>
-      _CreateBoardingHousePageState();
+  _CreateBoardingHouseState createState() =>
+      _CreateBoardingHouseState();
 }
 
-class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
+class _CreateBoardingHouseState extends State<CreateBoardingHouse> {
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   getNameBoardingHouseType();
+  // }
   int _currentStep = 0;
   final _boardinghousekey = GlobalKey<FormState>();
   List<Step> stepList() => [
@@ -142,6 +154,7 @@ class InforForm extends StatefulWidget {
 
 class _InforFormState extends State<InforForm> {
   BoardingHouse? _boardingHouse;
+  // bool loading = true;
 
   String selectedRoom = 'Phòng cho thuê';
   String name = '';
@@ -149,8 +162,8 @@ class _InforFormState extends State<InforForm> {
   int quantity = 1;
   int capacity = 1;
   // String selectedGender = 'Tất cả';
-  double area = 0.0;
-  double cost = 0.0;
+  double acrea = 0.0;
+  double price = 0.0;
   double deposit = 0.0;
   double electricityPrice = 0.0;
   double waterPrice = 0.0;
@@ -159,19 +172,20 @@ class _InforFormState extends State<InforForm> {
   String description = '';
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController txtTypeController = TextEditingController();
-  TextEditingController txtNameController = TextEditingController();
-  TextEditingController txtAddressController = TextEditingController();
-  TextEditingController txtQuantityController = TextEditingController();
-  TextEditingController txtCapacityController = TextEditingController();
-  TextEditingController txtAraeController = TextEditingController();
-  TextEditingController txtCostController = TextEditingController();
-  TextEditingController txtDepositController = TextEditingController();
-  TextEditingController txtElectriController = TextEditingController();
-  TextEditingController txtWaterController = TextEditingController();
-  TextEditingController txtOpenTimeController = TextEditingController();
-  TextEditingController txtCloseTimeController = TextEditingController();
-  TextEditingController txtDescriptionController = TextEditingController();
+  final TextEditingController _txtTypeController = TextEditingController();
+  final TextEditingController _txtNameController = TextEditingController();
+  final TextEditingController _txtAddressController = TextEditingController();
+  final TextEditingController _txtQuantityController = TextEditingController();
+  final TextEditingController _txtCapacityController = TextEditingController();
+  final TextEditingController _txtAcraeController = TextEditingController();
+  final TextEditingController _txtPriceController = TextEditingController();
+  final TextEditingController _txtDepositController = TextEditingController();
+  final TextEditingController _txtElectriController = TextEditingController();
+  final TextEditingController _txtWaterController = TextEditingController();
+  final TextEditingController _txtOpenTimeController = TextEditingController();
+  final TextEditingController _txtCloseTimeController = TextEditingController();
+  final TextEditingController _txtDescriptionController =
+      TextEditingController();
 
   File? _imageFile;
   final _picker = ImagePicker();
@@ -186,227 +200,283 @@ class _InforFormState extends State<InforForm> {
     }
   }
 
+  void _createBoardingHouse() async {
+    int userId = await getUserId();
+    String? image = _imageFile == null ? null : getStringImage(_imageFile);
+    ApiResponse response = await createBoardingHouse(
+        userId,
+        _txtTypeController.text,
+        _txtNameController.text,
+        _txtAddressController.text,
+        _txtQuantityController.text,
+        _txtCapacityController.text,
+        _txtAcraeController.text,
+        _txtPriceController.text,
+        _txtDepositController.text,
+        _txtElectriController.text,
+        _txtWaterController.text,
+        _txtOpenTimeController.text,
+        _txtCloseTimeController.text,
+        _txtDescriptionController.text,
+        image!);
+
+    if (response.error == null) {
+      Navigator.of(context).pop();
+    } else if (response.error == unauthorized) {
+      logout().then((value) => {
+            // Navigator.of(context).pushAndRemoveUntil(
+            //     MaterialPageRoute(builder: (context) => Login()),
+            //     (route) => false)
+          });
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
+      setState(() {
+        // _loading = !_loading;
+      });
+    }
+  }
+
+  List<dynamic> _typeList = [];
+  void getNameBoardingHouseType() async {
+    try {
+      ApiResponse response = await getBoardingHouseType();
+      if (response.error == null) {
+        setState(() {
+          _typeList = response.data as List<dynamic>;
+        });
+      } else if (response.error == unauthorized) {
+        logout().then((value) => {});
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+        print(response.error);
+      }
+    } catch (e) {
+      print('Error in getNameBoardingHouseType: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getNameBoardingHouseType();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            GestureDetector(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 180,
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1),
-                  image:
-                      // _imageFile == null
-
-                      //     ? _boardingHouse!.image != null
-                      //         ? DecorationImage(
-                      //             image: NetworkImage('${_boardingHouse!.image}'),
-                      //             fit: BoxFit.cover)
-                      //         : null
-                      // :
-                      DecorationImage(
-                          image: FileImage(_imageFile ?? File('')),
-                          // image: AssetImage("assets/images/avatar.jpg"),
-                          fit: BoxFit.cover),
-                  // color: Colors.amber
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              GestureDetector(
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 180,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1),
+                    image: DecorationImage(
+                        image: FileImage(_imageFile ?? File('')),
+                        fit: BoxFit.cover),
+                  ),
                 ),
+                onTap: () {
+                  getImage();
+                },
               ),
-              onTap: () {
-                getImage();
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text('Loại phòng:'),
-            Column(
-              children: <Widget>[
-                buildRoomOption('Phòng cho thuê'),
-                buildRoomOption('Ký túc xá'),
-                buildRoomOption('Nhà nguyên căn'),
-                // buildRoomOption('Căn hộ'),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text("Tên nhà trọ"),
-            TextFormField(
-              // decoration: InputDecoration(labelText: 'Sức chứa'),
-              // keyboardType: TextInputTyp.,
-              onChanged: (value) {
-                setState(() {
-                  name = value;
-                });
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text("Địa chỉ"),
-            TextFormField(
-              // decoration: InputDecoration(labelText: 'Sức chứa'),
-              // keyboardType: TextInputTyp.,
-              onChanged: (value) {
-                setState(() {
-                  address = value;
-                });
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text("Số lượng phòng"),
-            TextFormField(
-              // decoration: InputDecoration(labelText: 'Số lượng'),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  quantity = int.parse(value);
-                });
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text("sức chứa"),
-            TextFormField(
-              // decoration: InputDecoration(labelText: 'Sức chứa'),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  capacity = int.parse(value);
-                });
-              },
-            ),
-            // const SizedBox(
-            //   height: 20,
-            // ),
-            // const Text('Giới tính'),
-            // Column(
-            //   // mainAxisAlignment: MainAxisAlignment.center,
-            //   children: <Widget>[
-            //     buildGenderOption('Tất cả'),
-            //     buildGenderOption('Nam'),
-            //     buildGenderOption('Nữ'),
-            //   ],
-            // ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text('Diện tích'),
-            TextFormField(
-              // decoration: InputDecoration(labelText: 'Diện tích'),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  area = double.parse(value);
-                });
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text('Giá phòng'),
-            TextFormField(
-              // decoration: InputDecoration(labelText: 'Chi phí'),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  cost = double.parse(value);
-                });
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text('Đặt cọc'),
-            TextFormField(
-              // decoration: InputDecoration(labelText: 'Đặt cọc'),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  deposit = double.parse(value);
-                });
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text('Giá điện'),
-            TextFormField(
-              // decoration: InputDecoration(labelText: 'Giá điện'),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  electricityPrice = double.parse(value);
-                });
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text('Giá nước'),
-            TextFormField(
-              // decoration: InputDecoration(labelText: 'Giá nước'),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  waterPrice = double.parse(value);
-                });
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            ListTile(
-              title: const Text('Giờ mở cửa'),
-              trailing: Text(openTime.format(context)),
-              onTap: () async {
-                final selectedTime = await showTimePicker(
-                  context: context,
-                  initialTime: openTime,
-                );
-                if (selectedTime != null) {
+              const SizedBox(
+                height: 20,
+              ),
+              const Text('Loại phòng:'),
+
+              Container(
+                height: 150,
+                child: ListView.builder(
+                    itemCount: _typeList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      BoardingHouseType type = _typeList[index];
+                      return buildRoomOption('${type.name}');
+                    }),
+              ),
+
+              // Column(
+              //   children: <Widget>[
+              //     buildRoomOption('Phòng cho thuê'),
+              //     buildRoomOption('Ký túc xá'),
+              //     buildRoomOption('Nhà nguyên căn'),
+              //     // buildRoomOption('Căn hộ'),
+              //   ],
+              // ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text("Tên nhà trọ"),
+              TextFormField(
+                controller: _txtNameController,
+                // decoration: InputDecoration(labelText: 'Sức chứa'),
+                // keyboardType: TextInputTyp.,
+                onChanged: (value) {
                   setState(() {
-                    openTime = selectedTime;
+                    name = value;
                   });
-                }
-              },
-            ),
-            ListTile(
-              title: const Text('Giờ đóng cửa'),
-              trailing: Text(closeTime.format(context)),
-              onTap: () async {
-                final selectedTime = await showTimePicker(
-                  context: context,
-                  initialTime: closeTime,
-                );
-                if (selectedTime != null) {
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text("Địa chỉ"),
+              TextFormField(
+                controller: _txtAddressController,
+                // decoration: InputDecoration(labelText: 'Sức chứa'),
+                // keyboardType: TextInputTyp.,
+                onChanged: (value) {
                   setState(() {
-                    closeTime = selectedTime;
+                    address = value;
                   });
-                }
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text('Mô tả'),
-            TextFormField(
-              // decoration: InputDecoration(labelText: 'Mô tả'),
-              onChanged: (value) {
-                setState(() {
-                  description = value;
-                });
-              },
-            ),
-          ],
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text("Số lượng phòng"),
+              TextFormField(
+                // decoration: InputDecoration(labelText: 'Số lượng'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  setState(() {
+                    quantity = int.parse(value);
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text("sức chứa"),
+              TextFormField(
+                // decoration: InputDecoration(labelText: 'Sức chứa'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  setState(() {
+                    capacity = int.parse(value);
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text('Diện tích'),
+              TextFormField(
+                // decoration: InputDecoration(labelText: 'Diện tích'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  setState(() {
+                    acrea = double.parse(value);
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text('Giá phòng'),
+              TextFormField(
+                // decoration: InputDecoration(labelText: 'Chi phí'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  setState(() {
+                    price = double.parse(value);
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text('Đặt cọc'),
+              TextFormField(
+                // decoration: InputDecoration(labelText: 'Đặt cọc'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  setState(() {
+                    deposit = double.parse(value);
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text('Giá điện'),
+              TextFormField(
+                // decoration: InputDecoration(labelText: 'Giá điện'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  setState(() {
+                    electricityPrice = double.parse(value);
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text('Giá nước'),
+              TextFormField(
+                // decoration: InputDecoration(labelText: 'Giá nước'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  setState(() {
+                    waterPrice = double.parse(value);
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              ListTile(
+                title: const Text('Giờ mở cửa'),
+                trailing: Text(openTime.format(context)),
+                onTap: () async {
+                  final selectedTime = await showTimePicker(
+                    context: context,
+                    initialTime: openTime,
+                  );
+                  if (selectedTime != null) {
+                    setState(() {
+                      openTime = selectedTime;
+                    });
+                  }
+                },
+              ),
+              ListTile(
+                title: const Text('Giờ đóng cửa'),
+                trailing: Text(closeTime.format(context)),
+                onTap: () async {
+                  final selectedTime = await showTimePicker(
+                    context: context,
+                    initialTime: closeTime,
+                  );
+                  if (selectedTime != null) {
+                    setState(() {
+                      closeTime = selectedTime;
+                    });
+                  }
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text('Mô tả'),
+              TextFormField(
+                // decoration: InputDecoration(labelText: 'Mô tả'),
+                onChanged: (value) {
+                  setState(() {
+                    description = value;
+                  });
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -428,23 +498,6 @@ class _InforFormState extends State<InforForm> {
       ],
     );
   }
-
-  // Widget buildGenderOption(String gender) {
-  //   return Row(
-  //     children: <Widget>[
-  //       Radio(
-  //         value: gender,
-  //         groupValue: selectedGender,
-  //         onChanged: (value) {
-  //           setState(() {
-  //             selectedGender = value.toString();
-  //           });
-  //         },
-  //       ),
-  //       Text(gender),
-  //     ],
-  //   );
-  // }
 }
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -459,21 +512,46 @@ class UtilForm extends StatefulWidget {
   State<UtilForm> createState() => _UtilFormState();
 }
 
-List<Util> utils = [
-  Util(icon: Icons.wifi, name: 'Wifi'),
-  Util(icon: Icons.directions_car, name: 'Nhà Xe'),
-  Util(icon: Icons.wash, name: 'Máy Giặt'),
-  Util(icon: Icons.ac_unit, name: 'Máy Lạnh'),
-  Util(icon: Icons.tv, name: 'TV'),
-  Util(icon: Icons.kitchen, name: 'Tủ Lạnh'),
-  Util(icon: Icons.king_bed, name: 'Giường'),
-  Util(icon: Icons.access_time, name: 'Giờ Tự Do'),
-  Util(icon: Icons.hotel, name: 'Gác Lửng'),
-  Util(icon: Icons.pets, name: 'Thú Cưng'),
-  Util(icon: Icons.outdoor_grill, name: 'Ban Công'),
-];
+// List<Util> utils = [
+//   Util(icon: Icons.wifi, name: 'Wifi'),
+//   Util(icon: Icons.directions_car, name: 'Nhà Xe'),
+//   Util(icon: Icons.wash, name: 'Máy Giặt'),
+//   Util(icon: Icons.ac_unit, name: 'Máy Lạnh'),
+//   Util(icon: Icons.tv, name: 'TV'),
+//   Util(icon: Icons.kitchen, name: 'Tủ Lạnh'),
+//   Util(icon: Icons.king_bed, name: 'Giường'),
+//   Util(icon: Icons.access_time, name: 'Giờ Tự Do'),
+//   Util(icon: Icons.hotel, name: 'Gác Lửng'),
+//   Util(icon: Icons.pets, name: 'Thú Cưng'),
+//   Util(icon: Icons.outdoor_grill, name: 'Ban Công'),
+// ];
 
 class _UtilFormState extends State<UtilForm> {
+  List<dynamic> _utilsList = [];
+  void getListUtil() async {
+    try {
+      ApiResponse response = await getUtil();
+      if (response.error == null) {
+        setState(() {
+          _utilsList = response.data as List<dynamic>;
+        });
+      } else if (response.error == unauthorized) {
+        logout().then((value) => {});
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+      }
+    } catch (e) {
+      print('Error in getNameBoardingHouseType: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getListUtil();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -496,9 +574,9 @@ class _UtilFormState extends State<UtilForm> {
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20 // Tỉ lệ chiều cao theo chiều rộng
                 ),
-            itemCount: utils.length,
+            itemCount: _utilsList.length,
             itemBuilder: (BuildContext context, int index) {
-              final feature = utils[index];
+              Utils feature = _utilsList[index];
               return GestureDetector(
                 onTap: () {
                   setState(() {
@@ -512,17 +590,26 @@ class _UtilFormState extends State<UtilForm> {
                     child: Row(
                       // mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          feature.icon,
-                          color:
-                              feature.isSelected ? Colors.white : Colors.grey,
-                          // Kích thước của icon
+                        Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                              // borderRadius: BorderRadius.circular(60),
+                              image: DecorationImage(
+                                  image: NetworkImage('${feature.imageUrl}'),
+                                  fit: BoxFit.cover)),
                         ),
+                        // Icon(
+                        //   feature.icon,
+                        //   color:
+                        //       feature.isSelected ? Colors.white : Colors.grey,
+                        //   // Kích thước của icon
+                        // ),
                         const SizedBox(
                           width: 10,
                         ),
                         Text(
-                          feature.name,
+                          '${feature.name}',
                           style: TextStyle(
                             // Kích thước của văn bản
                             color: feature.isSelected

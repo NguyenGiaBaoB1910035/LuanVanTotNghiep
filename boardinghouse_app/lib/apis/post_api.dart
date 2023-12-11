@@ -11,7 +11,7 @@ Future<ApiResponse> getPosts() async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.get(Uri.parse(ApiConstants.apiPost), headers: {
+    final response = await http.get(Uri.parse(apiPost), headers: {
       "Content-Type": "application/json",
       'Authorization': 'Bearer $token'
     });
@@ -43,7 +43,7 @@ Future<ApiResponse> createPost(int boardingHouseId, String content) async {
   try {
     String token = await getToken();
     final response = await http.post(
-      Uri.parse(ApiConstants.apiPost),
+      Uri.parse(apiPost),
       headers: {
         "Content-Type": "application/json",
         'Authorization': 'Bearer $token'
