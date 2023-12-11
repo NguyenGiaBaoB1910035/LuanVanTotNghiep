@@ -91,6 +91,7 @@ class BoardingHouseResource extends Resource
                                 FileUpload::make('images')
                                     ->label('Other Images')
                                     ->preserveFilenames()
+                                    ->image()
                                     ->imageEditor()
                                     ->acceptedFileTypes(['image/*'])
                                     ->multiple(),
@@ -129,9 +130,11 @@ class BoardingHouseResource extends Resource
                                     ->required()
                                     ->hiddenOn(EvaluateRelationManager::class),
 
-                                Forms\Components\Select::make('utils')
+                                Forms\Components\CheckboxList::make('utils')
                                     ->relationship('utils', 'name')
-                                    ->multiple(),
+                                    ->multiple()
+                                    ->searchable()
+                                    ->columns(2),
                             ]),
                         Forms\Components\Section::make('Time Management')
                             ->schema([
