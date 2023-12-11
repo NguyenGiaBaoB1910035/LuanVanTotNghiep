@@ -60,7 +60,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Gác lửng',
-                'icon' => 'Gac-lung.',
+                'icon' => 'Gac-lung.png',
             ],
             [
                 'name' => 'Ban công',
