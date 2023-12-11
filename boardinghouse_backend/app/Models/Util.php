@@ -24,6 +24,6 @@ class Util extends Model
     public function getUrlIconAttribute()
     {
         if (empty($this->icon)) return;
-        return Storage::url($this->icon);
+        return url(Storage::url($this->icon));
     }
 }

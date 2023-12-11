@@ -25,8 +25,8 @@ return new class extends Migration
             $table->string('deposit_price'); //giá cọc
             $table->string('electric_price'); //giá điện
             $table->string('water_price'); //giá nước
-            $table->time('open_time');
-            $table->time('close_time');
+            $table->time('open_time')->nullable();
+            $table->time('close_time')->nullable();
             $table->longText('description');
             $table->text('address');
             $table->string('favourite')->default('0');

@@ -1,11 +1,10 @@
 import 'dart:convert';
-// import 'package:boardinghouse_app/apis/auth_api.dart';
+import 'dart:io';
 import 'package:boardinghouse_app/apis/auth_api.dart';
 import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/apis/user_api.dart';
 import 'package:boardinghouse_app/models/boarding_house.dart';
 import 'package:http/http.dart' as http;
-import 'dart:developer';
 import 'package:boardinghouse_app/models/api_response.dart';
 
 //get boardinghouse
@@ -18,13 +17,26 @@ Future<ApiResponse> getBoardingHouses() async {
       'Authorization': 'Bearer $token'
     });
 
+    print("responsr from server getBoardingHouses");
+    print(response.body);
+
     switch (response.statusCode) {
       case 200:
-        apiResponse.data = jsonDecode(response.body)['boadingHouses']
-            .map((p) => BoardingHouse.fromJson(p))
-            .toList();
-        // we get list of posts, so we need to map each item to post model
-        apiResponse.data as List<dynamic>;
+        if (jsonDecode(response.body)['data'] != null) {
+          // Mapping từ danh sách JSON thành danh sách đối tượng BoardingHouseType
+          List<BoardingHouse> boardingHouses =
+              (jsonDecode(response.body)['data'] as List)
+                  .map((boardinghouseJson) =>
+                      BoardingHouse.fromJson(boardinghouseJson))
+                  .toList();
+          // Gán danh sách vào apiResponse.data
+          apiResponse.data = boardingHouses;
+          print('apiResponse.data');
+          print(apiResponse.data);
+        } else {
+          apiResponse.error = null;
+        }
+
         break;
       case 401:
         apiResponse.error = unauthorized;
@@ -35,13 +47,14 @@ Future<ApiResponse> getBoardingHouses() async {
     }
   } catch (e) {
     apiResponse.error = serverError;
+    print(e);
   }
   return apiResponse;
 }
 
 Future<ApiResponse> createBoardingHouse(
     int userId,
-    String type,
+    int type,
     String name,
     String address,
     String roomNumber,
@@ -51,8 +64,10 @@ Future<ApiResponse> createBoardingHouse(
     String depositPrice,
     String electricPrice,
     String waterPrice,
-    String openTime,
-    String closeTime,
+    // DateTime openTime,
+    // DateTime closeTime,
+    // String openTime,
+    // String closeTime,
     String description,
     String image) async {
   ApiResponse apiResponse = ApiResponse();
@@ -67,7 +82,7 @@ Future<ApiResponse> createBoardingHouse(
       body: json.encode(
         {
           'user_id': userId,
-          'type': type,
+          'boarding_house_type_id': type,
           'name': name,
           'featured_image_id': image,
           'room_number': roomNumber,
@@ -77,8 +92,8 @@ Future<ApiResponse> createBoardingHouse(
           'deposit_price': depositPrice,
           'electric_price': electricPrice,
           'water_price': waterPrice,
-          'open_time': openTime,
-          'close_time': closeTime,
+          // 'open_time': openTime,
+          // 'close_time': closeTime,
           'description': description,
           'address': address,
         },
@@ -95,6 +110,7 @@ Future<ApiResponse> createBoardingHouse(
         break;
       case 401:
         apiResponse.error = unauthorized;
+        print(apiResponse.error);
         break;
       default:
         print(response.body);
@@ -234,3 +250,55 @@ Future<ApiResponse> deleteBoardingHouse(int boardingHouseId) async {
 //     return null;
 //   }
 // }
+
+Future<ApiResponse> uploadImagesBoardingHouse(
+    int boardingHouseId, List<String> imagePaths) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    var uri = Uri.parse('$apiBoardingHouse/upload-pictures/$boardingHouseId');
+
+    var request = http.MultipartRequest('POST', uri);
+    request.headers['Content-Type'] = 'application/json';
+    request.headers['Authorization'] = 'Bearer $token';
+
+    // Thêm trường dữ liệu vào FormData
+    request.fields['boarding_house_id'] = boardingHouseId.toString();
+
+    // Thêm ảnh vào FormData
+    for (var imagePath in imagePaths) {
+      var file = await http.MultipartFile.fromPath('images', imagePath);
+      request.files.add(file);
+    }
+
+    var response = await request.send();
+
+    // Đọc response
+    var responseData = await response.stream.toBytes();
+    var responseString = String.fromCharCodes(responseData);
+
+    // Xử lý response
+    print(responseString);
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(responseString);
+        break;
+      case 422:
+        final errors = jsonDecode(responseString)['errors'];
+        apiResponse.error = errors[errors.keys.elementAt(0)][0];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        print(responseString);
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    print('Error: $e');
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
