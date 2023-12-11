@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
 
 class BoardingHouse extends Model
 {
@@ -36,7 +35,7 @@ class BoardingHouse extends Model
         'status',
         'user_id',
         'published_at',
-        'boarding_house_type_id',
+        'boarding_house_type_id'
     ];
 
     protected $casts = ['images' => 'array'];
@@ -44,11 +43,6 @@ class BoardingHouse extends Model
     public function boarding_house_type(): BelongsTo
     {
         return $this->belongsTo(BoardingHouseType::class, 'boarding_house_type_id');
-    }
-
-    public function utils()
-    {
-        return $this->belongsToMany(Util::class, 'boarding_house_util');
     }
 
     public function user(): BelongsTo
@@ -61,19 +55,18 @@ class BoardingHouse extends Model
         return $this->hasMany(Evaluate::class, 'boarding_house_id');
     }
 
-    public function storeFile(UploadedFile $file, string $folder)
+    public function utils(): BelongsToMany
     {
-        $path = $file->storePublicly($folder, ['disk' => 'public']);
-
-        $this->images()->create([
-            'path' => $path,
-        ]);
+        return $this->belongsToMany(Util::class, 'util_boarding_houses', 'boarding_house_id', 'util_id')->withTimestamps();
     }
 
 
-    public function getUrlFeaturedImageAttribute(): ?string
+
+    public function getUrlFeaturedImageAttribute()
     {
-        return $this->featured_image ? url(Storage::url($this->featured_image)) : null;
+        if (empty($this->featured_image) || !$this->featured_image) return;
+
+        return url(Storage::url('media/'.$this->featured_image));
     }
 
     public function getUtilsAttribute()

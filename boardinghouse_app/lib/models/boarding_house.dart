@@ -1,4 +1,7 @@
+import 'package:boardinghouse_app/models/boarding_house_type.dart';
+
 import 'user.dart';
+import 'util.dart';
 
 class BoardingHouse {
   int? id;
@@ -16,10 +19,15 @@ class BoardingHouse {
   String? closeTime;
   String? description;
   String? address;
-  String? favourite;
+  // String? favourite;
   String? status;
+  String? urlIamge;
+
   int? userid;
+  int? boardingHouseTypeId;
   User? user;
+  BoardingHouseType? boardingHouseType;
+  List<Utils>? utils;
 
   BoardingHouse(
       {this.id,
@@ -37,10 +45,15 @@ class BoardingHouse {
       this.closeTime,
       this.description,
       this.address,
-      this.favourite,
+      // this.favourite,
+      this.urlIamge,
       this.status,
       this.userid,
-      this.user});
+      this.boardingHouseTypeId,
+      this.user,
+      this.boardingHouseType,
+      this.utils,
+      });
 
   factory BoardingHouse.fromJson(Map<String, dynamic> json) {
     return BoardingHouse(
@@ -55,18 +68,22 @@ class BoardingHouse {
       depositPrice: json['deposit_price'],
       electricPrice: json['electric_price'],
       waterPrice: json['water_price'],
-      openTime: json['open_time'],
-      closeTime: json['close_time'],
+      // openTime: json['open_time'],
+      // closeTime: json['close_time'],
       description: json['description'],
       address: json['address'],
-      favourite: json['favourite'],
+      urlIamge: json['url_featured_image'],
+      // favourite: json['favourite'],
       status: json['status'],
       userid: json['user_id'],
-      user: User(
-        id: json['user']['id'],
-        userName: json['user']['user_name'],
-        avatar: json['user']['avatar'],
-      ),
+      boardingHouseTypeId: json['boarding_house_type_id'],
+      // user: User(
+      //   id: json['user']['id'],
+      //   userName: json['user']['user_name'],
+      //   avatar: json['user']['avatar'],
+      // ),
+      boardingHouseType: BoardingHouseType(id: json['id'], name: json['name']),
+      utils: List<Utils>.from(json['utils'].map((util) => Utils.fromJson(util))),
     );
   }
 }

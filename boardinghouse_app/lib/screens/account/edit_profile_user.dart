@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:boardinghouse_app/apis/auth_api.dart';
 import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/apis/user_api.dart';
 import 'package:boardinghouse_app/models/api_response.dart';
@@ -117,9 +116,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        actions: [
-          buildAddButton(context),
-        ],
+        // actions: [
+        //   buildAddButton(context),
+        // ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -197,7 +196,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ],
             ),
           ),
-
           TextButton(
               child: Text(
                 "Lưu",
@@ -217,119 +215,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 updateProfile();
                 Navigator.of(context).pushNamed('profile');
               })
-          // SizedBox(
-          //   height: 20,
-          // ),
-          // Center(
-          //   child: Text(
-          //     '${_user?.userName}',
-          //     style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-          //   ),
-          // ),
-          // SizedBox(
-          //   height: 20,
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          //   child: ListTile(
-          //     leading: Icon(
-          //       Icons.email,
-          //       size: 35,
-          //     ),
-          //     title: Text(
-          //       '${_user?.email}',
-          //       style: TextStyle(fontSize: 20),
-          //     ),
-          //   ),
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          //   child: ListTile(
-          //     leading: Icon(
-          //       Icons.phone,
-          //       size: 35,
-          //     ),
-          //     title: Text(
-          //       '${_user?.phone}',
-          //       style: TextStyle(fontSize: 20),
-          //     ),
-          //   ),
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          //   child: ListTile(
-          //     leading: Icon(
-          //       Icons.person,
-          //       size: 35,
-          //     ),
-          //     title: _user?.name != null
-          //         ? Text(
-          //             '${_user?.name}',
-          //             style: TextStyle(fontSize: 20),
-          //           )
-          //         : Text(
-          //             '...',
-          //             style: TextStyle(fontSize: 20),
-          //           ),
-          //   ),
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          //   child: ListTile(
-          //     leading: const Icon(
-          //       Icons.transgender,
-          //       size: 35,
-          //     ),
-          //     title: _user?.gender != null
-          //         ? Text(
-          //             '${_user?.gender}',
-          //             style: TextStyle(fontSize: 20),
-          //           )
-          //         : Text(
-          //             '...',
-          //             style: TextStyle(fontSize: 20),
-          //           ),
-          //   ),
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          //   child: ListTile(
-          //     leading: Icon(
-          //       Icons.place,
-          //       size: 35,
-          //     ),
-          //     title: _user?.address != null
-          //         ? Text(
-          //             '${_user?.address}',
-          //             style: TextStyle(fontSize: 20),
-          //           )
-          //         : Text(
-          //             '...',
-          //             style: TextStyle(fontSize: 20),
-          //           ),
-          //   ),
-          // ),
         ]),
       ),
     );
   }
 
-  Widget buildAddButton(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.edit, color: Color.fromRGBO(0, 177, 237, 1)),
-      onPressed: () {
-        // Navigator.of(context).pushNamed(
+  // Widget buildAddButton(BuildContext context) {
+  //   return IconButton(
+  //     icon: const Icon(Icons.edit, color: Color.fromRGBO(0, 177, 237, 1)),
+  //     onPressed: () {
+  //       // Navigator.of(context).pushNamed(
 
-        // );
-      },
-    );
-  }
-
-//   Widget InputDecoration  kInputDecoration(String label) {
-//   return InputDecoration(
-  // labelText: label,
-  // contentPadding: EdgeInsets.all(10),
-  // border: OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.black))
-//     );
-// }
+  //       // );
+  //     },
+  //   );
+  // }
 }

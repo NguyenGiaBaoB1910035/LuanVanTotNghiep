@@ -8,7 +8,6 @@ use App\Filament\Resources\BoardingHouseResource\{
     RelationManagers\EvaluateRelationManager
 };
 use App\Models\BoardingHouse;
-use App\Models\Util;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
@@ -87,10 +86,9 @@ class BoardingHouseResource extends Resource
 
                         Forms\Components\Section::make('Images')
                             ->schema([
-                                FileUpload::make('featured_image')
-                                    ->imageEditor(),
+                                FileUpload::make('featured_image'),
 
-                                FileUpload::make('testimage')
+                                FileUpload::make('images')
                                     ->label('Other Images')
                                     ->preserveFilenames()
                                     ->imageEditor()
@@ -121,7 +119,7 @@ class BoardingHouseResource extends Resource
                                 Forms\Components\Select::make('user_id')
                                     ->label('Author')
                                     ->relationship('user', 'name')
-                                    // ->searchable()
+                                    ->searchable()
                                     ->required(),
 
                                 Forms\Components\Select::make('boarding_house_type_id')
@@ -131,12 +129,10 @@ class BoardingHouseResource extends Resource
                                     ->required()
                                     ->hiddenOn(EvaluateRelationManager::class),
 
-                                Forms\Components\CheckboxList::make('utils')
+                                Forms\Components\Select::make('utils')
                                     ->relationship('utils', 'name')
-                                    ->searchable()
-                                    ->columns(2),
-
-                            ])->collapsible(),
+                                    ->multiple(),
+                            ]),
                         Forms\Components\Section::make('Time Management')
                             ->schema([
                                 Forms\Components\TimePicker::make('open_time')

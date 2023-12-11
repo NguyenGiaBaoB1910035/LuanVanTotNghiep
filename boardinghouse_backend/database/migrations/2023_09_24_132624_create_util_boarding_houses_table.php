@@ -9,11 +9,12 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('boarding_house_util', function (Blueprint $table) {
-            $table->foreignId('util_id')->constrained();
-            $table->foreignId('boarding_house_id')->constrained();
+        Schema::create('util_boarding_houses', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('util_id')->nullable();
+            $table->foreignId('boarding_house_id')->nullable();
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('boarding_house_util');
+        Schema::dropIfExists('util_boarding_houses');
     }
 };

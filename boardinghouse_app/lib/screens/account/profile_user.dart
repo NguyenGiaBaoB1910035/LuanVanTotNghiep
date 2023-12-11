@@ -1,13 +1,9 @@
-import 'dart:io';
-
-import 'package:boardinghouse_app/apis/auth_api.dart';
 import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/apis/user_api.dart';
 import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:boardinghouse_app/models/user.dart';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -42,38 +38,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    // _loadUserProfile();
     getUser();
   }
-  // late User _user;
-  // File? _imageFile;
-  // final _picker = ImagePicker();
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _loadUserProfile();
-  // }
-
-  // Future getImage() async {
-  //   final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       _imageFile = File(pickedFile.path);
-  //     });
-  //   }
-  // }
-
-  // Future<void> _loadUserProfile() async {
-  //   try {
-  //     User user = await AuthApi().getUserProfile();
-  //     setState(() {
-  //       _user = user;
-  //     });
-  //   } catch (error) {
-  //     print('Failed to load user profile: $error');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -118,57 +84,57 @@ class _ProfilePageState extends State<ProfilePage> {
             // getImage();
           },
         )),
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
         Center(
           child: Text(
             '${_user?.userName}',
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.email,
               size: 35,
             ),
             title: Text(
               '${_user?.email}',
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
             ),
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.phone,
               size: 35,
             ),
             title: Text(
               '${_user?.phone}',
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
             ),
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.person,
               size: 35,
             ),
             title: _user?.name != null
                 ? Text(
                     '${_user?.name}',
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   )
-                : Text(
+                : const Text(
                     '...',
                     style: TextStyle(fontSize: 20),
                   ),
@@ -184,9 +150,9 @@ class _ProfilePageState extends State<ProfilePage> {
             title: _user?.gender != null
                 ? Text(
                     '${_user?.gender}',
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   )
-                : Text(
+                : const Text(
                     '...',
                     style: TextStyle(fontSize: 20),
                   ),
@@ -195,16 +161,16 @@ class _ProfilePageState extends State<ProfilePage> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.place,
               size: 35,
             ),
             title: _user?.address != null
                 ? Text(
                     '${_user?.address}',
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                   )
-                : Text(
+                : const Text(
                     '...',
                     style: TextStyle(fontSize: 20),
                   ),

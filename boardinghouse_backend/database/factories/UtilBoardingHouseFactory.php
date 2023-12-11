@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\BoardingHouse;
 use App\Models\Util;
+use App\Models\UtilBoarding;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Storage;
 
-class UtilFactory extends Factory
+class UtilBoardingHouseFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -15,11 +16,9 @@ class UtilFactory extends Factory
      */
     public function definition(): array
     {
-        $imagePath = storage_path('app/public');
         return [
-            'name' => $this->faker->word,
-            'icon' => $this->faker->image($imagePath, 640, 480, null, false),
-            'parent_id' => null,
+            'util_id' => Util::inRandomOrder()->pluck('id')->first(),
+            'boarding_house_id' => BoardingHouse::inRandomOrder()->pluck('id')->first(),
             'created_at' => now(),
             'updated_at' => now(),
         ];

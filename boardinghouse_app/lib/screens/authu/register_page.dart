@@ -1,7 +1,7 @@
 import 'package:boardinghouse_app/apis/user_api.dart';
 import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:boardinghouse_app/models/user.dart';
-import 'package:boardinghouse_app/providers/auth_provider.dart';
+// import 'package:boardinghouse_app/providers/auth_provider.dart';
 import 'package:boardinghouse_app/screens/authu/begin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
