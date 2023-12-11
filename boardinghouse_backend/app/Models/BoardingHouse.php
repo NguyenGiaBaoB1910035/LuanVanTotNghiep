@@ -13,11 +13,10 @@ class BoardingHouse extends Model
 {
     use HasFactory;
 
-    protected $appends = ['url_featured_image', 'utils', 'boarding_house_type', 'user'];
+    protected $appends = ['url_featured_image', 'utils', 'boarding_house_type', 'user', 'evaluates'];
     protected $fillable = [
         'type',
         'name',
-        'slug',
         'images',
         'featured_image',
         'room_number',
@@ -50,15 +49,22 @@ class BoardingHouse extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+
     public function evaluates(): HasMany
     {
         return $this->hasMany(Evaluate::class, 'boarding_house_id');
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class, 'boarding_house_id');
     }
 
     public function utils(): BelongsToMany
     {
         return $this->belongsToMany(Util::class, 'util_boarding_houses', 'boarding_house_id', 'util_id')->withTimestamps();
     }
+
 
     public function getUrlFeaturedImageAttribute()
     {
@@ -74,11 +80,16 @@ class BoardingHouse extends Model
 
     public function getBoardingHouseTypeAttribute()
     {
-        return BoardingHouseType::find($this->boarding_house_type_id)->first();
+        return BoardingHouseType::findOrFail($this->boarding_house_type_id);
     }
 
     public function getUserAttribute()
     {
-        return User::find($this->user_id)->first();
+        return User::findOrFail($this->user_id);
+    }
+
+    public function getEvaluatesAttribute()
+    {
+        return $this->evaluates()->get();
     }
 }

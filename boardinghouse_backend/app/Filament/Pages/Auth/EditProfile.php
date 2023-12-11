@@ -8,6 +8,7 @@ use Filament\Forms\Components\{
     Card,
     Grid,
     Select,
+    FileUpload
 };
 use Filament\Forms\Form;
 use Filament\Pages\Auth\EditProfile as BaseEditProfile;
@@ -21,6 +22,9 @@ class EditProfile extends BaseEditProfile
             ->schema([
                 Grid::make()
                     ->schema([
+                        FileUpload::make('avatar')
+                            ->image()
+                            ->imageEditor(),
                         TextInput::make('user_name')
                             ->required()
                             ->maxLength(255),

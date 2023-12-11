@@ -5,7 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BoardingHouseResource\{
     Pages,
     RelationManagers,
-    RelationManagers\EvaluateRelationManager
+    RelationManagers\EvaluateRelationManager,
+    RelationManagers\PostsRelationManager,
 };
 use App\Models\BoardingHouse;
 use Filament\Forms;
@@ -30,9 +31,9 @@ class BoardingHouseResource extends Resource
 
     protected static ?string $navigationGroup = 'Boarding Houses';
 
-    protected static ?string $navigationIcon = 'heroicon-o-bolt';
-
     protected static ?string $navigationLabel = 'Boarding Houses';
+
+    protected static ?string $navigationIcon = 'heroicon-o-bolt';
 
     protected static ?int $navigationSort = 0;
 
@@ -45,19 +46,7 @@ class BoardingHouseResource extends Resource
                         Forms\Components\Section::make()
                             ->schema([
                                 Forms\Components\TextInput::make('name')
-                                    ->required()
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
-                                        if ($operation !== 'create') {
-                                            return;
-                                        }
-                                        $set('slug', Str::slug($state));
-                                    }),
-                                Forms\Components\TextInput::make('slug')
-                                    ->disabled()
-                                    ->dehydrated()
-                                    ->required()
-                                    ->unique(BoardingHouse::class, 'slug', ignoreRecord: true),
+                                    ->required(),
 
                                 Forms\Components\MarkdownEditor::make('description')
                                     ->columnSpan('full')
@@ -86,7 +75,9 @@ class BoardingHouseResource extends Resource
 
                         Forms\Components\Section::make('Images')
                             ->schema([
-                                FileUpload::make('featured_image'),
+                                FileUpload::make('featured_image')
+                                    ->image()
+                                    ->imageEditor(),
 
                                 FileUpload::make('images')
                                     ->label('Other Images')
@@ -110,7 +101,7 @@ class BoardingHouseResource extends Resource
                                 Forms\Components\Toggle::make('status')
                                     ->label('Visible')
                                     ->helperText('Approved or not approved.')
-                                    ->default(true),
+                                    ->default(false),
 
                                 Forms\Components\DatePicker::make('published_at')
                                     ->label('Availability')
@@ -141,7 +132,7 @@ class BoardingHouseResource extends Resource
                                     ->format('H:i')
                                     ->datalist([
                                         '00:00',
-                                        '12:00',
+                                        '11:59:59',
                                     ])
                                     ->default('00:00')
                                     ->required(),
@@ -149,9 +140,9 @@ class BoardingHouseResource extends Resource
                                 Forms\Components\TimePicker::make('close_time')->after('open_time')
                                     ->datalist([
                                         '00:00',
-                                        '12:00',
+                                        '11:59:59',
                                     ])
-                                    ->default('12:00')
+                                    ->default('11:59:59')
                                     ->required(),
                             ])
                             ->columns(2),
@@ -236,6 +227,7 @@ class BoardingHouseResource extends Resource
                     ->native(false),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->groupedBulkActions([
@@ -253,6 +245,7 @@ class BoardingHouseResource extends Resource
     {
         return [
             RelationManagers\EvaluateRelationManager::class,
+            RelationManagers\PostsRelationManager::class,
         ];
     }
 

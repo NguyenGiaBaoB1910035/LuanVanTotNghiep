@@ -7,47 +7,38 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use IbrahimBougaoua\FilamentRatingStar\Actions\RatingStar;
-use IbrahimBougaoua\FilamentRatingStar\Columns\RatingStarColumn;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class EvaluateRelationManager extends RelationManager
+class PostsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'evaluates';
+    protected static string $relationship = 'posts';
 
     public function form(Form $form): Form
     {
         return $form
-            ->columns(1)
             ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->required(),
 
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
                     ->searchable()
                     ->required(),
 
-                RatingStar::make('ratings')
-                    ->label('Rating')
+                Forms\Components\Select::make('boarding_house_id')
+                    ->relationship('boardingHouse', 'name')
+                    ->searchable()
                     ->required(),
-
-                Forms\Components\MarkdownEditor::make('content')
-                    ->required()
-                    ->label('Content'),
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('title')
+            ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')
-                    ->label('User'),
-
-                RatingStarColumn::make('ratings')
-                    ->label('Rating'),
-
-                Tables\Columns\TextColumn::make('content')
-                    ->label('Content'),
+                Tables\Columns\TextColumn::make('name'),
             ])
             ->filters([
                 //
