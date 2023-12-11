@@ -14,12 +14,12 @@ class BoardingHouse extends Model
 {
     use HasFactory;
 
-    protected $appends = ['url_featured_image', 'utils', 'images'];
+    protected $appends = ['url_featured_image', 'utils', 'all_images'];
     protected $fillable = [
         'type',
         'name',
         'slug',
-        'testimage',
+        'images',
         'featured_image',
         'room_number',
         'acreage',
@@ -39,7 +39,7 @@ class BoardingHouse extends Model
         'boarding_house_type_id',
     ];
 
-    protected $casts = ['testimage' => 'array'];
+    protected $casts = ['images' => 'array'];
 
     public function boarding_house_type(): BelongsTo
     {
@@ -81,7 +81,7 @@ class BoardingHouse extends Model
         return $this->utils()->get();
     }
 
-    public function getImagesAttribute()
+    public function getAllImagesAttribute()
     {
         return $this->images->map(function ($image) {
             return url(Storage::url($image->path));
