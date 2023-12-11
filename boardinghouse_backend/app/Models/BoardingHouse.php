@@ -19,6 +19,7 @@ class BoardingHouse extends Model
         'type',
         'name',
         'slug',
+        'testimage',
         'featured_image',
         'room_number',
         'acreage',
@@ -37,6 +38,8 @@ class BoardingHouse extends Model
         'published_at',
         'boarding_house_type_id',
     ];
+
+    protected $casts = ['testimage' => 'array'];
 
     public function boarding_house_type(): BelongsTo
     {
@@ -68,11 +71,6 @@ class BoardingHouse extends Model
     }
 
 
-    public function images(): HasMany
-    {
-        return $this->hasMany(BoardingHouseImage::class, 'boarding_house_id');
-    }
-
     public function getUrlFeaturedImageAttribute(): ?string
     {
         return $this->featured_image ? url(Storage::url($this->featured_image)) : null;
@@ -85,6 +83,8 @@ class BoardingHouse extends Model
 
     public function getImagesAttribute()
     {
-        return $this->images()->pluck('path')->toArray();
+        return $this->images->map(function ($image) {
+            return url(Storage::url($image->path));
+        })->toArray();
     }
 }

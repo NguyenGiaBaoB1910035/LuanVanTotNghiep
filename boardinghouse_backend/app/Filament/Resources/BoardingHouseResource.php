@@ -90,9 +90,11 @@ class BoardingHouseResource extends Resource
                                 FileUpload::make('featured_image')
                                     ->imageEditor(),
 
-                                FileUpload::make('imagess')
+                                FileUpload::make('testimage')
                                     ->label('Other Images')
+                                    ->preserveFilenames()
                                     ->imageEditor()
+                                    ->acceptedFileTypes(['image/*'])
                                     ->multiple(),
 
                             ])
