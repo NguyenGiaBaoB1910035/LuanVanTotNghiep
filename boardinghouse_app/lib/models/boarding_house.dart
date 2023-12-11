@@ -1,6 +1,7 @@
 import 'package:boardinghouse_app/models/boarding_house_type.dart';
 
 import 'user.dart';
+import 'util.dart';
 
 class BoardingHouse {
   int? id;
@@ -26,6 +27,7 @@ class BoardingHouse {
   int? boardingHouseTypeId;
   User? user;
   BoardingHouseType? boardingHouseType;
+  List<Utils>? utils;
 
   BoardingHouse(
       {this.id,
@@ -49,7 +51,9 @@ class BoardingHouse {
       this.userid,
       this.boardingHouseTypeId,
       this.user,
-      this.boardingHouseType});
+      this.boardingHouseType,
+      this.utils,
+      });
 
   factory BoardingHouse.fromJson(Map<String, dynamic> json) {
     return BoardingHouse(
@@ -64,8 +68,8 @@ class BoardingHouse {
       depositPrice: json['deposit_price'],
       electricPrice: json['electric_price'],
       waterPrice: json['water_price'],
-      openTime: json['open_time'],
-      closeTime: json['close_time'],
+      // openTime: json['open_time'],
+      // closeTime: json['close_time'],
       description: json['description'],
       address: json['address'],
       urlIamge: json['url_featured_image'],
@@ -73,12 +77,13 @@ class BoardingHouse {
       status: json['status'],
       userid: json['user_id'],
       boardingHouseTypeId: json['boarding_house_type_id'],
-      user: User(
-        id: json['user']['id'],
-        userName: json['user']['user_name'],
-        avatar: json['user']['avatar'],
-      ),
+      // user: User(
+      //   id: json['user']['id'],
+      //   userName: json['user']['user_name'],
+      //   avatar: json['user']['avatar'],
+      // ),
       boardingHouseType: BoardingHouseType(id: json['id'], name: json['name']),
+      utils: List<Utils>.from(json['utils'].map((util) => Utils.fromJson(util))),
     );
   }
 }

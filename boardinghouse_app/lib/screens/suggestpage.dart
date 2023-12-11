@@ -1,9 +1,11 @@
 // import 'package:boardinghouse_app/screens/bottombar.dart';
 import 'package:boardinghouse_app/apis/boarding_house_api.dart';
+import 'package:boardinghouse_app/apis/boarding_house_type_api.dart';
 import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/apis/user_api.dart';
 import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:boardinghouse_app/models/boarding_house.dart';
+import 'package:boardinghouse_app/models/boarding_house_type.dart';
 import 'package:flutter/material.dart';
 
 // import '../components/card_boarding_house_detail.dart';
@@ -38,10 +40,42 @@ class _SuggestPageState extends State<SuggestPage> {
     }
   }
 
+  List<dynamic> _typeList = [];
+
+  String? getTypeName(int typeId) {
+    for (var i = 0; i < _typeList.length; i = i + 1) {
+      BoardingHouseType type = _typeList[i];
+      if (typeId == type.id) {
+        return type.name;
+      }
+    }
+  }
+
+  //get boardingHouseType
+  void getNameBoardingHouseType() async {
+    try {
+      ApiResponse response = await getBoardingHouseType();
+      if (response.error == null) {
+        setState(() {
+          _typeList = response.data as List<dynamic>;
+        });
+      } else if (response.error == unauthorized) {
+        logout().then((value) => {});
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+        print("response.error getNameBoardingHouseType ${response.error}");
+      }
+    } catch (e) {
+      print('Error in getNameBoardingHouseType: $e');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     getListBoardingHouse();
+    getNameBoardingHouseType();
   }
 
   @override
@@ -119,7 +153,7 @@ class _SuggestPageState extends State<SuggestPage> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 2.5),
                             child: Text(
-                              "${boardingHouse.type}",
+                              "${boardingHouse.boardingHouseTypeId}",
                               style: TextStyle(fontSize: 16),
                             ),
                           ),

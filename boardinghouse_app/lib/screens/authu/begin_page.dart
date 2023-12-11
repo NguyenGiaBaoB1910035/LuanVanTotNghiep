@@ -33,7 +33,7 @@ class BeginPage extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * 2 / 3,
+                height: MediaQuery.of(context).size.height * 3 / 5,
                 width: double.infinity,
                 // color: Colors.black26,
                 margin: const EdgeInsets.only(
@@ -52,7 +52,7 @@ class BeginPage extends StatelessWidget {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 50),
+                            padding: const EdgeInsets.symmetric(vertical: 20),
                             child: SmoothPageIndicator(
                                 controller: controller, // PageController
                                 count: 3,
@@ -141,22 +141,22 @@ class BeginPage extends StatelessWidget {
                         )
                       ],
                     ),
-                    InkWell(
-                      onTap: () {
-                        print("mở Trang chủ");
-                        Navigator.of(context).pushNamed('main');
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                        child: Center(
-                          child: Text("Trải nghiệm không cần đăng nhập",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                  color: Color.fromRGBO(0, 177, 237, 1))),
-                        ),
-                      ),
-                    )
+                    // InkWell(
+                    //   onTap: () {
+                    //     print("mở Trang chủ");
+                    //     Navigator.of(context).pushNamed('main');
+                    //   },
+                    //   child: const Padding(
+                    //     padding: EdgeInsets.symmetric(vertical: 15),
+                    //     child: Center(
+                    //       child: Text("Trải nghiệm không cần đăng nhập",
+                    //           style: TextStyle(
+                    //               fontSize: 16,
+                    //               fontWeight: FontWeight.w400,
+                    //               color: Color.fromRGBO(0, 177, 237, 1))),
+                    //     ),
+                    //   ),
+                    // )
                   ],
                 ),
               )
