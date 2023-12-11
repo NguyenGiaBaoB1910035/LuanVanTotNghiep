@@ -78,7 +78,11 @@ class SearchHandler extends Handlers
 
             return static::sendSuccessResponse($results, "Search Results");
         } catch (\Exception $e) {
-            return static::sendErrorResponse($e->getMessage(), $e->getCode());
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'code' => $e->getCode(),
+            ], 500);
         }
     }
 }
