@@ -41,6 +41,6 @@ class Evaluate extends Model
             return $boardingHouse;
         }
 
-        return null; 
+        return null;
     }
 }
