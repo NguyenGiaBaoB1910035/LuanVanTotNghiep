@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:boardinghouse_app/models/util.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+// import 'package:path/path.dart';
 
 class CreateBoardingHousePage extends StatefulWidget {
   const CreateBoardingHousePage({Key? key}) : super(key: key);
@@ -66,6 +67,20 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
       });
     }
   }
+//   Future<void> getImage() async {
+//   final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+//   if (pickedFile != null) {
+//     String fileExtension = extension(pickedFile.path);
+//     if (fileExtension.toLowerCase() == '.png' || fileExtension.toLowerCase() == '.jpg') {
+//       setState(() {
+//         _imageFile = File(pickedFile.path);
+//       });
+//     } else {
+//       // Show an error message or handle the case where the file extension is not allowed.
+//       print("Invalid file type. Please choose a PNG or JPG image.");
+//     }
+//   }
+// }
 
   void _createBoardingHouse() async {
     print("có chạy cái này nha");
