@@ -26,11 +26,16 @@ class CreateHandler extends Handlers
     {
         $model = new (static::getModel());
 
-        $model->fill($request->all());
+        $model->fill($request->except('featured_image'));
 
-        $image = $request->featured_image;
+        // Kiểm tra xem có file ảnh được gửi lên không
+        if ($request->hasFile('featured_image')) {
+            // Lưu file vào storage và lấy đường dẫn
+            $imagePath = $request->file('featured_image')->store('featured_images', 'public');
 
-        // Storage::put();
+            // Gán đường dẫn file ảnh vào trường featured_image của model
+            $model->featured_image = $imagePath;
+        }
 
         $model->save();
 
