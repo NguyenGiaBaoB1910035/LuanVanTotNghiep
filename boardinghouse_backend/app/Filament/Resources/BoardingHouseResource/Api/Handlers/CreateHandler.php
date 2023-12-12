@@ -24,21 +24,40 @@ class CreateHandler extends Handlers
 
     public function handler(Request $request)
     {
-        $model = new (static::getModel());
+        try {
+            $model = new (static::getModel());
 
-        $model->fill($request->except('featured_image'));
+            // Validate the incoming request data (you can use validation rules)
 
-        // Kiểm tra xem có file ảnh được gửi lên không
-        if ($request->hasFile('featured_image')) {
-            // Lưu file vào storage và lấy đường dẫn
-            $imagePath = $request->file('featured_image')->store('featured_images', 'public');
+            $model->fill($request->except('featured_image'));
 
-            // Gán đường dẫn file ảnh vào trường featured_image của model
-            $model->featured_image = $imagePath;
+            // Check if the request has the 'featured_image' file
+            if ($request->hasFile('featured_image')) {
+                // Validate the file (size, mime type, etc.) before storing it
+                $request->validate([
+                    'featured_image' => 'image|mimes:jpeg,png,jpg,gif', // Adjust max size as needed
+                ]);
+
+                // Store the file in the 'public' disk under the 'featured_images' directory
+                $imagePath = $request->file('featured_image')->store('featured_images', 'public');
+
+                // Assign the file path to the 'featured_image' attribute of the model
+                $model->featured_image = $imagePath;
+            }
+
+            $model->save();
+
+            // Return a JSON response indicating success
+            return response()->json([
+                'message' => 'Successfully Create Resource',
+                'data' => $model,
+            ], 200);
+        } catch (\Exception $e) {
+            // Handle exceptions appropriately (e.g., log, return error response)
+            return response()->json([
+                'message' => 'Error creating resource',
+                'error' => $e->getMessage(),
+            ], 500); // Set a default HTTP status code (e.g., 500 for internal server error)
         }
-
-        $model->save();
-
-        return static::sendSuccessResponse($model, "Successfully Create Resource");
     }
 }
