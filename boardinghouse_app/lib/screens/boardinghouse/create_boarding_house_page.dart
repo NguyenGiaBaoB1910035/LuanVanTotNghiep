@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:boardinghouse_app/apis/boarding_house_api.dart';
 import 'package:boardinghouse_app/apis/boarding_house_type_api.dart';
@@ -33,9 +34,9 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
   double electricityPrice = 0.0;
   double waterPrice = 0.0;
   String description = '';
-  DateTime openTime = DateTime.now();
-  DateTime closeTime = DateTime.now();
-  DateTime publishedAt = DateTime.now();
+  // DateTime openTime = DateTime.now();
+  // DateTime closeTime = DateTime.now();
+  // DateTime publishedAt = DateTime.now();
 
   bool _loading = false;
 
@@ -82,10 +83,11 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
         _txtDepositController.text,
         _txtElectriController.text,
         _txtWaterController.text,
-        openTime,
-        closeTime,
-        publishedAt,
+        // openTime,
+        // closeTime,
+        // publishedAt,
         _txtDescriptionController.text,
+        // _imageFile ,
         _image!);
 
     if (response.error == null) {
@@ -384,42 +386,42 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
                     const SizedBox(
                       height: 20,
                     ),
-                    ListTile(
-                      title: const Text('Giờ mở cửa'),
-                      trailing: Text(_formatTime(openTime)),
-                      onTap: () async {
-                        final selectedTime = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.fromDateTime(openTime),
-                        );
-                        if (selectedTime != null) {
-                          setState(() {
-                            openTime = _combineDateAndTime(
-                              openTime,
-                              selectedTime,
-                            );
-                          });
-                        }
-                      },
-                    ),
-                    ListTile(
-                      title: const Text('Giờ đóng cửa'),
-                      trailing: Text(_formatTime(closeTime)),
-                      onTap: () async {
-                        final selectedTime = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.fromDateTime(closeTime),
-                        );
-                        if (selectedTime != null) {
-                          setState(() {
-                            closeTime = _combineDateAndTime(
-                              closeTime,
-                              selectedTime,
-                            );
-                          });
-                        }
-                      },
-                    ),
+                    // ListTile(
+                    //   title: const Text('Giờ mở cửa'),
+                    //   trailing: Text(_formatTime(openTime)),
+                    //   onTap: () async {
+                    //     final selectedTime = await showTimePicker(
+                    //       context: context,
+                    //       initialTime: TimeOfDay.fromDateTime(openTime),
+                    //     );
+                    //     if (selectedTime != null) {
+                    //       setState(() {
+                    //         openTime = _combineDateAndTime(
+                    //           openTime,
+                    //           selectedTime,
+                    //         );
+                    //       });
+                    //     }
+                    //   },
+                    // ),
+                    // ListTile(
+                    //   title: const Text('Giờ đóng cửa'),
+                    //   trailing: Text(_formatTime(closeTime)),
+                    //   onTap: () async {
+                    //     final selectedTime = await showTimePicker(
+                    //       context: context,
+                    //       initialTime: TimeOfDay.fromDateTime(closeTime),
+                    //     );
+                    //     if (selectedTime != null) {
+                    //       setState(() {
+                    //         closeTime = _combineDateAndTime(
+                    //           closeTime,
+                    //           selectedTime,
+                    //         );
+                    //       });
+                    //     }
+                    //   },
+                    // ),
                     // ListTile(
                     //   title: const Text('Giờ mở cửa'),
                     //   trailing: Text(openTime.format(context)),
@@ -816,11 +818,11 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
     );
   }
 
-  String _formatTime(DateTime time) {
-    return '${time.hour}:${time.minute.toString().padLeft(2, '0')}';
-  }
+  // String _formatTime(DateTime time) {
+  //   return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+  // }
 
-  DateTime _combineDateAndTime(DateTime date, TimeOfDay time) {
-    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
-  }
+  // DateTime _combineDateAndTime(DateTime date, TimeOfDay time) {
+  //   return DateTime(date.year, date.month, date.day, time.hour, time.minute);
+  // }
 }

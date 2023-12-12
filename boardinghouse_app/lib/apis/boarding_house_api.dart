@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:developer' as developer;
 import 'dart:io';
+import 'dart:math';
 import 'package:boardinghouse_app/apis/auth_api.dart';
 import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/apis/user_api.dart';
@@ -64,11 +66,9 @@ Future<ApiResponse> createBoardingHouse(
     String depositPrice,
     String electricPrice,
     String waterPrice,
-    DateTime openTime,
-    DateTime closeTime,
-    DateTime publishedAt,
-    // String openTime,
-    // String closeTime,
+    // DateTime openTime,
+    // DateTime closeTime,
+    // DateTime publishedAt,
     String description,
     String image) async {
   ApiResponse apiResponse = ApiResponse();
@@ -93,9 +93,9 @@ Future<ApiResponse> createBoardingHouse(
           'deposit_price': depositPrice,
           'electric_price': electricPrice,
           'water_price': waterPrice,
-          'open_time': openTime,
-          'close_time': closeTime,
-          'published_at': publishedAt,
+          // 'open_time': openTime,
+          // 'close_time': closeTime,
+          // 'published_at': publishedAt,
           'description': description,
           'address': address,
         },
@@ -121,6 +121,8 @@ Future<ApiResponse> createBoardingHouse(
     }
   } catch (e) {
     apiResponse.error = serverError;
+    print(e);
+    developer.log("erroe: $e");
   }
   return apiResponse;
 }
