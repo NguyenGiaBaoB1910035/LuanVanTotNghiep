@@ -13,7 +13,7 @@ class BoardingHouse extends Model
 {
     use HasFactory;
 
-    protected $appends = ['url_featured_image', 'utils', 'boarding_house_type', 'user', 'evaluates'];
+    protected $appends = ['url_featured_image', 'url_images', 'utils', 'boarding_house_type', 'user', 'evaluates'];
     protected $fillable = [
         'type',
         'name',
@@ -92,4 +92,15 @@ class BoardingHouse extends Model
     {
         return $this->evaluates()->get();
     }
+
+    public function getUrlImagesAttribute()
+{
+    $urlImages = [];
+
+    foreach ($this->images as $image) {
+        $urlImages[] = url(Storage::url($image));
+    }
+
+    return $urlImages;
+}
 }
