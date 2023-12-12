@@ -91,12 +91,19 @@ Future<ApiResponse> createBoardingHouse(
         'address': address,
       });
 
-    if (imageFile != null) {
-      var stream = http.ByteStream(imageFile.openRead());
-      var length = await imageFile.length();
-      var multipartFile = http.MultipartFile('featured_image', stream, length,
-          filename: basename(imageFile.path));
-      request.files.add(multipartFile);
+   if (imageFile != null) {
+      String fileExtension = extension(imageFile.path);
+      if (fileExtension.toLowerCase() == '.png' || fileExtension.toLowerCase() == '.jpg') {
+        var stream = http.ByteStream(imageFile.openRead());
+        var length = await imageFile.length();
+        var multipartFile = http.MultipartFile('featured_image', stream, length,
+            filename: basename(imageFile.path));
+        request.files.add(multipartFile);
+      } else {
+        // Handle the case where the file extension is not allowed.
+        apiResponse.error = "Invalid file type. Please choose a PNG or JPG image.";
+        return apiResponse;
+      }
     }
 
     var response = await request.send();
