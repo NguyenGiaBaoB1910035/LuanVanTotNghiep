@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Rupadana\ApiService\Http\Handlers;
 use App\Filament\Resources\BoardingHouseResource;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CreateHandler extends Handlers
 {
@@ -27,6 +28,8 @@ class CreateHandler extends Handlers
         try {
             $model = new (static::getModel());
 
+            $validation_image = 'image|mimes:jpeg,png,jpg,gif,webp';
+
             // Validate the incoming request data (you can use validation rules)
 
             $model->fill($request->except('featured_image'));
@@ -35,11 +38,11 @@ class CreateHandler extends Handlers
             if ($request->hasFile('featured_image')) {
                 // Validate the file (size, mime type, etc.) before storing it
                 $request->validate([
-                    'featured_image' => 'image|mimes:jpeg,png,jpg,gif,webp', // Adjust max size as needed
+                    'featured_image' => $validation_image, // Adjust max size as needed
                 ]);
 
                 // Store the file in the 'public' disk under the 'featured_images' directory
-                $imagePath = $request->file('featured_image')->store('featured_images', 'public');
+                $imagePath = $this->storeAndConvertToPng($request->file('featured_image'));
 
                 // Assign the file path to the 'featured_image' attribute of the model
                 $model->featured_image = $imagePath;
@@ -49,13 +52,24 @@ class CreateHandler extends Handlers
             if ($request->hasFile('images')) {
                 $imagePaths = [];
 
-                foreach ($request->file('images') as $image) {
-                    // Validate and store each image
-                    $image->validate([
-                        'image' => 'image|mimes:jpeg,png,jpg,gif,webp', // Adjust max size as needed
-                    ]);
+                $files = is_array($request->file('images')) ? $request->file('images') : [$request->file('images')];
 
-                    $imagePath = $image->store('images', 'public');
+                foreach ($files as $image) {
+                    // Validate and store each image
+                    $validator = validator(
+                        ['image' => $image],
+                        ['image' => $validation_image]
+                    );
+
+                    if ($validator->fails()) {
+                        // Handle validation failure, for example, return a response with error messages
+                        return response()->json([
+                            'message' => 'Validation failed',
+                            'errors' => $validator->errors(),
+                        ], 422);
+                    }
+
+                    $imagePath = $this->storeAndConvertToPng($image);
                     $imagePaths[] = $imagePath;
                 }
 
@@ -76,5 +90,16 @@ class CreateHandler extends Handlers
                 'error' => $e->getMessage(),
             ], 500); // Set a default HTTP status code (e.g., 500 for internal server error)
         }
+    }
+
+    private function storeAndConvertToPng($file)
+    {
+        $originalPath = $file->store('boarding_house', 'public');
+        $convertedPath = Str::replaceLast($file->getClientOriginalExtension(), 'png', $originalPath);
+
+        // Copy the file to the new path and convert it to PNG
+        Storage::disk('public')->copy($originalPath, $convertedPath);
+
+        return $convertedPath;
     }
 }
