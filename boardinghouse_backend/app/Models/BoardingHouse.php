@@ -70,7 +70,7 @@ class BoardingHouse extends Model
     {
         if (empty($this->featured_image) || !$this->featured_image) return;
 
-        return url(Storage::url('media/' . $this->featured_image));
+        return url(Storage::url($this->featured_image));
     }
 
     public function getUtilsAttribute()
