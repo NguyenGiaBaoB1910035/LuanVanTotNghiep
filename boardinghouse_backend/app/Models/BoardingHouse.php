@@ -94,13 +94,14 @@ class BoardingHouse extends Model
     }
 
     public function getUrlImagesAttribute()
-{
-    $urlImages = [];
+    {
+        if (empty($this->images)) return;
+        $urlImages = [];
 
-    foreach ($this->images as $image) {
-        $urlImages[] = url(Storage::url($image));
+        foreach ($this->images as $image) {
+            $urlImages[] = url(Storage::url($image));
+        }
+
+        return $urlImages;
     }
-
-    return $urlImages;
-}
 }
