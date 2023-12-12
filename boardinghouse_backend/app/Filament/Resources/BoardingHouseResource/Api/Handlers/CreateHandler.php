@@ -35,7 +35,7 @@ class CreateHandler extends Handlers
             if ($request->hasFile('featured_image')) {
                 // Validate the file (size, mime type, etc.) before storing it
                 $request->validate([
-                    'featured_image' => 'image|mimes:jpeg,png,jpg,gif', // Adjust max size as needed
+                    'featured_image' => 'image|mimes:jpeg,png,jpg,gif,webp', // Adjust max size as needed
                 ]);
 
                 // Store the file in the 'public' disk under the 'featured_images' directory
@@ -43,6 +43,23 @@ class CreateHandler extends Handlers
 
                 // Assign the file path to the 'featured_image' attribute of the model
                 $model->featured_image = $imagePath;
+            }
+
+            // Check if the request has multiple images
+            if ($request->hasFile('images')) {
+                $imagePaths = [];
+
+                foreach ($request->file('images') as $image) {
+                    // Validate and store each image
+                    $image->validate([
+                        'image' => 'image|mimes:jpeg,png,jpg,gif,webp', // Adjust max size as needed
+                    ]);
+
+                    $imagePath = $image->store('images', 'public');
+                    $imagePaths[] = $imagePath;
+                }
+
+                $model->images = $imagePaths;
             }
 
             $model->save();
