@@ -88,7 +88,7 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
         // publishedAt,
         _txtDescriptionController.text,
         // _imageFile ,
-        _image!);
+        _imageFile);
 
     if (response.error == null) {
       Navigator.of(context).pop();
