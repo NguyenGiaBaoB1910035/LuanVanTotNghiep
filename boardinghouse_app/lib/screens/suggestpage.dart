@@ -129,8 +129,9 @@ class _SuggestPageState extends State<SuggestPage> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               image: DecorationImage(
-                                image:
-                                    NetworkImage('${boardingHouse.urlIamge}'),
+                                image: Image.network(
+                                  '${boardingHouse.urlIamge}',
+                                ).image,
                                 // AssetImage("assets/images/anh.jpg"),
                                 fit: BoxFit.fitWidth,
                               ),
