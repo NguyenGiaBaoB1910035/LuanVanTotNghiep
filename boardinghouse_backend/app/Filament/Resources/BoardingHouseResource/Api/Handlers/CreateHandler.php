@@ -76,6 +76,29 @@ class CreateHandler extends Handlers
                 $model->images = $imagePaths;
             }
 
+            // Utils
+            if ($request->has('utils')) {
+                try {
+                    // Retrieve the utility IDs from the request
+                    $utilityIds = $request->input('utils');
+
+                    // Save the model first to get the ID
+                    $model->save();
+
+                    // Get the ID of the saved model
+                    $boardingHouseId = $model->id;
+
+                    // Attach the utilities to the newly created boarding house with the correct boarding_house_id
+                    $model->utils()->attach($utilityIds, ['boarding_house_id' => $boardingHouseId]);
+                } catch (\Exception $e) {
+                    // Handle exceptions appropriately (e.g., log, return error response)
+                    return response()->json([
+                        'message' => 'Error attaching utilities to the resource',
+                        'error' => $e->getMessage(),
+                    ], 500);
+                }
+            }
+
             $model->save();
 
             // Return a JSON response indicating success
