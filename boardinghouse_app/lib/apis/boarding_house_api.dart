@@ -55,6 +55,51 @@ Future<ApiResponse> getBoardingHouses() async {
   return apiResponse;
 }
 
+//get boardinghouse userId
+Future<ApiResponse> getBoardingHousesUserId(int userId) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.get(Uri.parse('$apiBoardingHouse/$userId'), headers: {
+      "Content-Type": "application/json",
+      'Authorization': 'Bearer $token'
+    });
+
+    print("responsr from server getBoardingHouses");
+    print(response.body);
+
+    switch (response.statusCode) {
+      case 200:
+        if (jsonDecode(response.body)['data'] != null) {
+          // Mapping từ danh sách JSON thành danh sách đối tượng BoardingHouseType
+          List<BoardingHouse> boardingHouses =
+              (jsonDecode(response.body)['data'] as List)
+                  .map((boardinghouseJson) =>
+                      BoardingHouse.fromJson(boardinghouseJson))
+                  .toList();
+          // Gán danh sách vào apiResponse.data
+          apiResponse.data = boardingHouses;
+          print('apiResponse.data');
+          print(apiResponse.data);
+        } else {
+          apiResponse.error = null;
+        }
+
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+    print(e);
+  }
+  return apiResponse;
+}
+
 //get BoardingHousesDetail
 Future<ApiResponse> getBoardingHousesDetail(int boardingHouseId) async {
   ApiResponse apiResponse = ApiResponse();
@@ -286,6 +331,70 @@ Future<ApiResponse> deleteBoardingHouse(int boardingHouseId) async {
     switch (response.statusCode) {
       case 200:
         apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+Future<ApiResponse> searchBoardingHouse(
+  String? address,
+  String? name,
+  String? type,
+  String? capacity,
+  String? priceStart,
+  String? priceSend,
+  String? utile,
+) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.put(
+      Uri.parse('$apiBoardingHouse/search'),
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer $token'
+      },
+      body: json.encode(
+        {
+          'type': type,
+          'name': name,
+          'utils': utile,
+          'address': address,
+          'capacity': capacity,
+          'price_start': priceStart,
+          'price_end': priceSend
+        },
+      ),
+    );
+
+    switch (response.statusCode) {
+      case 200:
+        if (jsonDecode(response.body)['data'] != null) {
+          // Mapping từ danh sách JSON thành danh sách đối tượng BoardingHouseType
+          List<BoardingHouse> boardingHouses =
+              (jsonDecode(response.body)['data'] as List)
+                  .map((boardinghouseJson) =>
+                      BoardingHouse.fromJson(boardinghouseJson))
+                  .toList();
+          // Gán danh sách vào apiResponse.data
+          apiResponse.data = boardingHouses;
+          print('apiResponse.data');
+          print(apiResponse.data);
+        } else {
+          apiResponse.error = null;
+        }
         break;
       case 403:
         apiResponse.error = jsonDecode(response.body)['message'];

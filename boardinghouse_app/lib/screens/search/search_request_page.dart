@@ -1,3 +1,9 @@
+import 'package:boardinghouse_app/apis/boarding_house_type_api.dart';
+import 'package:boardinghouse_app/apis/constant.dart';
+import 'package:boardinghouse_app/apis/user_api.dart';
+import 'package:boardinghouse_app/apis/util_api.dart';
+import 'package:boardinghouse_app/models/api_response.dart';
+import 'package:boardinghouse_app/models/boarding_house_type.dart';
 import 'package:boardinghouse_app/screens/components/card_boarding_house_detail.dart';
 import 'package:boardinghouse_app/models/util.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +18,74 @@ bool selectData = false;
 bool selectUtil = false;
 
 class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
+  List<dynamic> _boardingHouseList = [];
+
+  // void _createBoardingHouse() async {
+   
+
+  //   ApiResponse response = await searchBoardingHouse(
+      
+  //   );
+
+  //   if (response.error == null) {
+  //     Navigator.of(context).pop();
+  //   } else if (response.error == unauthorized) {
+  //     logout().then((value) => {});
+  //   } else {
+  //     ScaffoldMessenger.of(context)
+  //         .showSnackBar(SnackBar(content: Text('${response.error}')));
+  //     setState(() {
+        
+  //     });
+  //   }
+  // }
+ 
+ 
+ 
+  List<dynamic> _utilsList = [];
+
+  //get Uitls
+  void getListUtil() async {
+    try {
+      ApiResponse response = await getUtil();
+      if (response.error == null) {
+        setState(() {
+          _utilsList = response.data as List<dynamic>;
+        });
+      } else if (response.error == unauthorized) {
+        logout().then((value) => {});
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+        print("response.error getListUtil ${response.error}");
+      }
+    } catch (e) {
+      print('Error in getListUtil: $e');
+    }
+  }
+
+  List<dynamic> _typeList = [];
+
+  //get boardingHouseType
+  void getNameBoardingHouseType() async {
+    try {
+      ApiResponse response = await getBoardingHouseType();
+      if (response.error == null) {
+        setState(() {
+          _typeList = response.data as List<dynamic>;
+        });
+      } else if (response.error == unauthorized) {
+        logout().then((value) => {});
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+        print("response.error getNameBoardingHouseType ${response.error}");
+      }
+    } catch (e) {
+      print('Error in getNameBoardingHouseType: $e');
+    }
+  }
+
   TabController? _tabController;
   RangeValues priceRange = RangeValues(0.0, 1000000.0);
   double priceIncrement = 1000000;
@@ -19,6 +93,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    getNameBoardingHouseType();
+    getListUtil();
     _tabController = TabController(length: 6, vsync: this, initialIndex: 5);
   }
 
@@ -28,28 +104,10 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
         automaticallyImplyLeading: false,
-        title: InkWell(
-          child: Container(
-              decoration: const BoxDecoration(
-                  color: Color(0xF5F5F5F5),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(15),
-                  )),
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  icon: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Icon(
-                      Icons.search,
-                      color: Color.fromRGBO(0, 177, 237, 1),
-                    ),
-                  ),
-                  hintText: "Tìm theo tên đường, địa điểm",
-                  border: InputBorder.none,
-                ),
-              )),
-        ),
+        title: Text("Tìm kiếm theo yêu cầu",
+            style: TextStyle(color: Color.fromRGBO(0, 177, 237, 1))),
         actions: [
           TextButton(
               onPressed: () {
@@ -290,6 +348,28 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     return Column(
       children: [
         Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+          child: Container(
+              decoration: const BoxDecoration(
+                  color: Color(0xF5F5F5F5),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(15),
+                  )),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  icon: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Icon(
+                      Icons.search,
+                      color: Color.fromRGBO(0, 177, 237, 1),
+                    ),
+                  ),
+                  hintText: "Tìm theo tên đường, địa điểm",
+                  border: InputBorder.none,
+                ),
+              )),
+        ),
+        Padding(
           padding: const EdgeInsets.all(15),
           child: Container(
             width: MediaQuery.of(context).size.width,
@@ -366,13 +446,14 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   Widget typePage() {
     return Column(
       children: [
-        Column(
-          children: <Widget>[
-            buildRoomOption('Phòng cho thuê'),
-            buildRoomOption('Ký túc xá'),
-            buildRoomOption('Phòng nguyên căn'),
-            buildRoomOption('Căn hộ'),
-          ],
+        Container(
+          height: 150,
+          child: ListView.builder(
+              itemCount: _typeList.length,
+              itemBuilder: (BuildContext context, int index) {
+                BoardingHouseType type = _typeList[index];
+                return buildRoomOption('${type.name}');
+              }),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -472,19 +553,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 ]),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Giới tính"),
-                Row(
-                  children: [
-                    buildGenderOption('Tất cả'),
-                    buildGenderOption('Nam'),
-                    buildGenderOption('Nữ'),
-                  ],
-                ),
-              ],
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: ElevatedButton(
@@ -514,22 +582,22 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget buildGenderOption(String gender) {
-    return Row(
-      children: <Widget>[
-        Radio(
-          value: gender,
-          groupValue: selectedGender,
-          onChanged: (value) {
-            setState(() {
-              selectedGender = value.toString();
-            });
-          },
-        ),
-        Text(gender),
-      ],
-    );
-  }
+  // Widget buildGenderOption(String gender) {
+  //   return Row(
+  //     children: <Widget>[
+  //       Radio(
+  //         value: gender,
+  //         groupValue: selectedGender,
+  //         onChanged: (value) {
+  //           setState(() {
+  //             selectedGender = value.toString();
+  //           });
+  //         },
+  //       ),
+  //       Text(gender),
+  //     ],
+  //   );
+  // }
 
 //----------------------------------util page---------------------------------//
 
@@ -548,7 +616,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   ];
   // bool isSelected = false;
 
-  List<Util> selectedUtils = [];
+  List<Utils> selectedUtils = [];
 
   Widget utilPage() {
     return Column(
@@ -566,13 +634,13 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 shrinkWrap: true,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2, // Số cột
-                    childAspectRatio: 4 / 9,
+                    childAspectRatio: 4 / 8,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10 // Tỉ lệ chiều cao theo chiều rộng
                     ),
-                itemCount: utils.length,
+                itemCount: _utilsList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  final feature = utils[index];
+                  Utils feature = _utilsList[index];
                   return GestureDetector(
                     onTap: () {
                       setState(() {
@@ -591,18 +659,28 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                         child: Row(
                           // mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              feature.icon,
-                              color: feature.isSelected
-                                  ? Colors.white
-                                  : Colors.grey,
-                              // Kích thước của icon
+                            Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: NetworkImage('${feature.imageUrl}'),
+                                    fit: BoxFit.cover),
+                                // color: Colors.amber
+                              ),
                             ),
+                            // Icon(
+                            //   feature.icon,
+                            //   color: feature.isSelected
+                            //       ? Colors.white
+                            //       : Colors.grey,
+                            //   // Kích thước của icon
+                            // ),
                             const SizedBox(
                               width: 10,
                             ),
                             Text(
-                              feature.name,
+                              '${feature.name}',
                               style: TextStyle(
                                 // Kích thước của văn bản
                                 color: feature.isSelected
@@ -628,7 +706,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   selectUtil = true;
                 });
                 _tabController?.animateTo(5);
-                for (Util util in selectedUtils) {
+                for (Utils util in selectedUtils) {
                   print("Util đã chọn: ${util.name}");
                 }
               },
@@ -938,7 +1016,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.grey.shade200),
-                            child: Text(util.name,
+                            child: Text(util.name!,
                                 style: const TextStyle(fontSize: 15))),
                         Positioned(
                           top: 0,

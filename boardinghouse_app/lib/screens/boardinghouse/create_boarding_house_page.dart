@@ -39,7 +39,7 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
   // DateTime closeTime = DateTime.now();
   // DateTime publishedAt = DateTime.now();
 
-  bool _loading = false;
+  bool _loading = true;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   int _typeId = 1;
@@ -758,11 +758,12 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
                         print("ảnh và tiện ích");
 
                         // Thực hiện chức năng cho stepper thứ hai
-                      } else if (_currentStep == 2) {
-                        print("hoàn thành");
+                      } 
+                      // else if (_currentStep == 2) {
+                      //   print("hoàn thành");
 
-                        // Thực hiện chức năng cho stepper thứ ba
-                      }
+                      //   // Thực hiện chức năng cho stepper thứ ba
+                      // }
 
                       // Di chuyển đến bước tiếp theo
                       if (_currentStep < (stepList().length - 1)) {
@@ -770,10 +771,11 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
                           _currentStep += 1;
                         });
                       } else {
-                        _createBoardingHouse();
-                        Navigator.of(context).pushNamed("postquickly");
-                        // Chức năng khi hoàn thành tất cả các bước
                         print('Submited');
+                        _createBoardingHouse();
+                        Navigator.of(context).pushNamed("main");
+                        // Chức năng khi hoàn thành tất cả các bước
+                        // 
                       }
                     },
                     child: (isLastStep)

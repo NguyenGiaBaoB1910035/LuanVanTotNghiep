@@ -1,8 +1,48 @@
+import 'package:boardinghouse_app/apis/boarding_house_api.dart';
+import 'package:boardinghouse_app/apis/constant.dart';
+import 'package:boardinghouse_app/apis/user_api.dart';
+import 'package:boardinghouse_app/models/api_response.dart';
+import 'package:boardinghouse_app/models/boarding_house.dart';
 import 'package:boardinghouse_app/screens/components/card_boarding_house_post.dart';
 import 'package:flutter/material.dart';
 
-class PostQuicklyPage extends StatelessWidget {
+class PostQuicklyPage extends StatefulWidget {
   const PostQuicklyPage({super.key});
+
+  @override
+  State<PostQuicklyPage> createState() => _PostQuicklyPageState();
+}
+
+class _PostQuicklyPageState extends State<PostQuicklyPage> {
+  List<dynamic> _boardigHouseList = [];
+  bool _loading = true;
+  //get BoardingHouse
+  void getListBoardingHouse() async {
+    try {
+      int userId = await getUserId();
+      ApiResponse response = await getBoardingHousesUserId(userId);
+      if (response.error == null) {
+        setState(() {
+          _boardigHouseList = response.data as List<dynamic>;
+          // _loading = _loading ? !_loading : _loading;
+        });
+      } else if (response.error == unauthorized) {
+        logout().then((value) => {});
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+        print("response.error getListBoardingHouse ${response.error}");
+      }
+    } catch (e) {
+      print('Error in getListBoardingHouse: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getListBoardingHouse();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +102,9 @@ class PostQuicklyPage extends StatelessWidget {
           ListView.builder(
               shrinkWrap: true,
               padding: const EdgeInsets.all(8),
-              itemCount: 2,
+              itemCount: _boardigHouseList.length,
               itemBuilder: (BuildContext context, int index) {
+                BoardingHouse boardingHouse = _boardigHouseList[index];
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: Padding(
@@ -75,36 +116,40 @@ class PostQuicklyPage extends StatelessWidget {
                         Row(
                           children: [
                             Container(
-                              width: 150,
-                              height: 90,
-                              decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Image.asset(
-                                "assets/images/anh.jpg",
-                                fit: BoxFit.fitHeight,
-                              ),
-                            ),
+                                width: 150,
+                                height: 90,
+                                decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Image.network(
+                                  "${boardingHouse.urlIamge}",
+                                  fit: BoxFit.fitHeight,
+                                )
+                                // Image.asset(
+                                //   "assets/images/anh.jpg",
+                                //   fit: BoxFit.fitHeight,
+                                // ),
+                                ),
                             Container(
                               width: MediaQuery.of(context).size.width - 190,
-                              child: const Column(
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
                                     padding:
-                                        EdgeInsets.only(left: 10, bottom: 2.5),
-                                    child: Text("Phòng cho Thuê"),
+                                       const  EdgeInsets.only(left: 10, bottom: 2.5),
+                                    child: Text('${boardingHouse.boardingHouseType!.name}'),
                                   ),
                                   Padding(
                                     padding:
                                         EdgeInsets.only(left: 10, bottom: 2.5),
                                     child: Text(
-                                      "Phòng cho Thuê Hoàng Gia, Quận Ninh Kiều, cần thơ ",
+                                      "${boardingHouse.name}",
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                       softWrap: false,
-                                      style: TextStyle(
+                                      style: const  TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -112,7 +157,7 @@ class PostQuicklyPage extends StatelessWidget {
                                     padding:
                                         EdgeInsets.only(left: 10, bottom: 2.5),
                                     child: Text(
-                                      "1.200.000 VND",
+                                      "${boardingHouse.price}",
                                       style: TextStyle(
                                           color: Colors.blue,
                                           fontWeight: FontWeight.bold),
@@ -128,7 +173,7 @@ class PostQuicklyPage extends StatelessWidget {
                                   Padding(
                                     padding:
                                         EdgeInsets.only(left: 10, bottom: 2.5),
-                                    child: Text("Ninh Kiêu"),
+                                    child: Text("${boardingHouse.address}"),
                                   )
                                 ],
                               ),
