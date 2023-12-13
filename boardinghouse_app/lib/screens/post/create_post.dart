@@ -14,13 +14,13 @@ class _CreatePostState extends State<CreatePost> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          color: const Color.fromRGBO(0, 177, 237, 1),
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
+        // leading: IconButton(
+        //   color: const Color.fromRGBO(0, 177, 237, 1),
+        //   icon: const Icon(Icons.arrow_back),
+        //   onPressed: () {
+        //     Navigator.of(context).pop();
+        //   },
+        // ),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
@@ -28,6 +28,16 @@ class _CreatePostState extends State<CreatePost> {
           "Đăng tin",
           style: TextStyle(color: Color.fromRGBO(0, 177, 237, 1)),
         ),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Hủy',
+                style: TextStyle(color: Colors.black54, fontSize: 20),
+              ))
+        ],
       ),
       body: Container(
         color: Colors.white,

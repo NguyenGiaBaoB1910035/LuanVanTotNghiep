@@ -109,6 +109,8 @@ Future<ApiResponse> createBoardingHouse(
   String description,
   File? imageFile,
   List<File>? imageFiles,
+  List<int> utilityIds, 
+
 ) async {
   ApiResponse apiResponse = ApiResponse();
   try {
@@ -129,7 +131,10 @@ Future<ApiResponse> createBoardingHouse(
         'water_price': waterPrice,
         'description': description,
         'address': address,
+        'utils': utilityIds.join(','),
       });
+
+      
 
     if (imageFile != null) {
       String fileExtension = extension(imageFile.path);

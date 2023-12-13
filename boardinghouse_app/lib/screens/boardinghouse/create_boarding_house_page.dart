@@ -87,47 +87,6 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
     });
   }
 
-  void _createBoardingHouse() async {
-    print("có chạy cái này nha");
-    int _userId = await getUserId();
-    String? _image = getStringImage(_imageFile);
-
-    List<File> additionalImageFiles = [];
-  
-  // Convert additional XFile images to File objects
-  for (XFile imageFile in imageFileList) {
-    additionalImageFiles.add(File(imageFile.path));
-  }
-    ApiResponse response = await createBoardingHouse(
-        _userId,
-        _typeId,
-        _txtNameController.text,
-        _txtAddressController.text,
-        _txtQuantityController.text,
-        _txtCapacityController.text,
-        _txtAcraeController.text,
-        _txtPriceController.text,
-        _txtDepositController.text,
-        _txtElectriController.text,
-        _txtWaterController.text,
-        _txtDescriptionController.text,
-        _imageFile,
-        additionalImageFiles
-        );
-
-    if (response.error == null) {
-      Navigator.of(context).pop();
-    } else if (response.error == unauthorized) {
-      logout().then((value) => {});
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('${response.error}')));
-      setState(() {
-        _loading = !_loading;
-      });
-    }
-  }
-
   List<dynamic> _typeList = [];
 
   //get boardingHouseType
@@ -150,16 +109,58 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
     }
   }
 
-  int? getBoardingHouseTypeIdByName(String typeName) {
-    for (dynamic type in _typeList) {
-      if (type['name'] == typeName) {
-        return type['id'] as int?;
+  void _createBoardingHouse() async {
+    print("có chạy cái này nha");
+    int _userId = await getUserId();
+    String? _image = getStringImage(_imageFile);
+
+    List<File> additionalImageFiles = [];
+
+    // Convert additional XFile images to File objects
+    for (XFile imageFile in imageFileList) {
+      additionalImageFiles.add(File(imageFile.path));
+    }
+
+    List<int> selectedUtilsIds = [];
+    for (Utils utility in _utilsList) {
+      if (utility.isSelected) {
+        selectedUtilsIds.add(utility.id!);
       }
     }
-    return null; // Return null if not found
+
+    ApiResponse response = await createBoardingHouse(
+      _userId,
+      _typeId,
+      _txtNameController.text,
+      _txtAddressController.text,
+      _txtQuantityController.text,
+      _txtCapacityController.text,
+      _txtAcraeController.text,
+      _txtPriceController.text,
+      _txtDepositController.text,
+      _txtElectriController.text,
+      _txtWaterController.text,
+      _txtDescriptionController.text,
+      _imageFile,
+      additionalImageFiles,
+      selectedUtilsIds,
+    );
+
+    if (response.error == null) {
+      Navigator.of(context).pop();
+    } else if (response.error == unauthorized) {
+      logout().then((value) => {});
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
+      setState(() {
+        _loading = !_loading;
+      });
+    }
   }
 
   List<dynamic> _utilsList = [];
+  // List<Utils> _utilsList = [];
 
   //get Uitls
   void getListUtil() async {
@@ -180,41 +181,6 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
       print('Error in getListUtil: $e');
     }
   }
-
-  
-
-  // Future<void> postListImage() async {
-  //   try {
-  //     List<String> uploadedImagePaths = [];
-  //     for (var imageFile in imageFileList) {
-  //       String imagePath = imageFile.path;
-  //       uploadedImagePaths.add(imagePath);
-  //     }
-
-  //     int boardingHouseId = 123; // Thay bằng boardingHouseId thực tế của bạn
-
-  //     ApiResponse response = await uploadImagesBoardingHouse(
-  //       boardingHouseId,
-  //       uploadedImagePaths,
-  //     );
-
-  //     if (response.error == null) {
-  //       // Navigator.of(context).pop();
-  //       print("Upload ảnh thành công");
-  //     } else if (response.error == unauthorized) {
-  //       logout().then((value) => {});
-  //     } else {
-  //       ScaffoldMessenger.of(context)
-  //           .showSnackBar(SnackBar(content: Text('${response.error}')));
-  //       setState(() {
-  //         // _loading = !_loading;
-  //       });
-  //     }
-  //   } catch (e) {
-  //     // Xử lý khi có lỗi xảy ra
-  //     print("Lỗi khi tải ảnh lên: $e");
-  //   }
-  // }
 
   @override
   void initState() {
@@ -694,13 +660,13 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          color: const Color.fromRGBO(0, 177, 237, 1),
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pushNamed('postquickly');
-          },
-        ),
+        // leading: IconButton(
+        //   color: const Color.fromRGBO(0, 177, 237, 1),
+        //   icon: const Icon(Icons.arrow_back),
+        //   onPressed: () {
+        //     Navigator.of(context).pushNamed('postquickly');
+        //   },
+        // ),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
@@ -708,6 +674,16 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
           "Tạo nhà trọ",
           style: TextStyle(color: Color.fromRGBO(0, 177, 237, 1)),
         ),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Hủy',
+                style: TextStyle(color: Colors.black54, fontSize: 20),
+              ))
+        ],
       ),
       body: Stepper(
         type: StepperType.horizontal,
@@ -782,8 +758,6 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
                         // Thực hiện chức năng cho stepper thứ hai
                       } else if (_currentStep == 2) {
                         print("hoàn thành");
-                        _createBoardingHouse();
-                        Navigator.of(context).pushNamed("postquickly");
 
                         // Thực hiện chức năng cho stepper thứ ba
                       }
@@ -794,6 +768,8 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
                           _currentStep += 1;
                         });
                       } else {
+                        _createBoardingHouse();
+                        Navigator.of(context).pushNamed("postquickly");
                         // Chức năng khi hoàn thành tất cả các bước
                         print('Submited');
                       }
@@ -827,12 +803,4 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
       ],
     );
   }
-
-  // String _formatTime(DateTime time) {
-  //   return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-  // }
-
-  // DateTime _combineDateAndTime(DateTime date, TimeOfDay time) {
-  //   return DateTime(date.year, date.month, date.day, time.hour, time.minute);
-  // }
 }
