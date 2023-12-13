@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Evaluate extends Model
 {
     use HasFactory;
+
+    protected $appends = ['user'];
+
     protected $fillable = [
         'user_id',
         'boarding_house_id',
