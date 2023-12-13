@@ -130,12 +130,14 @@ Future<ApiResponse> createBoardingHouse(
         'water_price': waterPrice,
         'description': description,
         'address': address,
-        'utils': utilityIds!.join(','),
+        // 'utils': utilityIds!.join(','),
       });
 
-    // if (utilityIds != null && utilityIds.isNotEmpty) {
-    //   request.fields['id'] = utilityIds.map((id) => id.toString()).join(',');
-    // }
+    if (utilityIds != null && utilityIds.isNotEmpty) {
+      request.fields['utils'] = utilityIds.map((id) => id.toString()).join(',');
+    }
+
+    print(request.fields['utils']);
 
     if (imageFile != null) {
       String fileExtension = extension(imageFile.path);

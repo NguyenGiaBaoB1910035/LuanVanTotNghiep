@@ -122,11 +122,13 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
     }
 
     List<int> selectedUtilsIds = [];
+    
     for (Utils utility in _utilsList) {
       if (utility.isSelected) {
         selectedUtilsIds.add(utility.id!);
       }
     }
+    print(selectedUtilsIds);
 
     ApiResponse response = await createBoardingHouse(
       _userId,
