@@ -112,7 +112,7 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
   void _createBoardingHouse() async {
     print("có chạy cái này nha");
     int _userId = await getUserId();
-    String? _image = getStringImage(_imageFile);
+    // String? _image = getStringImage(_imageFile);
 
     List<File> additionalImageFiles = [];
 
