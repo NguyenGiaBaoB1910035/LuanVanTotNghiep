@@ -80,7 +80,10 @@ class CreateHandler extends Handlers
             if ($request->has('utils')) {
                 try {
                     // Retrieve the utility IDs from the request
-                    $utilityIds = $request->input('utils');
+                    $utilsInput = $request->input('utils');
+
+                    // Decode the JSON string to an array
+                    $utilityIds = json_decode($utilsInput);
 
                     // Save the model first to get the ID
                     $model->save();
@@ -90,6 +93,9 @@ class CreateHandler extends Handlers
 
                     // Attach the utilities to the newly created boarding house with the correct boarding_house_id
                     $model->utils()->attach($utilityIds, ['boarding_house_id' => $boardingHouseId]);
+
+                    // ...
+
                 } catch (\Exception $e) {
                     // Handle exceptions appropriately (e.g., log, return error response)
                     return response()->json([
@@ -98,6 +104,7 @@ class CreateHandler extends Handlers
                     ], 500);
                 }
             }
+
 
             $model->save();
 
