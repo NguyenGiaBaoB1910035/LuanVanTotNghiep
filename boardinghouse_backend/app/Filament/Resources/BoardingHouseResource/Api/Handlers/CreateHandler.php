@@ -83,7 +83,7 @@ class CreateHandler extends Handlers
                     $utilsInput = $request->input('utils');
 
                     // Decode the JSON string to an array
-                    $utilityIds = json_decode($utilsInput);
+                    $utilityIds = explode(',', $utilsInput);
 
                     // Save the model first to get the ID
                     $model->save();
