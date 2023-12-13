@@ -18,58 +18,64 @@ class SearchHandler extends Handlers
 
     public static function getModel()
     {
-        return static::$resource::getModel();
+        $modelClass = static::$resource::getModel();
+        return new $modelClass;
     }
 
     public function handler(Request $request)
     {
         try {
-            $query = static::getModel();
+            $query = static::getModel()->newQuery();
 
             // Search by name
-            if ($request->has('name')) {
-                $query->where('name', 'like', '%' . $request->input('name') . '%');
+            if ($request->filled('name')) {
+                $query->where('name', 'like', '%' . trim($request->input('name')) . '%');
             }
 
             // Search by author's name
-            if ($request->has('author_name')) {
+            if ($request->filled('author_name')) {
                 $query->whereHas('user', function ($subQuery) use ($request) {
-                    $subQuery->where('name', 'like', '%' . $request->input('author_name') . '%');
+                    $subQuery->where('name', 'like', '%' . trim($request->input('author_name')) . '%');
                 });
             }
 
             // Search by utils
-            if ($request->has('utils')) {
-                $query->whereHas('utils', function ($subQuery) use ($request) {
-                    $subQuery->whereIn('name', $request->input('utils'));
+            if ($request->filled('utils')) {
+                $utils = $request->input('utils');
+
+                // Ensure $utils is an array
+                $utils = is_array($utils) ? $utils : [$utils];
+
+                $query->whereHas('utils', function ($subQuery) use ($utils) {
+                    $subQuery->whereIn('name', $utils);
                 });
             }
 
             // Search by address
-            if ($request->has('address')) {
-                $query->where('address', 'like', '%' . $request->input('address') . '%');
+            if ($request->filled('address')) {
+                $query->where('address', 'like', '%' . trim($request->input('address')) . '%');
             }
 
             // Search by type
-            if ($request->has('type')) {
+            if ($request->filled('type')) {
                 $query->whereHas('boarding_house_type', function ($subQuery) use ($request) {
-                    $subQuery->where('name', 'like', '%' . $request->input('type') . '%');
+                    $subQuery->where('name', 'like', '%' . trim($request->input('type')) . '%');
                 });
             }
 
             // Search by capacity
-            if ($request->has('capacity')) {
+            if ($request->filled('capacity')) {
                 $query->where('capacity', '=', $request->input('capacity'));
             }
 
             // Search by openTime, closeTime
-            if ($request->has('openTime') && $request->has('closeTime')) {
+            if ($request->filled('openTime') && $request->filled('closeTime')) {
                 $query->whereBetween('open_time', [$request->input('openTime'), $request->input('closeTime')])
                     ->whereBetween('close_time', [$request->input('openTime'), $request->input('closeTime')]);
             }
 
             // Search by price
-            if ($request->has('price_start') && $request->has('price_end')) {
+            if ($request->filled('price_start') && $request->filled('price_end')) {
                 $query->where('price', '>=', $request->input('price_start'))
                     ->where('price', '<=', $request->input('price_end'));
             }
