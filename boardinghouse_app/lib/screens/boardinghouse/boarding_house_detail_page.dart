@@ -161,7 +161,7 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
                               Container(
                                 child: SmoothPageIndicator(
                                     controller: controller, // PageController
-                                    count: imageList.length,
+                                    count: _boardingHouse!.urlImages!.length,
                                     effect: const WormEffect(
                                         dotHeight: 7,
                                         dotWidth: 7,
@@ -725,7 +725,7 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text('${evaluate.userId}'),
+                                    Text('${evaluate.user!.userName}'),
                                     // evaluate.userId == getUserId()
                                     //     ? Container(
                                     //         child: null,
@@ -802,64 +802,64 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
 // ------------------------------------------------------------------------------------------//
 // ------------------------------------------------------------------------------------------//
 
-List<String> imageList = [
-  'assets/images/bh_image_1.jpg',
-  'assets/images/bh_image_2.jpg',
-  'assets/images/bh_image_3.jpg',
-  'assets/images/bh_image_4.jpg',
-  // Thêm nhiều hình ảnh khác ở đây
-];
+// List<String> imageList = [
+//   'assets/images/bh_image_1.jpg',
+//   'assets/images/bh_image_2.jpg',
+//   'assets/images/bh_image_3.jpg',
+//   'assets/images/bh_image_4.jpg',
+//   // Thêm nhiều hình ảnh khác ở đây
+// ];
 
-class ListImage extends StatefulWidget {
-  const ListImage({super.key});
+// class ListImage extends StatefulWidget {
+//   const ListImage({super.key});
 
-  @override
-  State<ListImage> createState() => _ListImageState();
-}
+//   @override
+//   State<ListImage> createState() => _ListImageState();
+// }
 
-class _ListImageState extends State<ListImage> {
-  final controller = PageController(viewportFraction: 0.9);
+// class _ListImageState extends State<ListImage> {
+//   final controller = PageController(viewportFraction: 0.9);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 4 / 10,
-      width: MediaQuery.of(context).size.width,
-      child: PageView.builder(
-        controller: controller,
-        // shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: imageList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 5),
-                  height: 300,
-                  width: MediaQuery.of(context).size.width,
-                  child: Image.asset(
-                    imageList[index],
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Container(
-                child: SmoothPageIndicator(
-                    controller: controller, // PageController
-                    count: imageList.length,
-                    effect: const WormEffect(
-                        dotHeight: 7,
-                        dotWidth: 7,
-                        activeDotColor: Color.fromRGBO(
-                            0, 177, 237, 1)), // your preferred effect
-                    onDotClicked: (index) {}),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       height: MediaQuery.of(context).size.height * 4 / 10,
+//       width: MediaQuery.of(context).size.width,
+//       child: PageView.builder(
+//         controller: controller,
+//         // shrinkWrap: true,
+//         scrollDirection: Axis.horizontal,
+//         itemCount: imageList.length,
+//         itemBuilder: (BuildContext context, int index) {
+//           return Column(
+//             children: [
+//               Padding(
+//                 padding: const EdgeInsets.only(bottom: 10),
+//                 child: Container(
+//                   margin: const EdgeInsets.symmetric(horizontal: 5),
+//                   height: 300,
+//                   width: MediaQuery.of(context).size.width,
+//                   child: Image.asset(
+//                     imageList[index],
+//                     fit: BoxFit.cover,
+//                   ),
+//                 ),
+//               ),
+//               Container(
+//                 child: SmoothPageIndicator(
+//                     controller: controller, // PageController
+//                     count: imageList.length,
+//                     effect: const WormEffect(
+//                         dotHeight: 7,
+//                         dotWidth: 7,
+//                         activeDotColor: Color.fromRGBO(
+//                             0, 177, 237, 1)), // your preferred effect
+//                     onDotClicked: (index) {}),
+//               ),
+//             ],
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }

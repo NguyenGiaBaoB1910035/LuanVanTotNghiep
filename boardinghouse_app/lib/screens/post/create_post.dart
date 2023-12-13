@@ -1,5 +1,6 @@
-import 'package:boardinghouse_app/screens/components/card_post.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CreatePost extends StatefulWidget {
   const CreatePost({super.key});
@@ -9,7 +10,26 @@ class CreatePost extends StatefulWidget {
 }
 
 class _CreatePostState extends State<CreatePost> {
+  File? _imageFile;
+  final _picker = ImagePicker();
+
+  Future getImage() async {
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
+
   String content = '';
+  String title = '';
+
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController _txtTitleController = TextEditingController();
+  final TextEditingController _txtContentController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,11 +63,29 @@ class _CreatePostState extends State<CreatePost> {
         color: Colors.white,
         child: Column(
           children: [
+            TextFormField(
+              // maxLines: 6,
+              style: TextStyle(fontSize: 20),
+              // textDirection: ,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Tên bài đăng',
+                // labelText: 'Nội dung cho nhà trọ của bạn?'
+              ),
+              onChanged: (value) {
+                setState(() {
+                  content = (value);
+                });
+              },
+            ),
+            Divider(
+              color: Colors.black45,
+            ),
             Padding(
               padding: const EdgeInsets.all(10),
               child: TextFormField(
-                maxLines: 6,
-                style: TextStyle(fontSize: 22),
+                maxLines: 5,
+                style: TextStyle(fontSize: 20),
                 // textDirection: ,
                 decoration: const InputDecoration(
                   border: InputBorder.none,
@@ -58,6 +96,24 @@ class _CreatePostState extends State<CreatePost> {
                   setState(() {
                     content = (value);
                   });
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: GestureDetector(
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 180,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1),
+                    image: DecorationImage(
+                        image: FileImage(_imageFile ?? File('')),
+                        fit: BoxFit.cover),
+                  ),
+                ),
+                onTap: () {
+                  getImage();
                 },
               ),
             ),
