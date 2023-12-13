@@ -21,8 +21,15 @@ class PaginationHandler extends Handlers
         $query = QueryBuilder::for($model)
             ->allowedFields($model::$allowedFields ?? [])
             ->allowedSorts($model::$allowedSorts ?? [])
-            ->allowedFilters($model::$allowedFilters ?? [])
-            ->paginate(request()->query('per_page'))
+            ->allowedFilters($model::$allowedFilters ?? []);
+
+        // Check if 'user_id' is present in the request
+        if ($userId = request()->query('user_id')) {
+            // Add a filter to only include boarding_houses for the specified user
+            $query->where('user_id', $userId);
+        }
+
+        $query = $query->paginate(request()->query('per_page'))
             ->appends(request()->query());
 
         return static::getApiTransformer()::collection($query);
