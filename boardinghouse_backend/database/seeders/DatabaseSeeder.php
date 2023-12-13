@@ -156,6 +156,32 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
+       /* BoardingHouseType::insert([
+            [
+                'name' => 'Nhà trọ Hoàng Gia',
+                'featured_image' => 'nhatro1-1.jpg',
+                'images' => [
+                    'nhatro1-1.jpg',
+                    'nhatro1-2.jpg',
+                    'nhatro1-3.jpg',
+                    'nhatro1-5.jpg',
+                ],
+                'room_number' => '20',
+                'acreage' => '3',
+                'capacity' => '20',
+                'price' => '1200000',
+                'deposit_price' => '1200000',
+                'electric_price' => '10000',
+                'water_price' => '6000',
+                'description' => 'CHO THUÊ PHÒNG KHU GIẢNG VIÊN ĐẠI HỌC CẦN THƠ ( hẻm 51, bờ hồ Bún Xáng....)\n📍kế bên trường ĐHYD, ĐHCT...\n💵: Giá 4tr6/tháng. Cọc 2 tháng. Hdong 1 năm\n- Lộ lớn đậu oto vivu/n- Nội thất đẹp mới như hình\n☎️: 07.9596.2728 Uyên',
+                'address' => '211 Huỳnh Cương, P An Cư, Q Ninh Kiều, TP Cần Thơ',
+                'status' => 'pending',
+                'user_id' => '1',
+                'boarding_house_type_id' => '1'
+
+            ]
+        ]);
+*/
         Util::insert($utils);
 
         User::factory(50)->create();

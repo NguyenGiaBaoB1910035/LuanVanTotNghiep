@@ -14,7 +14,8 @@ class _CardBoardingHouseDetailState extends State<CardBoardingHouseDetail> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.of(context).pushNamed('boardinghousedetail');
+        
+        // Navigator.of(context).pushNamed('boardinghousedetail');
       },
       child: Container(
           decoration: BoxDecoration(

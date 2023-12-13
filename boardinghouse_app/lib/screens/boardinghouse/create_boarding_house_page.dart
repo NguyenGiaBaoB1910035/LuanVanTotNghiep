@@ -67,25 +67,37 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
       });
     }
   }
-//   Future<void> getImage() async {
-//   final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-//   if (pickedFile != null) {
-//     String fileExtension = extension(pickedFile.path);
-//     if (fileExtension.toLowerCase() == '.png' || fileExtension.toLowerCase() == '.jpg') {
-//       setState(() {
-//         _imageFile = File(pickedFile.path);
-//       });
-//     } else {
-//       // Show an error message or handle the case where the file extension is not allowed.
-//       print("Invalid file type. Please choose a PNG or JPG image.");
-//     }
-//   }
-// }
+
+  final ImagePicker imagePicker = ImagePicker();
+  List<XFile> imageFileList = [];
+  List<String> imagePathList = [];
+  void selectImages() async {
+    final List<XFile>? selectedImages = await imagePicker.pickMultiImage();
+    if (selectedImages!.isNotEmpty) {
+      imageFileList!.addAll(selectedImages);
+    }
+    setState(() {});
+  }
+
+  void deleteImage(int index) {
+    setState(() {
+      if (index >= 0 && index < imageFileList.length) {
+        imageFileList.removeAt(index);
+      }
+    });
+  }
 
   void _createBoardingHouse() async {
     print("có chạy cái này nha");
     int _userId = await getUserId();
     String? _image = getStringImage(_imageFile);
+
+    List<File> additionalImageFiles = [];
+  
+  // Convert additional XFile images to File objects
+  for (XFile imageFile in imageFileList) {
+    additionalImageFiles.add(File(imageFile.path));
+  }
     ApiResponse response = await createBoardingHouse(
         _userId,
         _typeId,
@@ -98,12 +110,10 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
         _txtDepositController.text,
         _txtElectriController.text,
         _txtWaterController.text,
-        // openTime,
-        // closeTime,
-        // publishedAt,
         _txtDescriptionController.text,
-        // _imageFile ,
-        _imageFile);
+        _imageFile,
+        additionalImageFiles
+        );
 
     if (response.error == null) {
       Navigator.of(context).pop();
@@ -171,57 +181,40 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
     }
   }
 
-  final ImagePicker imagePicker = ImagePicker();
-  List<XFile> imageFileList = [];
-  List<String> imagePathList = [];
-  void selectImages() async {
-    final List<XFile>? selectedImages = await imagePicker.pickMultiImage();
-    if (selectedImages!.isNotEmpty) {
-      imageFileList!.addAll(selectedImages);
-    }
-    setState(() {});
-  }
+  
 
-  void deleteImage(int index) {
-    setState(() {
-      if (index >= 0 && index < imageFileList.length) {
-        imageFileList.removeAt(index);
-      }
-    });
-  }
+  // Future<void> postListImage() async {
+  //   try {
+  //     List<String> uploadedImagePaths = [];
+  //     for (var imageFile in imageFileList) {
+  //       String imagePath = imageFile.path;
+  //       uploadedImagePaths.add(imagePath);
+  //     }
 
-  Future<void> postListImage() async {
-    try {
-      List<String> uploadedImagePaths = [];
-      for (var imageFile in imageFileList) {
-        String imagePath = imageFile.path;
-        uploadedImagePaths.add(imagePath);
-      }
+  //     int boardingHouseId = 123; // Thay bằng boardingHouseId thực tế của bạn
 
-      int boardingHouseId = 123; // Thay bằng boardingHouseId thực tế của bạn
+  //     ApiResponse response = await uploadImagesBoardingHouse(
+  //       boardingHouseId,
+  //       uploadedImagePaths,
+  //     );
 
-      ApiResponse response = await uploadImagesBoardingHouse(
-        boardingHouseId,
-        uploadedImagePaths,
-      );
-
-      if (response.error == null) {
-        // Navigator.of(context).pop();
-        print("Upload ảnh thành công");
-      } else if (response.error == unauthorized) {
-        logout().then((value) => {});
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('${response.error}')));
-        setState(() {
-          // _loading = !_loading;
-        });
-      }
-    } catch (e) {
-      // Xử lý khi có lỗi xảy ra
-      print("Lỗi khi tải ảnh lên: $e");
-    }
-  }
+  //     if (response.error == null) {
+  //       // Navigator.of(context).pop();
+  //       print("Upload ảnh thành công");
+  //     } else if (response.error == unauthorized) {
+  //       logout().then((value) => {});
+  //     } else {
+  //       ScaffoldMessenger.of(context)
+  //           .showSnackBar(SnackBar(content: Text('${response.error}')));
+  //       setState(() {
+  //         // _loading = !_loading;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     // Xử lý khi có lỗi xảy ra
+  //     print("Lỗi khi tải ảnh lên: $e");
+  //   }
+  // }
 
   @override
   void initState() {
@@ -705,7 +698,7 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
           color: const Color.fromRGBO(0, 177, 237, 1),
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pushNamed('main');
+            Navigator.of(context).pushNamed('postquickly');
           },
         ),
         centerTitle: true,
@@ -748,67 +741,69 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
 
           return Row(
             children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Xử lý nút Tiếp tục của stepper thứ nhất
-                    if (_currentStep == 0) {
-                      print("lưu nhà trọ");
-                      _createBoardingHouse();
-
-                      // Thực hiện chức năng cho stepper thứ nhất
-                    } else if (_currentStep == 1) {
-                      print("ảnh và tiện ích");
-
-                      // Thực hiện chức năng cho stepper thứ hai
-                    } else if (_currentStep == 2) {
-                      print("hoàn thành");
-
-                      // Thực hiện chức năng cho stepper thứ ba
-                    }
-
-                    // Di chuyển đến bước tiếp theo
-                    if (_currentStep < (stepList().length - 1)) {
-                      setState(() {
-                        _currentStep += 1;
-                      });
-                    } else {
-                      Navigator.of(context).pushNamed("main");
-                      // Chức năng khi hoàn thành tất cả các bước
-                      print('Submited');
-                    }
-                  },
-                  child: (isLastStep)
-                      ? const Text('Hoàn thành')
-                      : const Text('Tiếp tục'),
-                ),
-              ),
               if (_currentStep > 0)
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Xử lý nút Trở lại của từng stepper
-                        if (_currentStep == 0) {
-                          // Thực hiện chức năng cho stepper thứ nhất khi nhấn nút Trở lại
-                        } else if (_currentStep == 1) {
-                          // Thực hiện chức năng cho stepper thứ hai khi nhấn nút Trở lại
-                        } else if (_currentStep == 2) {
-                          // Thực hiện chức năng cho stepper thứ ba khi nhấn nút Trở lại
-                        }
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Xử lý nút Trở lại của từng stepper
+                      if (_currentStep == 0) {
+                        // Thực hiện chức năng cho stepper thứ nhất khi nhấn nút Trở lại
+                      } else if (_currentStep == 1) {
+                        // Thực hiện chức năng cho stepper thứ hai khi nhấn nút Trở lại
+                      } else if (_currentStep == 2) {
+                        // Thực hiện chức năng cho stepper thứ ba khi nhấn nút Trở lại
+                      }
 
-                        // Di chuyển đến bước trước đó
-                        if (_currentStep > 0) {
-                          setState(() {
-                            _currentStep -= 1;
-                          });
-                        }
-                      },
-                      child: const Text('Trở lại'),
-                    ),
+                      // Di chuyển đến bước trước đó
+                      if (_currentStep > 0) {
+                        setState(() {
+                          _currentStep -= 1;
+                        });
+                      }
+                    },
+                    child: const Text('Trở lại'),
                   ),
-                )
+                ),
+              Expanded(
+                child: Padding(
+                  padding: _currentStep != 0
+                      ? const EdgeInsets.only(left: 10)
+                      : const EdgeInsets.only(left: 0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Xử lý nút Tiếp tục của stepper thứ nhất
+                      if (_currentStep == 0) {
+                        print("lưu nhà trọ");
+
+                        // Thực hiện chức năng cho stepper thứ nhất
+                      } else if (_currentStep == 1) {
+                        print("ảnh và tiện ích");
+
+                        // Thực hiện chức năng cho stepper thứ hai
+                      } else if (_currentStep == 2) {
+                        print("hoàn thành");
+                        _createBoardingHouse();
+                        Navigator.of(context).pushNamed("postquickly");
+
+                        // Thực hiện chức năng cho stepper thứ ba
+                      }
+
+                      // Di chuyển đến bước tiếp theo
+                      if (_currentStep < (stepList().length - 1)) {
+                        setState(() {
+                          _currentStep += 1;
+                        });
+                      } else {
+                        // Chức năng khi hoàn thành tất cả các bước
+                        print('Submited');
+                      }
+                    },
+                    child: (isLastStep)
+                        ? const Text('Hoàn thành')
+                        : const Text('Tiếp tục'),
+                  ),
+                ),
+              ),
             ],
           );
         },

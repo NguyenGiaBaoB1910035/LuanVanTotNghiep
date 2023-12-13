@@ -18,25 +18,32 @@ class Evalute {
 
 class Evaluate {
   int? id;
+  int? userId;
+  // int? boardingHouseId;
+
   int? rating;
-  String? comment;
-  User? user;
+  String? content;
+  // User? user;
   // BoardingHouse? boardingHouse;
 
   Evaluate({
     this.id,
     this.rating,
-    this.comment,
-    this.user,
-    // this.boardingHouse,
+    this.content,
+    this.userId,
+    // this.boardingHouseId,
+
+    // this.user,
   });
 
   factory Evaluate.fromJson(Map<String, dynamic> json) {
     return Evaluate(
       id: json['id'],
-      rating: json['rating'],
-      comment: json['comment'],
-      user: User(id: json['user']['id'], userName: json['user']['user_name']),
+      rating: json['ratings'],
+      content: json['content'],
+      userId: json['user_id'],
+      // boardingHouseId: json['boarding_house_id']
+      // user: User(id: json['user']['id'], userName: json['user']['user_name']),
     );
   }
 }

@@ -4,7 +4,6 @@ import 'package:boardinghouse_app/screens/account/profile_user.dart';
 import 'package:boardinghouse_app/screens/authu/begin_page.dart';
 import 'package:boardinghouse_app/screens/authu/login_page.dart';
 import 'package:boardinghouse_app/screens/authu/register_page.dart';
-import 'package:boardinghouse_app/screens/boardinghouse/boarding_house_detail_page.dart';
 import 'package:boardinghouse_app/screens/boardinghouse/create_boarding_house_page.dart';
 import 'package:boardinghouse_app/screens/bottombar.dart';
 import 'package:boardinghouse_app/screens/favouritepage.dart';
@@ -63,9 +62,6 @@ class MyApp extends StatelessWidget {
         // 'createBH': (context) => const CreateBoardingHouse(),
         'createBHP': (context) => const CreateBoardingHousePage(),
 
-        //-----//
-        'boardinghousedetail': (context) => const BoardingHouseDetailPage(),
-        //-----//
         'mapplace': (context) => PlaceSearchScreen(),
       },
     );

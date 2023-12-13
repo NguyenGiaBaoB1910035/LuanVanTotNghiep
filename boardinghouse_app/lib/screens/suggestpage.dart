@@ -1,13 +1,10 @@
-// import 'package:boardinghouse_app/screens/bottombar.dart';
 import 'package:boardinghouse_app/apis/boarding_house_api.dart';
-import 'package:boardinghouse_app/apis/boarding_house_type_api.dart';
 import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/apis/user_api.dart';
 import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:boardinghouse_app/models/boarding_house.dart';
-import 'package:boardinghouse_app/models/boarding_house_type.dart';
+import 'package:boardinghouse_app/screens/boardinghouse/boarding_house_detail_page.dart';
 import 'package:flutter/material.dart';
-
 // import '../components/card_boarding_house_detail.dart';
 
 class SuggestPage extends StatefulWidget {
@@ -19,6 +16,7 @@ class SuggestPage extends StatefulWidget {
 
 class _SuggestPageState extends State<SuggestPage> {
   List<dynamic> _boardigHouseList = [];
+  bool _loading = true;
 
   //get BoardingHouse
   void getListBoardingHouse() async {
@@ -27,6 +25,7 @@ class _SuggestPageState extends State<SuggestPage> {
       if (response.error == null) {
         setState(() {
           _boardigHouseList = response.data as List<dynamic>;
+          _loading = _loading ? !_loading : _loading;
         });
       } else if (response.error == unauthorized) {
         logout().then((value) => {});
@@ -40,42 +39,11 @@ class _SuggestPageState extends State<SuggestPage> {
     }
   }
 
-  List<dynamic> _typeList = [];
-
-  String? getTypeName(int typeId) {
-    for (var i = 0; i < _typeList.length; i = i + 1) {
-      BoardingHouseType type = _typeList[i];
-      if (typeId == type.id) {
-        return type.name;
-      }
-    }
-  }
-
-  //get boardingHouseType
-  void getNameBoardingHouseType() async {
-    try {
-      ApiResponse response = await getBoardingHouseType();
-      if (response.error == null) {
-        setState(() {
-          _typeList = response.data as List<dynamic>;
-        });
-      } else if (response.error == unauthorized) {
-        logout().then((value) => {});
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('${response.error}')));
-        print("response.error getNameBoardingHouseType ${response.error}");
-      }
-    } catch (e) {
-      print('Error in getNameBoardingHouseType: $e');
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     getListBoardingHouse();
-    getNameBoardingHouseType();
+    // getNameBoardingHouseType();
   }
 
   @override
@@ -113,7 +81,12 @@ class _SuggestPageState extends State<SuggestPage> {
                 BoardingHouse boardingHouse = _boardigHouseList[index];
                 return InkWell(
                   onTap: () {
-                    Navigator.of(context).pushNamed('boardinghousedetail');
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => BoardingHouseDetailPage(
+                                  boardingHouseId: boardingHouse.id!,
+                                )));
                   },
                   child: Container(
                       decoration: BoxDecoration(
@@ -132,7 +105,6 @@ class _SuggestPageState extends State<SuggestPage> {
                                 image: Image.network(
                                   '${boardingHouse.urlIamge}',
                                 ).image,
-                                // AssetImage("assets/images/anh.jpg"),
                                 fit: BoxFit.fitWidth,
                               ),
                             ),
@@ -150,11 +122,12 @@ class _SuggestPageState extends State<SuggestPage> {
                             //           color: Colors.red),
                             //     )),
                           ),
+
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 2.5),
                             child: Text(
-                              "${boardingHouse.boardingHouseTypeId}",
+                              "${boardingHouse.boardingHouseType!.name}",
                               style: TextStyle(fontSize: 16),
                             ),
                           ),

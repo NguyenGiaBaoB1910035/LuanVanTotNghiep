@@ -43,6 +43,7 @@ Future<ApiResponse> login(String login, String password) async {
     }
   } catch (e) {
     apiResponse.error = serverError;
+    print(e);
   }
 
   return apiResponse;
@@ -95,6 +96,7 @@ Future<ApiResponse> getUserDetail(int userId) async {
     });
 
     if (response.statusCode == 200) {
+      // apiResponse.data = User.fromJson(jsonDecode(response.body));
       final Map<String, dynamic> responseBody = json.decode(response.body);
 
       if (responseBody.containsKey('data')) {
@@ -125,10 +127,8 @@ Future<ApiResponse> getUserDetail(int userId) async {
 }
 
 // Update user
-Future<ApiResponse> updateUser(
-  int userId,
-  
-    String name, String gender, String address, String? image) async {
+Future<ApiResponse> updateUser(int userId, String name, String gender,
+    String address, String? image) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
@@ -192,24 +192,9 @@ Future<bool> logout() async {
 
 // Get base64 encoded image
 String? getStringImage(File? file) {
-  if (file == null) return null ;
+  if (file == null) return null;
   return base64Encode(file.readAsBytesSync());
 }
 
 
-// String? getStringImage(File? file, {String format = 'jpeg'}) {
-//   if (file == null) return '';
 
-//   // Đọc dữ liệu từ tệp
-//   List<int> imageBytes = file.readAsBytesSync();
-
-//   // Chuyển đổi thành Uint8List
-//   Uint8List uint8List = Uint8List.fromList(imageBytes);
-
-//   // Thay đổi định dạng hình ảnh
-//   Image image = decodeImage(uint8List)!;
-//   List<int> convertedBytes = encodePng(image); // Thay đổi định dạng thành PNG
-
-//   // Chuyển đổi thành chuỗi base64
-//   return base64Encode(convertedBytes);
-// }

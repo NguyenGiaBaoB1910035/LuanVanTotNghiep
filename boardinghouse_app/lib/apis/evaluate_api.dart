@@ -8,64 +8,69 @@ import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:http/http.dart' as http;
 
 // Get post comments
-Future<ApiResponse> getComments(int boardingHouseId) async {
-  ApiResponse apiResponse = ApiResponse();
-  try {
-    String token = await getToken();
-    final response = await http.get(
-      Uri.parse('$ApiConstants.apiBoardingHouse/$boardingHouseId/evalutes'),
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': 'Bearer $token'
-      },
-    );
+// Future<ApiResponse> getComments(int boardingHouseId) async {
+//   ApiResponse apiResponse = ApiResponse();
+//   try {
+//     String token = await getToken();
+//     final response = await http.get(
+//       Uri.parse('$ApiConstants.apiBoardingHouse/$boardingHouseId/evalutes'),
+//       headers: {
+//         "Content-Type": "application/json",
+//         'Authorization': 'Bearer $token'
+//       },
+//     );
 
-    switch (response.statusCode) {
-      case 200:
-        // map each comments to comment model
-        apiResponse.data = jsonDecode(response.body)['evalutes']
-            .map((p) => Evaluate.fromJson(p))
-            .toList();
-        apiResponse.data as List<dynamic>;
-        break;
-      case 403:
-        apiResponse.error = jsonDecode(response.body)['message'];
-        break;
-      case 401:
-        apiResponse.error = unauthorized;
-        break;
-      default:
-        apiResponse.error = somethingWentWrong;
-        break;
-    }
-  } catch (e) {
-    apiResponse.error = serverError;
-  }
-  return apiResponse;
-}
+//     switch (response.statusCode) {
+//       case 200:
+//         // map each comments to comment model
+//         apiResponse.data = jsonDecode(response.body)['evalutes']
+//             .map((p) => Evaluate.fromJson(p))
+//             .toList();
+//         apiResponse.data as List<dynamic>;
+//         break;
+//       case 403:
+//         apiResponse.error = jsonDecode(response.body)['message'];
+//         break;
+//       case 401:
+//         apiResponse.error = unauthorized;
+//         break;
+//       default:
+//         apiResponse.error = somethingWentWrong;
+//         break;
+//     }
+//   } catch (e) {
+//     apiResponse.error = serverError;
+//   }
+//   return apiResponse;
+// }
 
 // Create comment
-Future<ApiResponse> createComment(
-    int boardingHouseId, int rating, String? comment) async {
+Future<ApiResponse> createEvalutes(
+    int userId, int boardingHouseId, double rating, String? content) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.post(
-        Uri.parse('$ApiConstants.apiBoardingHouse/$boardingHouseId/comments'),
+    final response = await http.post(Uri.parse(apiEvaluate),
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer $token'
         },
-        body: comment == null
+        body: content == null
             ? json.encode(
                 {
-                  'rating': rating,
+                  'user_id': userId,
+                  'boarding_house_id': boardingHouseId,
+                  'ratings': rating,
                 },
               )
             : json.encode({
-                'rating': rating,
-                'comment': comment,
+                'user_id': userId,
+                'boarding_house_id': boardingHouseId,
+                'ratings': rating,
+                'content': content,
               }));
+    print('response.body');
+    print(response.body);
 
     switch (response.statusCode) {
       case 200:
@@ -83,17 +88,18 @@ Future<ApiResponse> createComment(
     }
   } catch (e) {
     apiResponse.error = serverError;
+    print(e);
   }
   return apiResponse;
 }
 
 // Delete comment
-Future<ApiResponse> deleteComment(int commentId) async {
+Future<ApiResponse> deleteComment(int evaluateId) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
     final response = await http.delete(
-      Uri.parse('$ApiConstants.apiEvaluate/$commentId'),
+      Uri.parse('$apiEvaluate/$evaluateId'),
       headers: {
         "Content-Type": "application/json",
         'Authorization': 'Bearer $token'

@@ -1,3 +1,4 @@
+import 'package:boardinghouse_app/models/Evaluate.dart';
 import 'package:boardinghouse_app/models/boarding_house_type.dart';
 
 import 'user.dart';
@@ -22,38 +23,42 @@ class BoardingHouse {
   // String? favourite;
   String? status;
   String? urlIamge;
-
+  List<dynamic>? urlImages;
   int? userid;
   int? boardingHouseTypeId;
-  User? user;
-  BoardingHouseType? boardingHouseType;
-  List<Utils>? utils;
 
-  BoardingHouse(
-      {this.id,
-      this.name,
-      this.image, //???
-      this.type, //??
-      this.roomNumber,
-      this.acreage,
-      this.capacity,
-      this.price,
-      this.depositPrice,
-      this.electricPrice,
-      this.waterPrice,
-      this.openTime,
-      this.closeTime,
-      this.description,
-      this.address,
-      // this.favourite,
-      this.urlIamge,
-      this.status,
-      this.userid,
-      this.boardingHouseTypeId,
-      this.user,
-      this.boardingHouseType,
-      this.utils,
-      });
+  BoardingHouseType? boardingHouseType;
+  User? user;
+  List<Utils>? utils;
+  List<Evaluate>? evaluates;
+
+  BoardingHouse({
+    this.id,
+    this.name,
+    this.image, //???
+    this.type, //??
+    this.roomNumber,
+    this.acreage,
+    this.capacity,
+    this.price,
+    this.depositPrice,
+    this.electricPrice,
+    this.waterPrice,
+    this.openTime,
+    this.closeTime,
+    this.description,
+    this.address,
+    // this.favourite,
+    this.urlIamge,
+    this.urlImages,
+    this.status,
+    this.userid,
+    this.boardingHouseTypeId,
+    this.boardingHouseType,
+    this.user,
+    this.utils,
+    this.evaluates,
+  });
 
   factory BoardingHouse.fromJson(Map<String, dynamic> json) {
     return BoardingHouse(
@@ -73,17 +78,24 @@ class BoardingHouse {
       description: json['description'],
       address: json['address'],
       urlIamge: json['url_featured_image'],
+      urlImages: json['url_images'],
       // favourite: json['favourite'],
       status: json['status'],
       userid: json['user_id'],
       boardingHouseTypeId: json['boarding_house_type_id'],
-      // user: User(
-      //   id: json['user']['id'],
-      //   userName: json['user']['user_name'],
-      //   avatar: json['user']['avatar'],
-      // ),
-      boardingHouseType: BoardingHouseType(id: json['id'], name: json['name']),
-      utils: List<Utils>.from(json['utils'].map((util) => Utils.fromJson(util))),
+      boardingHouseType: BoardingHouseType(
+          id: json['boarding_house_type']['id'],
+          name: json['boarding_house_type']['name']),
+      user: User(
+        id: json['user']['id'],
+        userName: json['user']['user_name'],
+        urlAvatar: json['user']['url_avatar'],
+      ),
+      utils:
+          List<Utils>.from(json['utils'].map((util) => Utils.fromJson(util))),
+      evaluates: List<Evaluate>.from(
+        json['evaluates'].map((evaluate) => Evaluate.fromJson(evaluate)),
+      ),
     );
   }
 }

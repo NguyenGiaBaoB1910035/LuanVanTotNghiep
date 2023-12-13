@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:path/path.dart';
 
-//get boardinghouse
+//get all boardinghouse
 Future<ApiResponse> getBoardingHouses() async {
   ApiResponse apiResponse = ApiResponse();
   try {
@@ -55,6 +55,45 @@ Future<ApiResponse> getBoardingHouses() async {
   return apiResponse;
 }
 
+//get BoardingHousesDetail
+Future<ApiResponse> getBoardingHousesDetail(int boardingHouseId) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http
+        .get(Uri.parse('$apiBoardingHouse/$boardingHouseId'), headers: {
+      "Content-Type": "application/json",
+      'Authorization': 'Bearer $token'
+    });
+
+    print("responsr from server getBoardingHouses");
+    print(response.body);
+
+    switch (response.statusCode) {
+      case 200:
+        // Assuming 'data' directly contains the single boarding house
+        BoardingHouse boardingHouse =
+            BoardingHouse.fromJson(jsonDecode(response.body)['data']);
+        // Assign the single boarding house to apiResponse.data
+        apiResponse.data = boardingHouse;
+        print('apiResponse.data:');
+        print(apiResponse.data);
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+    print(e);
+  }
+  return apiResponse;
+}
+
+//create boarding house
 Future<ApiResponse> createBoardingHouse(
   int userId,
   int type,
@@ -69,6 +108,7 @@ Future<ApiResponse> createBoardingHouse(
   String waterPrice,
   String description,
   File? imageFile,
+  List<File>? imageFiles,
 ) async {
   ApiResponse apiResponse = ApiResponse();
   try {
@@ -107,6 +147,26 @@ Future<ApiResponse> createBoardingHouse(
         return apiResponse;
       }
     }
+    // Add multiple image files
+    if (imageFiles != null) {
+      for (int i = 0; i < imageFiles.length; i++) {
+        File imageFile = imageFiles[i];
+        String fileExtension = extension(imageFile.path);
+        if (fileExtension.toLowerCase() == '.png' ||
+            fileExtension.toLowerCase() == '.jpg') {
+          var stream = http.ByteStream(imageFile.openRead());
+          var length = await imageFile.length();
+          var multipartFile = http.MultipartFile('images[]', stream, length,
+              filename: 'image$i$fileExtension');
+          request.files.add(multipartFile);
+        } else {
+          // Handle the case where the file extension is not allowed.
+          apiResponse.error =
+              "Invalid file type. Please choose PNG or JPG images.";
+          return apiResponse;
+        }
+      }
+    }
 
     var response = await request.send();
     var responseData = await response.stream.bytesToString();
@@ -135,79 +195,6 @@ Future<ApiResponse> createBoardingHouse(
   }
   return apiResponse;
 }
-
-// Future<ApiResponse> createBoardingHouse(
-//     int userId,
-//     int type,
-//     String name,
-//     String address,
-//     String roomNumber,
-//     String acreage,
-//     String capacity,
-//     String price,
-//     String depositPrice,
-//     String electricPrice,
-//     String waterPrice,
-//     // DateTime openTime,
-//     // DateTime closeTime,
-//     // DateTime publishedAt,
-//     String description,
-//     String image) async {
-//   ApiResponse apiResponse = ApiResponse();
-//   try {
-//     String token = await getToken();
-//     final response = await http.post(
-//       Uri.parse(apiBoardingHouse),
-//       headers: {
-//         "Content-Type": "application/json",
-//         'Authorization': 'Bearer $token'
-//       },
-//       body: json.encode(
-//         {
-//           'user_id': userId,
-//           'boarding_house_type_id': type,
-//           'name': name,
-//           'featured_image': image,
-//           'room_number': roomNumber,
-//           'acreage': acreage,
-//           'capacity': capacity,
-//           'price': price,
-//           'deposit_price': depositPrice,
-//           'electric_price': electricPrice,
-//           'water_price': waterPrice,
-//           // 'open_time': openTime,
-//           // 'close_time': closeTime,
-//           // 'published_at': publishedAt,
-//           'description': description,
-//           'address': address,
-//         },
-//       ),
-//     );
-//     // here if the image is null we just send the body, if not null we send the image too
-//     switch (response.statusCode) {
-//       case 200:
-//         apiResponse.data = jsonDecode(response.body);
-//         break;
-//       case 422:
-//         final errors = jsonDecode(response.body)['errors'];
-//         apiResponse.error = errors[errors.keys.elementAt(0)][0];
-//         break;
-//       case 401:
-//         apiResponse.error = unauthorized;
-//         print(apiResponse.error);
-//         break;
-//       default:
-//         print(response.body);
-//         apiResponse.error = somethingWentWrong;
-//         break;
-//     }
-//   } catch (e) {
-//     apiResponse.error = serverError;
-//     print(e);
-//     developer.log("erroe: $e");
-//   }
-//   return apiResponse;
-// }
 
 // Edit boardinghouse
 Future<ApiResponse> editBoardingHouse(
@@ -303,87 +290,6 @@ Future<ApiResponse> deleteBoardingHouse(int boardingHouseId) async {
         break;
     }
   } catch (e) {
-    apiResponse.error = serverError;
-  }
-  return apiResponse;
-}
-
-//get all boardinghouse
-// Future<List<BoardingHouse>?> getBoardingHouseTypes() async {
-//   try {
-//     var url = Uri.parse(ApiConstants.apiBoardingHouse);
-//     var response = await http.get(url);
-
-//     // In ra nội dung phản hồi từ máy chủ dưới dạng chuỗi
-//     print("Response from server: ${response.body}");
-
-//     if (response.statusCode == 200) {
-//       Map<String, dynamic> jsonData = json.decode(response.body);
-//       List<dynamic> boardinghouseData = jsonData['data'];
-//       List<BoardingHouse> boardinghouses = boardinghouseData
-//           .map((boardinghouseJson) => BoardingHouse.fromJson(boardinghouseJson))
-//           .toList();
-
-//       return boardinghouses;
-//     } else {
-//       // Xử lý khi phản hồi không thành công
-//       log("Failed to fetch data: ${response.statusCode}");
-//       return null;
-//     }
-//   } catch (e) {
-//     // Xử lý khi có lỗi
-//     log("Error fetching data: $e");
-//     return null;
-//   }
-// }
-
-Future<ApiResponse> uploadImagesBoardingHouse(
-    int boardingHouseId, List<String> imagePaths) async {
-  ApiResponse apiResponse = ApiResponse();
-  try {
-    String token = await getToken();
-    var uri = Uri.parse('$apiBoardingHouse/upload-pictures/$boardingHouseId');
-
-    var request = http.MultipartRequest('POST', uri);
-    request.headers['Content-Type'] = 'application/json';
-    request.headers['Authorization'] = 'Bearer $token';
-
-    // Thêm trường dữ liệu vào FormData
-    request.fields['boarding_house_id'] = boardingHouseId.toString();
-
-    // Thêm ảnh vào FormData
-    for (var imagePath in imagePaths) {
-      var file = await http.MultipartFile.fromPath('images', imagePath);
-      request.files.add(file);
-    }
-
-    var response = await request.send();
-
-    // Đọc response
-    var responseData = await response.stream.toBytes();
-    var responseString = String.fromCharCodes(responseData);
-
-    // Xử lý response
-    print(responseString);
-
-    switch (response.statusCode) {
-      case 200:
-        apiResponse.data = jsonDecode(responseString);
-        break;
-      case 422:
-        final errors = jsonDecode(responseString)['errors'];
-        apiResponse.error = errors[errors.keys.elementAt(0)][0];
-        break;
-      case 401:
-        apiResponse.error = unauthorized;
-        break;
-      default:
-        print(responseString);
-        apiResponse.error = somethingWentWrong;
-        break;
-    }
-  } catch (e) {
-    print('Error: $e');
     apiResponse.error = serverError;
   }
   return apiResponse;
