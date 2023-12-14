@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class Post extends Model
 {
     use HasFactory;
+    protected $appends = ['url_featured_image'];
 
     protected $fillable = [
         'user_id',
@@ -49,5 +51,12 @@ class Post extends Model
         }
 
         return null;
+    }
+
+    public function getUrlFeaturedImageAttribute()
+    {
+        if (empty($this->featured_image) || !$this->featured_image) return;
+
+        return url(Storage::url($this->featured_image));
     }
 }

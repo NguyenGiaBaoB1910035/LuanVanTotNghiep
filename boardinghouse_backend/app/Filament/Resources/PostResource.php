@@ -15,6 +15,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use Filament\Tables\Columns\ImageColumn;
 
 class PostResource extends Resource
 {
@@ -62,7 +63,7 @@ class PostResource extends Resource
                                     ->helperText('Approved or not approved.')
                                     ->default(false),
 
-                                Forms\Components\DatePicker::make('published_at')
+                                Forms\Components\DatePicker::make('date_created')
                                     ->label('date_created')
                                     ->default(now())
                                     ->required(),
@@ -103,10 +104,44 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                //
+                ImageColumn::make('featured_image'),
+
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Name')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('boardingHouse.name')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
+
+                Tables\Columns\IconColumn::make('status')
+                    ->label('Status')
+                    ->boolean()
+                    ->sortable()
+                    ->toggleable(),
+
+                Tables\Columns\TextColumn::make('published_at')
+                    ->label('Publish Date')
+                    ->date()
+                    ->sortable()
+                    ->toggleable()
+                    ->toggledHiddenByDefault(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('boardingHouse')
+                    ->relationship('boardingHouse', 'name')
+                    ->preload()
+                    ->multiple()
+                    ->searchable(),
+
+                Tables\Filters\TernaryFilter::make('is_visible')
+                    ->label('Visibility')
+                    ->boolean()
+                    ->trueLabel('Only visible')
+                    ->falseLabel('Only hidden')
+                    ->native(false),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
