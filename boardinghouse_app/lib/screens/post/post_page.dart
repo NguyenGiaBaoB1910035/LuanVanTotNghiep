@@ -1,3 +1,9 @@
+import 'package:boardinghouse_app/apis/constant.dart';
+import 'package:boardinghouse_app/apis/post_api.dart';
+import 'package:boardinghouse_app/apis/user_api.dart';
+import 'package:boardinghouse_app/models/api_response.dart';
+import 'package:boardinghouse_app/models/port.dart';
+import 'package:boardinghouse_app/screens/boardinghouse/boarding_house_detail_page.dart';
 import 'package:boardinghouse_app/screens/components/card_post.dart';
 import 'package:flutter/material.dart';
 
@@ -9,74 +15,115 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
+  List<dynamic> _postList = [];
+  bool _loading = true;
+
+  //get BoardingHouse
+  void _getPosts() async {
+    try {
+      ApiResponse response = await getPosts();
+      if (response.error == null) {
+        setState(() {
+          _postList = response.data as List<dynamic>;
+          _loading = _loading ? !_loading : _loading;
+        });
+      } else if (response.error == unauthorized) {
+        logout().then((value) => {});
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+        print("response.error getListBoardingHouse ${response.error}");
+      }
+    } catch (e) {
+      print('Error in getListBoardingHouse: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getPosts();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: const Text(
-            "Bảng tin",
-            style: TextStyle(color: Color.fromRGBO(0, 177, 237, 1)),
-          )),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          "Bảng tin",
+          style: TextStyle(color: Color.fromRGBO(0, 177, 237, 1)),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('postquickly');
+              },
+              icon: Icon(
+                Icons.add_circle,
+                color: Color.fromRGBO(0, 177, 237, 1),
+              ))
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                // height: 50,
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(vertical: 5),
+            //   child: Container(
+            //     width: MediaQuery.of(context).size.width,
+            //     // height: 50,
 
-                color: Colors.white,
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  // Container(
-                  //     margin: EdgeInsets.all(5),
-                  //     width: 250,
-                  //     decoration: const BoxDecoration(
-                  //         color: Color(0xF5F5F5F5),
-                  //         borderRadius: BorderRadius.all(
-                  //           Radius.circular(15),
-                  //         )),
-                  //     child: TextFormField(
-                  //       decoration: const InputDecoration(
-                  //         icon: Padding(
-                  //           padding: EdgeInsets.only(left: 20),
-                  //           child: Icon(
-                  //             Icons.search,
-                  //             color: Color.fromRGBO(0, 177, 237, 1),
-                  //           ),
-                  //         ),
-                  //         hintText: "Tìm bài đăng",
-                  //         border: InputBorder.none,
-                  //       ),
-                  //     )),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 20),
-                    child: ElevatedButton(
-                      // style: ButtonStyle(),
-                      onPressed: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.post_add,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            'Đăng bài',
-                            style: TextStyle(color: Colors.white),
-                          )
-                        ],
-                      ),
-                    ),
-                  )
-                ]),
-              ),
-            ),
+            //     color: Colors.white,
+            //     child:
+            //         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            //       // Container(
+            //       //     margin: EdgeInsets.all(5),
+            //       //     width: 250,
+            //       //     decoration: const BoxDecoration(
+            //       //         color: Color(0xF5F5F5F5),
+            //       //         borderRadius: BorderRadius.all(
+            //       //           Radius.circular(15),
+            //       //         )),
+            //       //     child: TextFormField(
+            //       //       decoration: const InputDecoration(
+            //       //         icon: Padding(
+            //       //           padding: EdgeInsets.only(left: 20),
+            //       //           child: Icon(
+            //       //             Icons.search,
+            //       //             color: Color.fromRGBO(0, 177, 237, 1),
+            //       //           ),
+            //       //         ),
+            //       //         hintText: "Tìm bài đăng",
+            //       //         border: InputBorder.none,
+            //       //       ),
+            //       //     )),
+            //       Padding(
+            //         padding: const EdgeInsets.only(right: 20),
+            //         child: ElevatedButton(
+            //           // style: ButtonStyle(),
+            //           onPressed: () {},
+            //           child: Row(
+            //             mainAxisAlignment: MainAxisAlignment.center,
+            //             children: [
+            //               Icon(
+            //                 Icons.post_add,
+            //                 color: Colors.white,
+            //               ),
+            //               Text(
+            //                 'Đăng tin',
+            //                 style: TextStyle(color: Colors.white),
+            //               )
+            //             ],
+            //           ),
+            //         ),
+            //       )
+            //     ]),
+            //   ),
+            // ),
 //----------------------------------------------------------------------------------//
             Padding(
               padding: const EdgeInsets.only(top: 10),
@@ -84,8 +131,9 @@ class _PostPageState extends State<PostPage> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   // padding: const EdgeInsets.all(8),
-                  itemCount: 5,
+                  itemCount: _postList.length,
                   itemBuilder: (BuildContext context, int index) {
+                    Post post = _postList[index];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: Container(
@@ -122,7 +170,7 @@ class _PostPageState extends State<PostPage> {
                               // ),
                               Center(
                                 child: Text(
-                                  "Title",
+                                  "${post.name}",
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
@@ -135,36 +183,37 @@ class _PostPageState extends State<PostPage> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
                                 child: Text(
-                                  'Hiện tại còn dư 4 phòng',
+                                  '${post.content}',
                                   style: TextStyle(fontSize: 18),
                                 ),
                               ),
                               const SizedBox(
                                 height: 15,
                               ),
-                              Center(
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width - 40,
-                                  height: 150,
-                                  child: Image.asset(
-                                    "assets/images/anh.jpg",
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
+                              // Center(
+                              //   child: Container(
+                              //     width: MediaQuery.of(context).size.width - 40,
+                              //     height: 150,
+                              //     child: Image.network("${post.content}")
+                              //     // Image.asset(
+                              //     //   "assets/images/anh.jpg",
+                              //     //   fit: BoxFit.cover,
+                              //     // ),
+                              //   ),
+                              // ),
                               const SizedBox(
                                 height: 15,
                               ),
                               InkWell(
                                   onTap: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (_) =>
-                                    //             BoardingHouseDetailPage(
-                                    //               boardingHouseId:
-                                    //                   boardingHouse.id!,
-                                    //             )));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                BoardingHouseDetailPage(
+                                                  boardingHouseId:
+                                                      post.boardingHouseId!,
+                                                )));
                                   },
                                   child: const Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -182,73 +231,7 @@ class _PostPageState extends State<PostPage> {
                                         color: Color.fromRGBO(0, 177, 237, 1),
                                       )
                                     ],
-                                  )
-                                  // Row(
-                                  //   children: [
-                                  //     Container(
-                                  //       width: 150,
-                                  //       height: 90,
-                                  //       decoration: BoxDecoration(
-                                  //         color: Colors.blue,
-                                  //         borderRadius: BorderRadius.circular(10),
-                                  //       ),
-                                  //       child: Image.asset(
-                                  //         "assets/images/anh.jpg",
-                                  //         fit: BoxFit.fitHeight,
-                                  //       ),
-                                  //     ),
-                                  //     Container(
-                                  //       width: MediaQuery.of(context).size.width -
-                                  //           150,
-                                  //       child: const Column(
-                                  //         crossAxisAlignment:
-                                  //             CrossAxisAlignment.start,
-                                  //         children: [
-                                  //           Padding(
-                                  //             padding: EdgeInsets.only(
-                                  //                 left: 10, bottom: 2.5),
-                                  //             child: Text("Phòng cho Thuê"),
-                                  //           ),
-                                  //           Padding(
-                                  //             padding: EdgeInsets.only(
-                                  //                 left: 10, bottom: 2.5),
-                                  //             child: Text(
-                                  //               "Phòng cho Thuê Hoàng Gia, Quận Ninh Kiều, cần thơ ",
-                                  //               overflow: TextOverflow.ellipsis,
-                                  //               maxLines: 2,
-                                  //               softWrap: false,
-                                  //               style: TextStyle(
-                                  //                   fontWeight: FontWeight.bold),
-                                  //             ),
-                                  //           ),
-                                  //           Padding(
-                                  //             padding: EdgeInsets.only(
-                                  //                 left: 10, bottom: 2.5),
-                                  //             child: Text(
-                                  //               "1.200.000 VND",
-                                  //               style: TextStyle(
-                                  //                   color: Colors.blue,
-                                  //                   fontWeight: FontWeight.bold),
-                                  //             ),
-                                  //           ),
-                                  //           // const Padding(
-                                  //           //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2.5),
-                                  //           //   child: Text(
-                                  //           //     "40B/49, Trần Hoàng Na, Hưng Lợi",
-                                  //           //     overflow: TextOverflow.ellipsis,
-                                  //           //   ),
-                                  //           // ),
-                                  //           Padding(
-                                  //             padding: EdgeInsets.only(
-                                  //                 left: 10, bottom: 2.5),
-                                  //             child: Text("Ninh Kiêu"),
-                                  //           )
-                                  //         ],
-                                  //       ),
-                                  //     )
-                                  //   ],
-                                  // ),
-                                  ),
+                                  )),
                             ]),
                       ),
                     );

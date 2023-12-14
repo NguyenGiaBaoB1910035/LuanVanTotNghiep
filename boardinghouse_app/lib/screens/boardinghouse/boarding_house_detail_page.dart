@@ -2,10 +2,8 @@ import 'package:boardinghouse_app/apis/boarding_house_api.dart';
 import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/apis/evaluate_api.dart';
 import 'package:boardinghouse_app/apis/user_api.dart';
-import 'package:boardinghouse_app/models/Evaluate.dart';
 import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:boardinghouse_app/models/boarding_house.dart';
-import 'package:boardinghouse_app/models/util.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -349,22 +347,6 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
                                     ),
                                   ],
                                 ),
-                                // Column(
-                                //   children: [
-                                //     Padding(
-                                //       padding: EdgeInsets.only(bottom: 5),
-                                //       child: Text(
-                                //         'Giới tính',
-                                //         style: TextStyle(fontSize: 15),
-                                //       ),
-                                //     ),
-                                //     Text(
-                                //       'Tất cả',
-                                //       style: TextStyle(
-                                //           fontSize: 18, fontWeight: FontWeight.bold),
-                                //     ),
-                                //   ],
-                                // ),
                                 Column(
                                   children: [
                                     const Padding(
@@ -392,30 +374,30 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
                               color: Colors.black54,
                             ),
                           ),
-                          // const Padding(
-                          //   padding: EdgeInsets.symmetric(vertical: 5),
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.center,
-                          //     children: [
-                          //       Icon(Icons.access_time_outlined),
-                          //       SizedBox(
-                          //         width: 10,
-                          //       ),
-                          //       Text(
-                          //         "0:00 AM",
-                          //         style: TextStyle(fontSize: 15),
-                          //       ),
-                          //       Text(
-                          //         "  -  ",
-                          //         style: TextStyle(fontSize: 15),
-                          //       ),
-                          //       Text(
-                          //         "23:59 PM",
-                          //         style: TextStyle(fontSize: 15),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.access_time_outlined),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "${_boardingHouse!.openTime}",
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                                Text(
+                                  "  -  ",
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                                Text(
+                                  "${_boardingHouse!.closeTime}",
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ],
+                            ),
+                          ),
                           const Padding(
                             padding: EdgeInsets.only(top: 10, bottom: 5),
                             child: Text(
@@ -456,21 +438,21 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
                               ],
                             ),
                           ),
-                          // const Padding(
-                          //   padding: EdgeInsets.all(5),
-                          //   child: Row(
-                          //     children: [
-                          //       Icon(Icons.phone),
-                          //       SizedBox(
-                          //         width: 5,
-                          //       ),
-                          //       Text(
-                          //         'SĐT: 0377808122',
-                          //         style: TextStyle(fontSize: 15),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
+                          Padding(
+                            padding: EdgeInsets.all(5),
+                            child: Row(
+                              children: [
+                                Icon(Icons.phone),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'SĐT: ${_boardingHouse!.user!.phone}',
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),

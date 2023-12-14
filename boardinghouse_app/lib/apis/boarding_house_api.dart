@@ -6,6 +6,7 @@ import 'package:boardinghouse_app/apis/auth_api.dart';
 import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/apis/user_api.dart';
 import 'package:boardinghouse_app/models/boarding_house.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:path/path.dart';
@@ -60,7 +61,8 @@ Future<ApiResponse> getBoardingHousesUserId(int userId) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.get(Uri.parse('$apiBoardingHouse/$userId'), headers: {
+    final response = await http
+        .get(Uri.parse('$apiBoardingHouse?user_id=$userId'), headers: {
       "Content-Type": "application/json",
       'Authorization': 'Bearer $token'
     });
@@ -152,6 +154,9 @@ Future<ApiResponse> createBoardingHouse(
   String electricPrice,
   String waterPrice,
   String description,
+  TimeOfDay openTime,
+  TimeOfDay closeTime,
+  DateTime publishedAt,
   File? imageFile,
   List<File>? imageFiles,
   List<int>? utilityIds,
@@ -159,6 +164,9 @@ Future<ApiResponse> createBoardingHouse(
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
+
+    String formattedPublishedAt =
+        publishedAt.toLocal().toString().split(' ')[0];
 
     var request = http.MultipartRequest('POST', Uri.parse(apiBoardingHouse))
       ..headers['Authorization'] = 'Bearer $token'
@@ -175,6 +183,9 @@ Future<ApiResponse> createBoardingHouse(
         'water_price': waterPrice,
         'description': description,
         'address': address,
+        'open_time': '${openTime.hour}:${openTime.minute}',
+        'close_time': '${closeTime.hour}:${closeTime.minute}',
+        'published_at': formattedPublishedAt, // Use the formatted date
         // 'utils': utilityIds!.join(','),
       });
 
@@ -321,12 +332,11 @@ Future<ApiResponse> deleteBoardingHouse(int boardingHouseId) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.delete(
-        Uri.parse('$ApiConstants.apiBoardingHouse/$boardingHouseId'),
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': 'Bearer $token'
-        });
+    final response = await http
+        .delete(Uri.parse('$apiBoardingHouse/$boardingHouseId'), headers: {
+      "Content-Type": "application/json",
+      'Authorization': 'Bearer $token'
+    });
 
     switch (response.statusCode) {
       case 200:
@@ -349,35 +359,49 @@ Future<ApiResponse> deleteBoardingHouse(int boardingHouseId) async {
 }
 
 Future<ApiResponse> searchBoardingHouse(
-  String? address,
-  String? name,
-  String? type,
-  String? capacity,
-  String? priceStart,
-  String? priceSend,
-  String? utile,
-) async {
+    String? address,
+    String? type,
+    String? capacity,
+    String? priceStart,
+    String? priceSend,
+    List<String>? utils) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.put(
+    final response = await http.post(
       Uri.parse('$apiBoardingHouse/search'),
       headers: {
         "Content-Type": "application/json",
         'Authorization': 'Bearer $token'
       },
-      body: json.encode(
-        {
-          'type': type,
-          'name': name,
-          'utils': utile,
-          'address': address,
-          'capacity': capacity,
-          'price_start': priceStart,
-          'price_end': priceSend
-        },
-      ),
+      body: (type == null &&
+              utils == null &&
+              capacity == null &&
+              priceStart == null &&
+              priceSend == null)
+          ? json.encode(
+              {
+                'address': address,
+              },
+            )
+          : json.encode(
+              {
+                'type': type,
+                'utils': utils,
+                'address': address,
+                'capacity': capacity,
+                'price_start': priceStart,
+                'price_end': priceSend,
+              },
+            ),
     );
+    print('type: $type');
+    print('utils: $utils');
+    print('address: $address');
+    print('capacity: $priceStart');
+    print('price_start: $priceSend');
+    print('typprice_ende: $priceSend');
+    print(response.body);
 
     switch (response.statusCode) {
       case 200:

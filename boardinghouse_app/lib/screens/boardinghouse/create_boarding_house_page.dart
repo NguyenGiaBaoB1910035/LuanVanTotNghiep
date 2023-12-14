@@ -35,9 +35,9 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
   double electricityPrice = 0.0;
   double waterPrice = 0.0;
   String description = '';
-  // DateTime openTime = DateTime.now();
-  // DateTime closeTime = DateTime.now();
-  // DateTime publishedAt = DateTime.now();
+  TimeOfDay openTime = TimeOfDay(hour: 0, minute: 0);
+  TimeOfDay closeTime = TimeOfDay(hour: 23, minute: 59);
+  DateTime publishedAt = DateTime.now();
 
   bool _loading = true;
 
@@ -122,7 +122,7 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
     }
 
     List<int> selectedUtilsIds = [];
-    
+
     for (Utils utility in _utilsList) {
       if (utility.isSelected) {
         selectedUtilsIds.add(utility.id!);
@@ -143,6 +143,9 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
       _txtElectriController.text,
       _txtWaterController.text,
       _txtDescriptionController.text,
+      openTime,
+      closeTime,
+      publishedAt,
       _imageFile,
       additionalImageFiles,
       selectedUtilsIds,
@@ -398,38 +401,36 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
                     //     }
                     //   },
                     // ),
-                    // ListTile(
-                    //   title: const Text('Giờ mở cửa'),
-                    //   trailing: Text(openTime.format(context)),
-                    //   onTap: () async {
-                    //     final selectedTime = await showTimePicker(
-                    //       context: context,
-                    //       initialTime: openTime,
-                    //     );
-                    //     if (selectedTime != null) {
-                    //       setState(() {
-                    //         openTime = selectedTime;
-
-                    //       });
-                    //     }
-                    //   },
-                    // ),
-                    // ListTile(
-                    //   title: const Text('Giờ đóng cửa'),
-                    //   trailing: Text(closeTime.format(context)),
-                    //   onTap: () async {
-                    //     final selectedTime = await showTimePicker(
-                    //       context: context,
-                    //       initialTime: closeTime,
-                    //     );
-                    //     if (selectedTime != null) {
-                    //       setState(() {
-                    //         closeTime = selectedTime;
-
-                    //       });
-                    //     }
-                    //   },
-                    // ),
+                    ListTile(
+                      title: const Text('Giờ mở cửa'),
+                      trailing: Text(openTime.format(context)),
+                      onTap: () async {
+                        final selectedTime = await showTimePicker(
+                          context: context,
+                          initialTime: openTime,
+                        );
+                        if (selectedTime != null) {
+                          setState(() {
+                            openTime = selectedTime;
+                          });
+                        }
+                      },
+                    ),
+                    ListTile(
+                      title: const Text('Giờ đóng cửa'),
+                      trailing: Text(closeTime.format(context)),
+                      onTap: () async {
+                        final selectedTime = await showTimePicker(
+                          context: context,
+                          initialTime: closeTime,
+                        );
+                        if (selectedTime != null) {
+                          setState(() {
+                            closeTime = selectedTime;
+                          });
+                        }
+                      },
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -758,7 +759,7 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
                         print("ảnh và tiện ích");
 
                         // Thực hiện chức năng cho stepper thứ hai
-                      } 
+                      }
                       // else if (_currentStep == 2) {
                       //   print("hoàn thành");
 
@@ -775,7 +776,7 @@ class _CreateBoardingHousePageState extends State<CreateBoardingHousePage> {
                         _createBoardingHouse();
                         Navigator.of(context).pushNamed("main");
                         // Chức năng khi hoàn thành tất cả các bước
-                        // 
+                        //
                       }
                     },
                     child: (isLastStep)

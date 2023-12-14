@@ -1,5 +1,6 @@
 import 'package:boardinghouse_app/models/Evaluate.dart';
 import 'package:boardinghouse_app/models/boarding_house_type.dart';
+import 'package:flutter/material.dart';
 
 import 'user.dart';
 import 'util.dart';
@@ -73,8 +74,8 @@ class BoardingHouse {
       depositPrice: json['deposit_price'],
       electricPrice: json['electric_price'],
       waterPrice: json['water_price'],
-      // openTime: json['open_time'],
-      // closeTime: json['close_time'],
+      openTime: json['open_time'],
+      closeTime: json['close_time'],
       description: json['description'],
       address: json['address'],
       urlIamge: json['url_featured_image'],
@@ -89,6 +90,7 @@ class BoardingHouse {
       user: User(
         id: json['user']['id'],
         userName: json['user']['user_name'],
+        phone: json['user']['phone'],
         urlAvatar: json['user']['url_avatar'],
       ),
       utils:

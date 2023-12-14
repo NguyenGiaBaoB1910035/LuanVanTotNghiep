@@ -10,10 +10,12 @@ import 'package:boardinghouse_app/screens/favouritepage.dart';
 import 'package:boardinghouse_app/screens/loading.dart';
 import 'package:boardinghouse_app/screens/post/create_post.dart';
 import 'package:boardinghouse_app/screens/search/PlaceSearchScreen.dart';
+import 'package:boardinghouse_app/screens/search/demo.dart';
 import 'package:boardinghouse_app/screens/search/map_page.dart';
 import 'package:boardinghouse_app/screens/home/homepage.dart';
 import 'package:boardinghouse_app/screens/outstandingpage.dart';
 import 'package:boardinghouse_app/screens/post/post_page.dart';
+import 'package:boardinghouse_app/screens/search/search_box_page.dart';
 import 'package:boardinghouse_app/screens/search/search_request_page.dart';
 import 'package:boardinghouse_app/screens/suggestpage.dart';
 // import 'package:boardinghouse_app/screens/boardinghouse/create_boarding_house.dart';
@@ -50,7 +52,7 @@ class MyApp extends StatelessWidget {
         'map': (context) => const MapPage(),
         //------//
         'post': (context) => const PostPage(),
-        'createpost': (context) => const CreatePost(),
+        // 'createpost': (context) => const CreatePost(),
         // 'users': (context) => InfoUserPage(),
         //-----//
         'account': (context) => const AccountPage(),
@@ -63,6 +65,9 @@ class MyApp extends StatelessWidget {
         'createBHP': (context) => const CreateBoardingHousePage(),
 
         'mapplace': (context) => PlaceSearchScreen(),
+
+        'demo': (context) => DemoPage(),
+        'searchbox': (context) => SearchBoxPage()
       },
     );
   }

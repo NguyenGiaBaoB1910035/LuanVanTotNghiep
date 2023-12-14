@@ -20,11 +20,18 @@ Future<ApiResponse> getPosts() async {
 
     switch (response.statusCode) {
       case 200:
-        apiResponse.data = jsonDecode(response.body)['posts']
-            .map((p) => Post.fromJson(p))
-            .toList();
-        // we get list of posts, so we need to map each item to post model
-        apiResponse.data as List<dynamic>;
+        if (jsonDecode(response.body)['data'] != null) {
+          // Mapping từ danh sách JSON thành danh sách đối tượng BoardingHouseType
+          List<Post> postHouses = (jsonDecode(response.body)['data'] as List)
+              .map((posthouseJson) => Post.fromJson(posthouseJson))
+              .toList();
+          // Gán danh sách vào apiResponse.data
+          apiResponse.data = postHouses;
+          print('apiResponse.data');
+          print(apiResponse.data);
+        } else {
+          apiResponse.error = null;
+        }
         break;
       case 401:
         apiResponse.error = unauthorized;
@@ -35,6 +42,7 @@ Future<ApiResponse> getPosts() async {
     }
   } catch (e) {
     apiResponse.error = serverError;
+    print(e);
   }
   return apiResponse;
 }
@@ -46,18 +54,23 @@ Future<ApiResponse> createPost(
   String name,
   String content,
   File? imageFile,
+  DateTime dateCreated,
 ) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
 
-    var request = http.MultipartRequest('POST', Uri.parse(apiBoardingHouse))
+    String formattedPublishedAt =
+        dateCreated.toLocal().toString().split(' ')[0];
+
+    var request = http.MultipartRequest('POST', Uri.parse(apiPost))
       ..headers['Authorization'] = 'Bearer $token'
       ..fields.addAll({
         'user_id': userId.toString(),
         'boarding_house_id': boardingHouseId.toString(),
         'name': name,
-        'room_number': content,
+        'content': content,
+        'date_created': formattedPublishedAt
       });
 
     if (imageFile != null) {
