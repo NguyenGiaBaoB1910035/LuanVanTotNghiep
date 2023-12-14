@@ -13,4 +13,24 @@ class FavouriteBoardingHouse extends Model
         'boarding_house_id',
         'status'
     ];
+
+    /**
+     * Mối quan hệ thuộc về với model User.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Mối quan hệ thuộc về với model BoardingHouse.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function boardingHouse()
+    {
+        return $this->belongsTo(BoardingHouse::class);
+    }
 }

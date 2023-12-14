@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -104,6 +105,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
     public function boarding_houses(): HasMany
     {
         return $this->hasMany(BoardingHouse::class, 'user_id');
+    }
+
+    public function favourite_boarding_houses(): BelongsToMany
+    {
+        return $this->belongsToMany(BoardingHouse::class, 'favourite_boarding_houses', 'boarding_house_id', 'user_id');
     }
 
     public function getUrlAvatarAttribute()
