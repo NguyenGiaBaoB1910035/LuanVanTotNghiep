@@ -10,6 +10,7 @@ class Post {
   String? name;
   String? content;
   String? image;
+  String? status;
   DateTime? dateCreated;
   DateTime? dateUpdated;
   int? view;
@@ -23,6 +24,7 @@ class Post {
     this.name,
     this.content,
     this.image,
+    this.status,
     this.dateCreated,
     this.dateUpdated,
     this.view,
@@ -48,6 +50,7 @@ class Post {
       name: json['name'],
       content: json['content'],
       image: json['url_featured_image'],
+      status: json['status'],
       dateCreated: json['date_created'] != null
           ? DateTime.parse(json['date_created'])
           : null,

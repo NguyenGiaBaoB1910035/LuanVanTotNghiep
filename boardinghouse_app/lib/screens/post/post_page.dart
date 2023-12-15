@@ -22,6 +22,7 @@ class _PostPageState extends State<PostPage> {
   //get BoardingHouse
   void _getPosts() async {
     try {
+      userId = await getUserId();
       ApiResponse response = await getPosts();
       if (response.error == null) {
         setState(() {
@@ -149,9 +150,24 @@ class _PostPageState extends State<PostPage> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   // padding: const EdgeInsets.all(8),
-                  itemCount: _postList.length,
+                  // itemCount: _postList.length,
+                  itemCount: _postList
+                      .where((boardingHouse) => boardingHouse.status != "0")
+                      .length,
                   itemBuilder: (BuildContext context, int index) {
-                    Post post = _postList[index];
+                    // Post post = _postList[index];
+                    List<Post> filteredList = _postList
+                        .where((boardingHouse) => boardingHouse.status != "0")
+                        .cast<Post>() // Explicitly cast to List<BoardingHouse>
+                        .toList();
+
+                    Post post = filteredList[_postList
+                            .where(
+                                (boardingHouse) => boardingHouse.status != "0")
+                            .length -
+                        1 -
+                        index];
+
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: Container(
@@ -187,16 +203,21 @@ class _PostPageState extends State<PostPage> {
                               //   ],
                               // ),
                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Center(
-                                    child: Text(
-                                      "${post.name}",
-                                      style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 20),
+                                    child: Container(
+                                      child: Text(
+                                        "${post.name}",
+                                        style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ),
                                   ),
-                                  post.userId != userId
+                                  post.userId == userId
                                       ? PopupMenuButton(
                                           child: const Padding(
                                               padding:
@@ -206,15 +227,15 @@ class _PostPageState extends State<PostPage> {
                                                 color: Colors.black,
                                               )),
                                           itemBuilder: (context) => [
-                                            const PopupMenuItem(
-                                                child: Text('Sửa'),
-                                                value: 'edit'),
+                                            // const PopupMenuItem(
+                                            //     child: Text('Sửa'),
+                                            //     value: 'edit'),
                                             const PopupMenuItem(
                                                 child: Text('Xóa'),
                                                 value: 'delete')
                                           ],
                                           onSelected: (val) {
-                                            if (val == 'edit') {
+                                            if (val == 'delete') {
                                               // Navigator.of(context).push(
                                               //     MaterialPageRoute(
                                               //         builder: (context) =>
@@ -222,12 +243,14 @@ class _PostPageState extends State<PostPage> {
                                               //               title: 'Edit Post',
                                               //               post: post,
                                               //             )));
-                                            } else {
+
                                               _deleteEvaluate(post.id!);
                                             }
                                           },
                                         )
-                                      : SizedBox()
+                                      : Container(
+                                          child: null,
+                                        )
                                 ],
                               ),
                               const SizedBox(
@@ -252,9 +275,9 @@ class _PostPageState extends State<PostPage> {
                                                   .size
                                                   .width -
                                               40,
-                                          height: 150,
+                                          height: 180,
                                           child: Image.network(
-                                            "${post.image}",
+                                            "${post!.image}",
                                             fit: BoxFit.cover,
                                           )
                                           // Image.asset(
