@@ -34,11 +34,6 @@ class FavouriteListHandler extends Handlers
             return response()->json(['error' => 'User not found'], 404);
         }
 
-        // Assuming the relationship method is named 'favourite_boarding_houses'
-        $favouriteBoardingHouses = $user->favourite_boarding_houses()
-            ->with('boarding_house_type', 'user', 'evaluates', 'utils')
-            ->get();
-
         return static::sendSuccessResponse($user->favourite_boarding_houses()->get(), "List of favourite boarding houses of " . $user->name . "(" . $user->user_name . ")");
     }
 }
