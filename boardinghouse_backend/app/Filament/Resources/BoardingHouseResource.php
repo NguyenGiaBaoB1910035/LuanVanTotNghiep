@@ -9,6 +9,7 @@ use App\Filament\Resources\BoardingHouseResource\{
     RelationManagers\PostsRelationManager,
 };
 use App\Models\BoardingHouse;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
@@ -112,7 +113,31 @@ class BoardingHouseResource extends Resource
                                     ->label('Author')
                                     ->relationship('user', 'name')
                                     ->searchable()
-                                    ->required(),
+                                    ->required()
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
+                                        // if ($operation !== 'create') {
+                                        //     return;
+                                        // }
+                                        $user = User::find($state);
+
+                                        if ($user) {
+                                            $set('user_id', $user->id);
+                                            $set('user_email', $user->email);
+                                            $set('user_phone', $user->phone);
+                                        }
+                                    }),
+
+                                Forms\Components\TextInput::make('user_email')
+                                    ->label('Author email')
+                                    ->dehydrated()
+                                    ->unique(User::class, 'user_id', ignoreRecord: true)
+                                    ->disabled(),
+                                Forms\Components\TextInput::make('user_phone')
+                                    ->label('Author phone')
+                                    ->dehydrated()
+                                    ->unique(User::class, 'user_id', ignoreRecord: true)
+                                    ->disabled(),
 
                                 Forms\Components\Select::make('boarding_house_type_id')
                                     ->label('Boarding House Type')

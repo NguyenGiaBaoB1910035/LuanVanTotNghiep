@@ -74,9 +74,6 @@ class PostResource extends Resource
                                     ->required()
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
-                                        if ($operation !== 'create') {
-                                            return;
-                                        }
                                         $boardingHouse = BoardingHouse::find($state);
 
                                         if ($boardingHouse) {
