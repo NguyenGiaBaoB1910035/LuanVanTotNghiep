@@ -2,15 +2,11 @@ import 'package:boardinghouse_app/apis/boarding_house_api.dart';
 import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/apis/evaluate_api.dart';
 import 'package:boardinghouse_app/apis/user_api.dart';
-import 'package:boardinghouse_app/models/Evaluate.dart';
 import 'package:boardinghouse_app/models/api_response.dart';
 import 'package:boardinghouse_app/models/boarding_house.dart';
-import 'package:boardinghouse_app/models/util.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-
-enum SampleItem { itemOne, itemTwo }
 
 class BoardingHouseDetailPage extends StatefulWidget {
   final int boardingHouseId;
@@ -29,9 +25,11 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
   BoardingHouse? _boardingHouse;
   bool loading = false;
   bool _isFavorite = false;
-  SampleItem? selectedMenu;
+  // SampleItem? selectedMenu;
+  int userId = 0;
 
   void getBoardingHouse() async {
+    userId = await getUserId();
     int boardingHouseId = widget.boardingHouseId;
     ApiResponse response = await getBoardingHousesDetail(boardingHouseId);
     print('profile:');
@@ -91,6 +89,23 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('${response.error}')));
+    }
+  }
+
+  void _favourites(int? boardingHouseId) async {
+    int userId = await getUserId();
+    ApiResponse response = await favourites(userId, boardingHouseId!);
+    if (response.error == null) {
+      print("yêu thích");
+      // Navigator.of(context).pop();
+    } else if (response.error == unauthorized) {
+      logout().then((value) => {});
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
+      setState(() {
+        // _loading = !_loading;
+      });
     }
   }
 
@@ -161,7 +176,7 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
                               Container(
                                 child: SmoothPageIndicator(
                                     controller: controller, // PageController
-                                    count: imageList.length,
+                                    count: _boardingHouse!.urlImages!.length,
                                     effect: const WormEffect(
                                         dotHeight: 7,
                                         dotWidth: 7,
@@ -197,6 +212,7 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
                                     alignment: Alignment.topRight,
                                     child: InkWell(
                                       onTap: () {
+                                        _favourites(_boardingHouse!.id);
                                         setState(() {
                                           _isFavorite = !_isFavorite;
                                         });
@@ -349,22 +365,6 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
                                     ),
                                   ],
                                 ),
-                                // Column(
-                                //   children: [
-                                //     Padding(
-                                //       padding: EdgeInsets.only(bottom: 5),
-                                //       child: Text(
-                                //         'Giới tính',
-                                //         style: TextStyle(fontSize: 15),
-                                //       ),
-                                //     ),
-                                //     Text(
-                                //       'Tất cả',
-                                //       style: TextStyle(
-                                //           fontSize: 18, fontWeight: FontWeight.bold),
-                                //     ),
-                                //   ],
-                                // ),
                                 Column(
                                   children: [
                                     const Padding(
@@ -392,30 +392,30 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
                               color: Colors.black54,
                             ),
                           ),
-                          // const Padding(
-                          //   padding: EdgeInsets.symmetric(vertical: 5),
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.center,
-                          //     children: [
-                          //       Icon(Icons.access_time_outlined),
-                          //       SizedBox(
-                          //         width: 10,
-                          //       ),
-                          //       Text(
-                          //         "0:00 AM",
-                          //         style: TextStyle(fontSize: 15),
-                          //       ),
-                          //       Text(
-                          //         "  -  ",
-                          //         style: TextStyle(fontSize: 15),
-                          //       ),
-                          //       Text(
-                          //         "23:59 PM",
-                          //         style: TextStyle(fontSize: 15),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.access_time_outlined),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "${_boardingHouse!.openTime}",
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                                Text(
+                                  "  -  ",
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                                Text(
+                                  "${_boardingHouse!.closeTime}",
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ],
+                            ),
+                          ),
                           const Padding(
                             padding: EdgeInsets.only(top: 10, bottom: 5),
                             child: Text(
@@ -456,21 +456,21 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
                               ],
                             ),
                           ),
-                          // const Padding(
-                          //   padding: EdgeInsets.all(5),
-                          //   child: Row(
-                          //     children: [
-                          //       Icon(Icons.phone),
-                          //       SizedBox(
-                          //         width: 5,
-                          //       ),
-                          //       Text(
-                          //         'SĐT: 0377808122',
-                          //         style: TextStyle(fontSize: 15),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
+                          Padding(
+                            padding: EdgeInsets.all(5),
+                            child: Row(
+                              children: [
+                                Icon(Icons.phone),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'SĐT: ${_boardingHouse!.user!.phone}',
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -725,47 +725,42 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text('${evaluate.userId}'),
-                                    // evaluate.userId == getUserId()
-                                    //     ? Container(
-                                    //         child: null,
-                                    //       )
-                                    //     : PopupMenuButton<SampleItem>(
-                                    //         icon: const Icon(
-                                    //           Icons.more_vert,
-                                    //           size: 15,
-                                    //         ),
-                                    //         initialValue: selectedMenu,
-
-                                    //         // Callback that sets the selected popup menu item.
-                                    //         onSelected: (SampleItem item) {
-                                    //           setState(() {
-                                    //             selectedMenu = item;
-                                    //             if (item ==
-                                    //                 SampleItem.itemOne) {
-                                    //               print(
-                                    //                   'id người đánh giá : ${evaluate.userId}');
-                                    //             }
-                                    //             if (item ==
-                                    //                 SampleItem.itemTwo) {
-                                    //               // Call your delete function here
-                                    //               _deleteEvaluate(evaluate.id!);
-                                    //             }
-                                    //           });
-                                    //         },
-                                    //         itemBuilder: (BuildContext
-                                    //                 context) =>
-                                    //             <PopupMenuEntry<SampleItem>>[
-                                    //           const PopupMenuItem<SampleItem>(
-                                    //             value: SampleItem.itemOne,
-                                    //             child: Text('sửa'),
-                                    //           ),
-                                    //           const PopupMenuItem<SampleItem>(
-                                    //             value: SampleItem.itemTwo,
-                                    //             child: Text('xóa'),
-                                    //           ),
-                                    //         ],
-                                    //       ),
+                                    Text('${evaluate.user!.userName}'),
+                                    evaluate.userId == userId
+                                        ? PopupMenuButton(
+                                            child: const Padding(
+                                                padding:
+                                                    EdgeInsets.only(right: 10),
+                                                child: Icon(
+                                                  Icons.more_vert,
+                                                  color: Colors.black,
+                                                )),
+                                            itemBuilder: (context) => [
+                                              const PopupMenuItem(
+                                                  child: Text('Sửa'),
+                                                  value: 'edit'),
+                                              const PopupMenuItem(
+                                                  child: Text('Xóa'),
+                                                  value: 'delete')
+                                            ],
+                                            onSelected: (val) {
+                                              if (val == 'edit') {
+                                                // Navigator.of(context).push(
+                                                //     MaterialPageRoute(
+                                                //         builder: (context) =>
+                                                //             evaForm(
+                                                //               title: 'Edit eva',
+                                                //               eva: eva,
+                                                //             )));
+                                              } else {
+                                                _deleteEvaluate(
+                                                    evaluate.id! ?? 0);
+                                              }
+                                            },
+                                          )
+                                        : Container(
+                                            child: null,
+                                          )
                                   ],
                                 ),
                                 subtitle: Column(
@@ -794,72 +789,6 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
                 ),
               ),
             ),
-    );
-  }
-}
-
-// ------------------------------------------------------------------------------------------//
-// ------------------------------------------------------------------------------------------//
-// ------------------------------------------------------------------------------------------//
-
-List<String> imageList = [
-  'assets/images/bh_image_1.jpg',
-  'assets/images/bh_image_2.jpg',
-  'assets/images/bh_image_3.jpg',
-  'assets/images/bh_image_4.jpg',
-  // Thêm nhiều hình ảnh khác ở đây
-];
-
-class ListImage extends StatefulWidget {
-  const ListImage({super.key});
-
-  @override
-  State<ListImage> createState() => _ListImageState();
-}
-
-class _ListImageState extends State<ListImage> {
-  final controller = PageController(viewportFraction: 0.9);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 4 / 10,
-      width: MediaQuery.of(context).size.width,
-      child: PageView.builder(
-        controller: controller,
-        // shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: imageList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 5),
-                  height: 300,
-                  width: MediaQuery.of(context).size.width,
-                  child: Image.asset(
-                    imageList[index],
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Container(
-                child: SmoothPageIndicator(
-                    controller: controller, // PageController
-                    count: imageList.length,
-                    effect: const WormEffect(
-                        dotHeight: 7,
-                        dotWidth: 7,
-                        activeDotColor: Color.fromRGBO(
-                            0, 177, 237, 1)), // your preferred effect
-                    onDotClicked: (index) {}),
-              ),
-            ],
-          );
-        },
-      ),
     );
   }
 }

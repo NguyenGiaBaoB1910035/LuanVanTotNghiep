@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:boardinghouse_app/models/boarding_house.dart';
+
 import 'auth_api.dart';
 import 'package:boardinghouse_app/apis/constant.dart';
 import 'package:boardinghouse_app/models/api_response.dart';
@@ -172,6 +174,92 @@ Future<ApiResponse> updateUser(int userId, String name, String gender,
   return apiResponse;
 }
 
+// favourites
+Future<ApiResponse> favourites(int userId, int boardingHouseId) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.post(Uri.parse('$apiUser/favourite'),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer $token'
+        },
+        body: json.encode({
+          'user_id': userId,
+          'boarding_house_id': boardingHouseId,
+        }));
+
+    print(response.body);
+
+    // user can update his/her name or name and image
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body);
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        print(response.body);
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+// get-favourites-list
+Future<ApiResponse> getFavouritesList(int userId) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.post(Uri.parse('$apiUser/get-favourites-list'),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer $token'
+        },
+        body: json.encode({
+          'user_id': userId,
+        }));
+
+    print(response.body);
+
+    // user can update his/her name or name and image
+
+    switch (response.statusCode) {
+      case 200:
+        if (jsonDecode(response.body)['data'] != null) {
+          // Mapping từ danh sách JSON thành danh sách đối tượng BoardingHouseType
+          List<BoardingHouse> boardingHouses =
+              (jsonDecode(response.body)['data'] as List)
+                  .map((boardinghouseJson) =>
+                      BoardingHouse.fromJson(boardinghouseJson))
+                  .toList();
+          // Gán danh sách vào apiResponse.data
+          apiResponse.data = boardingHouses;
+          print('apiResponse.data');
+          print(apiResponse.data);
+        } else {
+          apiResponse.error = null;
+        }
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        print(response.body);
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
 // get token
 Future<String> getToken() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
@@ -195,6 +283,3 @@ String? getStringImage(File? file) {
   if (file == null) return null;
   return base64Encode(file.readAsBytesSync());
 }
-
-
-

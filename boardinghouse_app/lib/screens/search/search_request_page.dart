@@ -1,3 +1,12 @@
+import 'package:boardinghouse_app/apis/boarding_house_api.dart';
+import 'package:boardinghouse_app/apis/boarding_house_type_api.dart';
+import 'package:boardinghouse_app/apis/constant.dart';
+import 'package:boardinghouse_app/apis/user_api.dart';
+import 'package:boardinghouse_app/apis/util_api.dart';
+import 'package:boardinghouse_app/models/api_response.dart';
+import 'package:boardinghouse_app/models/boarding_house.dart';
+import 'package:boardinghouse_app/models/boarding_house_type.dart';
+import 'package:boardinghouse_app/screens/boardinghouse/boarding_house_detail_page.dart';
 import 'package:boardinghouse_app/screens/components/card_boarding_house_detail.dart';
 import 'package:boardinghouse_app/models/util.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +21,85 @@ bool selectData = false;
 bool selectUtil = false;
 
 class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
+  List<dynamic> _boardingHouseList = [];
+
+  void _searchBoardingHouse() async {
+    try {
+      String? capacityValue = capacity != 0 ? null : capacity.toString();
+
+      ApiResponse response = await searchBoardingHouse(
+        address,
+        selectedRoom,
+        capacityValue,
+        priceRange.start.toStringAsFixed(0),
+        priceRange.end.toStringAsFixed(0),
+        selectedUtils.map((util) => util.name!).toList(),
+      );
+
+      if (response.error == null) {
+        setState(() {
+          _boardingHouseList = response.data as List<dynamic>;
+          // _loading = _loading ? !_loading : _loading;
+        });
+      } else if (response.error == unauthorized) {
+        logout().then((value) => {});
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+        print("response.error getListBoardingHouse ${response.error}");
+      }
+    } catch (e) {
+      print('Error in getListBoardingHouse: $e');
+    }
+  }
+
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController _txtAddressController = TextEditingController();
+
+  List<dynamic> _utilsList = [];
+
+  //get Uitls
+  void getListUtil() async {
+    try {
+      ApiResponse response = await getUtil();
+      if (response.error == null) {
+        setState(() {
+          _utilsList = response.data as List<dynamic>;
+        });
+      } else if (response.error == unauthorized) {
+        logout().then((value) => {});
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+        print("response.error getListUtil ${response.error}");
+      }
+    } catch (e) {
+      print('Error in getListUtil: $e');
+    }
+  }
+
+  List<dynamic> _typeList = [];
+
+  //get boardingHouseType
+  void getNameBoardingHouseType() async {
+    try {
+      ApiResponse response = await getBoardingHouseType();
+      if (response.error == null) {
+        setState(() {
+          _typeList = response.data as List<dynamic>;
+        });
+      } else if (response.error == unauthorized) {
+        logout().then((value) => {});
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+        print("response.error getNameBoardingHouseType ${response.error}");
+      }
+    } catch (e) {
+      print('Error in getNameBoardingHouseType: $e');
+    }
+  }
+
   TabController? _tabController;
   RangeValues priceRange = RangeValues(0.0, 1000000.0);
   double priceIncrement = 1000000;
@@ -19,6 +107,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    getNameBoardingHouseType();
+    getListUtil();
     _tabController = TabController(length: 6, vsync: this, initialIndex: 5);
   }
 
@@ -28,28 +118,10 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        centerTitle: true,
         automaticallyImplyLeading: false,
-        title: InkWell(
-          child: Container(
-              decoration: const BoxDecoration(
-                  color: Color(0xF5F5F5F5),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(15),
-                  )),
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  icon: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Icon(
-                      Icons.search,
-                      color: Color.fromRGBO(0, 177, 237, 1),
-                    ),
-                  ),
-                  hintText: "Tìm theo tên đường, địa điểm",
-                  border: InputBorder.none,
-                ),
-              )),
-        ),
+        title: Text("Tìm kiếm theo yêu cầu",
+            style: TextStyle(color: Color.fromRGBO(0, 177, 237, 1))),
         actions: [
           TextButton(
               onPressed: () {
@@ -220,6 +292,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                 _tabController?.animateTo(5);
                                 print(
                                     '${priceRange.start.toStringAsFixed(0)} VND - ${priceRange.end.toStringAsFixed(0)} VND');
+                                _searchBoardingHouse();
                               },
                               child: Container(
                                 decoration: const BoxDecoration(
@@ -253,85 +326,217 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   Widget defaultPage() {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: GridView.count(
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 20,
-          crossAxisSpacing: 20,
-          shrinkWrap: true,
-          crossAxisCount: 2,
-          childAspectRatio: (1 / 1.4),
-          // scrollDirection: Axis.vertical,
-          children: List.generate(10, (index) {
-            return CardBoardingHouseDetail();
-          }),
-        ),
-      ),
+          padding: const EdgeInsets.all(20),
+          child: GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            // mainAxisSpacing: 20,
+            // crossAxisSpacing: 20,
+            shrinkWrap: true,
+            // crossAxisCount: 2,
+            // childAspectRatio: (1 / 1.4),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // Số cột
+                childAspectRatio: 1 / 1.4,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20 // Tỉ lệ chiều cao theo chiều rộng
+                ),
+            // scrollDirection: Axis.vertical,
+            itemCount: _boardingHouseList.length,
+            itemBuilder: (BuildContext context, int index) {
+              BoardingHouse boardingHouse = _boardingHouseList[index];
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => BoardingHouseDetailPage(
+                                boardingHouseId: boardingHouse.id!,
+                              )));
+                },
+                child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 1),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 2.5),
+                          width: MediaQuery.of(context).size.width,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: Image.network(
+                                '${boardingHouse.urlIamge}',
+                              ).image,
+                              fit: BoxFit.fitWidth,
+                            ),
+                          ),
+                          // child: Container(
+                          //     margin: EdgeInsets.only(top: 5, right: 5),
+                          //     alignment: Alignment.topRight,
+                          //     child: InkWell(
+                          //       onTap: () {
+                          //         setState(() {
+                          //           isFavorite = !isFavorite;
+                          //         });
+                          //       },
+                          //       child: Icon(
+                          //           isFavorite ? Icons.favorite : Icons.favorite_border,
+                          //           color: Colors.red),
+                          //     )),
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 2.5),
+                          child: Text(
+                            "${boardingHouse.boardingHouseType!.name}",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 2.5),
+                          child: Text(
+                            "${boardingHouse.name}",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 2.5),
+                          child: Text(
+                            "${boardingHouse.price}",
+                            style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        // const Padding(
+                        //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2.5),
+                        //   child: Text(
+                        //     "40B/49, Trần Hoàng Na, Hưng Lợi",
+                        //     overflow: TextOverflow.ellipsis,
+                        //   ),
+                        // ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 2.5),
+                          child: Text(
+                            "${boardingHouse.address}",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        )
+                      ],
+                    )),
+              );
+            },
+          )),
     );
   }
 
 //--------------------------------------address page---------------------------------------//
 
-  List<String> listDistrict = [
-    'Ninh Kiều',
-    'Cái Răng',
-    'Bình Thủy',
-    'Ô Môn',
-    'Thốt Nốt',
-    'Cờ Đỏ',
-    'Phong Điền',
-    'Thới Lai',
-    'Vĩnh Thạch',
-  ];
+  // List<String> listDistrict = [
+  //   'Ninh Kiều',
+  //   'Cái Răng',
+  //   'Bình Thủy',
+  //   'Ô Môn',
+  //   'Thốt Nốt',
+  //   'Cờ Đỏ',
+  //   'Phong Điền',
+  //   'Thới Lai',
+  //   'Vĩnh Thạch',
+  // ];
 
-  String selectedDistrict = "";
+  // String selectedDistrict = "";
+  String address = "";
 
   Widget addressPage() {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(15),
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 1 / 3,
-            child: GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 2 / 1,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemCount: listDistrict.length,
-              itemBuilder: (BuildContext context, int index) {
-                final feature = listDistrict[index];
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedDistrict = feature;
-                    });
-                  },
-                  child: Card(
-                    color: selectedDistrict == feature
-                        ? Colors.green
-                        : Colors.white,
-                    child: Center(
-                      child: Text(
-                        feature,
-                        style: TextStyle(
-                          color: selectedDistrict == feature
-                              ? Colors.white
-                              : Colors.black,
-                        ),
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+          child: Form(
+            key: formKey,
+            child: Container(
+                decoration: const BoxDecoration(
+                    color: Color(0xF5F5F5F5),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15),
+                    )),
+                child: TextFormField(
+                  controller: _txtAddressController,
+                  decoration: const InputDecoration(
+                    icon: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Icon(
+                        Icons.search,
+                        color: Color.fromRGBO(0, 177, 237, 1),
                       ),
                     ),
+                    hintText: "Tìm theo tên đường, địa điểm",
+                    border: InputBorder.none,
                   ),
-                );
-              },
-            ),
+                  onChanged: (value) {
+                    setState(() {
+                      address = (value);
+                    });
+                  },
+                )),
           ),
         ),
+        // Padding(
+        //   padding: const EdgeInsets.all(15),
+        //   child: Container(
+        //     width: MediaQuery.of(context).size.width,
+        //     height: MediaQuery.of(context).size.height * 1 / 3,
+        //     child: GridView.builder(
+        //       physics: const NeverScrollableScrollPhysics(),
+        //       shrinkWrap: true,
+        //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        //         crossAxisCount: 3,
+        //         childAspectRatio: 2 / 1,
+        //         crossAxisSpacing: 10,
+        //         mainAxisSpacing: 10,
+        //       ),
+        //       itemCount: listDistrict.length,
+        //       itemBuilder: (BuildContext context, int index) {
+        //         final feature = listDistrict[index];
+        //         return GestureDetector(
+        //           onTap: () {
+        //             setState(() {
+        //               selectedDistrict = feature;
+        //             });
+        //           },
+        //           child: Card(
+        //             color: selectedDistrict == feature
+        //                 ? Colors.green
+        //                 : Colors.white,
+        //             child: Center(
+        //               child: Text(
+        //                 feature,
+        //                 style: TextStyle(
+        //                   color: selectedDistrict == feature
+        //                       ? Colors.white
+        //                       : Colors.black,
+        //                 ),
+        //               ),
+        //             ),
+        //           ),
+        //         );
+        //       },
+        //     ),
+        //   ),
+        // ),
         Padding(
           padding: const EdgeInsets.all(30),
           child: ElevatedButton(
@@ -342,7 +547,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
               });
 
               _tabController?.animateTo(5);
-              print(selectedDistrict);
+              // print(selectedDistrict);
+              _searchBoardingHouse();
             },
             child: Container(
               decoration: const BoxDecoration(
@@ -366,13 +572,14 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
   Widget typePage() {
     return Column(
       children: [
-        Column(
-          children: <Widget>[
-            buildRoomOption('Phòng cho thuê'),
-            buildRoomOption('Ký túc xá'),
-            buildRoomOption('Phòng nguyên căn'),
-            buildRoomOption('Căn hộ'),
-          ],
+        Container(
+          height: 150,
+          child: ListView.builder(
+              itemCount: _typeList.length,
+              itemBuilder: (BuildContext context, int index) {
+                BoardingHouseType type = _typeList[index];
+                return buildRoomOption('${type.name}');
+              }),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -385,6 +592,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
                 _tabController?.animateTo(5);
                 print(selectedRoom);
+                _searchBoardingHouse();
               },
               child: Container(
                 decoration: const BoxDecoration(
@@ -423,8 +631,9 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
 
 //--------------------------------------number people page---------------------------------------//
 
+  // int? capacity;
   int capacity = 1;
-  String selectedGender = 'Tất cả';
+  // String selectedGender = 'Tất cả';
   Widget numberpeoplePage() {
     // capacity = 1;
     // selectedGender = '';
@@ -472,19 +681,6 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 ]),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Giới tính"),
-                Row(
-                  children: [
-                    buildGenderOption('Tất cả'),
-                    buildGenderOption('Nam'),
-                    buildGenderOption('Nữ'),
-                  ],
-                ),
-              ],
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: ElevatedButton(
@@ -494,7 +690,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                       selectData = true;
                     });
                     _tabController?.animateTo(5);
-                    print(' ${capacity} / ${selectedGender}');
+                    print(' ${capacity} ');
+                    _searchBoardingHouse();
                   },
                   child: Container(
                     decoration: const BoxDecoration(
@@ -514,41 +711,41 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget buildGenderOption(String gender) {
-    return Row(
-      children: <Widget>[
-        Radio(
-          value: gender,
-          groupValue: selectedGender,
-          onChanged: (value) {
-            setState(() {
-              selectedGender = value.toString();
-            });
-          },
-        ),
-        Text(gender),
-      ],
-    );
-  }
+  // Widget buildGenderOption(String gender) {
+  //   return Row(
+  //     children: <Widget>[
+  //       Radio(
+  //         value: gender,
+  //         groupValue: selectedGender,
+  //         onChanged: (value) {
+  //           setState(() {
+  //             selectedGender = value.toString();
+  //           });
+  //         },
+  //       ),
+  //       Text(gender),
+  //     ],
+  //   );
+  // }
 
 //----------------------------------util page---------------------------------//
 
-  List<Util> utils = [
-    Util(icon: Icons.wifi, name: 'Wifi'),
-    Util(icon: Icons.directions_car, name: 'Nhà Xe'),
-    Util(icon: Icons.wash, name: 'Máy Giặt'),
-    Util(icon: Icons.ac_unit, name: 'Máy Lạnh'),
-    Util(icon: Icons.tv, name: 'TV'),
-    Util(icon: Icons.kitchen, name: 'Tủ Lạnh'),
-    Util(icon: Icons.king_bed, name: 'Giường'),
-    Util(icon: Icons.access_time, name: 'Giờ Tự Do'),
-    Util(icon: Icons.hotel, name: 'Gác Lửng'),
-    Util(icon: Icons.pets, name: 'Thú Cưng'),
-    Util(icon: Icons.outdoor_grill, name: 'Ban Công'),
-  ];
+  // List<Util> utils = [
+  //   Util(icon: Icons.wifi, name: 'Wifi'),
+  //   Util(icon: Icons.directions_car, name: 'Nhà Xe'),
+  //   Util(icon: Icons.wash, name: 'Máy Giặt'),
+  //   Util(icon: Icons.ac_unit, name: 'Máy Lạnh'),
+  //   Util(icon: Icons.tv, name: 'TV'),
+  //   Util(icon: Icons.kitchen, name: 'Tủ Lạnh'),
+  //   Util(icon: Icons.king_bed, name: 'Giường'),
+  //   Util(icon: Icons.access_time, name: 'Giờ Tự Do'),
+  //   Util(icon: Icons.hotel, name: 'Gác Lửng'),
+  //   Util(icon: Icons.pets, name: 'Thú Cưng'),
+  //   Util(icon: Icons.outdoor_grill, name: 'Ban Công'),
+  // ];
   // bool isSelected = false;
 
-  List<Util> selectedUtils = [];
+  List<Utils> selectedUtils = [];
 
   Widget utilPage() {
     return Column(
@@ -566,13 +763,13 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                 shrinkWrap: true,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2, // Số cột
-                    childAspectRatio: 4 / 9,
+                    childAspectRatio: 4 / 8,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10 // Tỉ lệ chiều cao theo chiều rộng
                     ),
-                itemCount: utils.length,
+                itemCount: _utilsList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  final feature = utils[index];
+                  Utils feature = _utilsList[index];
                   return GestureDetector(
                     onTap: () {
                       setState(() {
@@ -591,18 +788,28 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                         child: Row(
                           // mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              feature.icon,
-                              color: feature.isSelected
-                                  ? Colors.white
-                                  : Colors.grey,
-                              // Kích thước của icon
+                            Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: NetworkImage('${feature.imageUrl}'),
+                                    fit: BoxFit.cover),
+                                // color: Colors.amber
+                              ),
                             ),
+                            // Icon(
+                            //   feature.icon,
+                            //   color: feature.isSelected
+                            //       ? Colors.white
+                            //       : Colors.grey,
+                            //   // Kích thước của icon
+                            // ),
                             const SizedBox(
                               width: 10,
                             ),
                             Text(
-                              feature.name,
+                              '${feature.name}',
                               style: TextStyle(
                                 // Kích thước của văn bản
                                 color: feature.isSelected
@@ -628,9 +835,10 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                   selectUtil = true;
                 });
                 _tabController?.animateTo(5);
-                for (Util util in selectedUtils) {
+                for (Utils util in selectedUtils) {
                   print("Util đã chọn: ${util.name}");
                 }
+                _searchBoardingHouse();
               },
               child: Container(
                 decoration: const BoxDecoration(
@@ -689,7 +897,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.grey.shade200),
                             child: selectedRoom != null
-                                ? Text('$selectedDistrict',
+                                ? Text('$address',
                                     style: TextStyle(fontSize: 15))
                                 : Text(''),
                           ),
@@ -798,8 +1006,8 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.grey.shade200),
-                            child: (capacity != null && selectedGender != null)
-                                ? Text('$capacity / $selectedGender',
+                            child: (capacity != null)
+                                ? Text('$capacity',
                                     style: const TextStyle(fontSize: 15))
                                 : Text(''),
                           ),
@@ -938,7 +1146,7 @@ class _SearchPageState extends State<SearchPage> with TickerProviderStateMixin {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.grey.shade200),
-                            child: Text(util.name,
+                            child: Text(util.name!,
                                 style: const TextStyle(fontSize: 15))),
                         Positioned(
                           top: 0,

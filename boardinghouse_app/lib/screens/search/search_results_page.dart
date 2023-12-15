@@ -7,25 +7,51 @@ import 'package:boardinghouse_app/screens/boardinghouse/boarding_house_detail_pa
 import 'package:flutter/material.dart';
 // import '../components/card_boarding_house_detail.dart';
 
-class SuggestPage extends StatefulWidget {
-  const SuggestPage({super.key});
+class SearchResultsPage extends StatefulWidget {
+  // const SearchResultsPage({super.key});
+
+  final String? type;
+  final String? address;
+  final String? capacity;
+  final String? price_start;
+  final String? typprice_end;
+  final List<String>? utils;
+
+  const SearchResultsPage(
+      {this.type,
+      this.address,
+      this.capacity,
+      this.price_start,
+      this.typprice_end,
+      this.utils,
+      Key? key})
+      : super(key: key);
 
   @override
-  State<SuggestPage> createState() => _SuggestPageState();
+  State<SearchResultsPage> createState() => _SearchResultsPageState();
 }
 
-class _SuggestPageState extends State<SuggestPage> {
+class _SearchResultsPageState extends State<SearchResultsPage> {
   List<dynamic> _boardigHouseList = [];
   bool _loading = true;
 
   //get BoardingHouse
-  void getListBoardingHouse() async {
+  void _searchBoardingHouse() async {
     try {
-      ApiResponse response = await getBoardingHouses();
+      // String? capacityValue = capacity != 0 ? null : capacity.toString();
+
+      ApiResponse response = await searchBoardingHouse(
+          widget.address,
+          widget.type,
+          widget.capacity,
+          widget.price_start,
+          widget.typprice_end,
+          widget.utils);
+
       if (response.error == null) {
         setState(() {
           _boardigHouseList = response.data as List<dynamic>;
-          _loading = _loading ? !_loading : _loading;
+          // _loading = _loading ? !_loading : _loading;
         });
       } else if (response.error == unauthorized) {
         logout().then((value) => {});
@@ -42,8 +68,7 @@ class _SuggestPageState extends State<SuggestPage> {
   @override
   void initState() {
     super.initState();
-    getListBoardingHouse();
-    // getNameBoardingHouseType();
+    _searchBoardingHouse();
   }
 
   @override
@@ -54,14 +79,14 @@ class _SuggestPageState extends State<SuggestPage> {
             color: Color.fromRGBO(0, 177, 237, 1),
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.of(context).pushNamed('main');
+              Navigator.of(context).pop();
             },
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
           elevation: 0,
           title: const Text(
-            "Phòng gợi ý",
+            "Kết quả tìm kiếm",
             style: TextStyle(color: Color.fromRGBO(0, 177, 237, 1)),
           )),
       body: SingleChildScrollView(
@@ -182,8 +207,7 @@ class _SuggestPageState extends State<SuggestPage> {
                       )),
                 );
               },
-            )
-            ),
+            )),
       ),
     );
   }

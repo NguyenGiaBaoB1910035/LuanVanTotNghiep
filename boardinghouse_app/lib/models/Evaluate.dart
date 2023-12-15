@@ -23,7 +23,7 @@ class Evaluate {
 
   int? rating;
   String? content;
-  // User? user;
+  User? user;
   // BoardingHouse? boardingHouse;
 
   Evaluate({
@@ -33,7 +33,7 @@ class Evaluate {
     this.userId,
     // this.boardingHouseId,
 
-    // this.user,
+    this.user,
   });
 
   factory Evaluate.fromJson(Map<String, dynamic> json) {
@@ -43,7 +43,11 @@ class Evaluate {
       content: json['content'],
       userId: json['user_id'],
       // boardingHouseId: json['boarding_house_id']
-      // user: User(id: json['user']['id'], userName: json['user']['user_name']),
+      user: User(
+        id: json['user']['id'],
+        userName: json['user']['user_name'],
+        urlAvatar: json['user']['url_avatar'],
+      ),
     );
   }
 }

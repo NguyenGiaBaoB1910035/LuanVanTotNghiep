@@ -75,7 +75,7 @@ class SearchHandler extends Handlers
             }
 
             // Search by price
-            if ($request->filled('price_start') && $request->filled('price_end')) {
+            if ($request->filled('price_start') && $request->filled('price_start')) {
                 $query->where('price', '>=', $request->input('price_start'))
                     ->where('price', '<=', $request->input('price_end'));
             }

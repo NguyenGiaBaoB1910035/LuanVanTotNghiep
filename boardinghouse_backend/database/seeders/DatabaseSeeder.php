@@ -178,6 +178,7 @@ class DatabaseSeeder extends Seeder
                 'status' => 'pending',
                 'user_id' => '1',
                 'boarding_house_type_id' => '1'
+                
 
             ]
         ]);

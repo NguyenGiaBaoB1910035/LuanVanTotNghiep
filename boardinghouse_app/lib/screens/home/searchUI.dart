@@ -31,7 +31,7 @@ class _SearchUIState extends State<SearchUI> {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.of(context).pushNamed('search');
+                  Navigator.of(context).pushNamed('searchbox');
                 },
                 child: Container(
                     padding: EdgeInsets.all(10),
@@ -55,13 +55,13 @@ class _SearchUIState extends State<SearchUI> {
                       ],
                     )
                     // TextFormField(
-                      // decoration: const InputDecoration(
-                      //   icon: Padding(
-                      //     padding: EdgeInsets.symmetric(horizontal: 20),
-                      //     child: Icon(Icons.search),
-                      //   ),
-                      //   hintText: "Tìm theo tên đường, địa điểm",
-                      //   border: InputBorder.none,
+                    // decoration: const InputDecoration(
+                    //   icon: Padding(
+                    //     padding: EdgeInsets.symmetric(horizontal: 20),
+                    //     child: Icon(Icons.search),
+                    //   ),
+                    //   hintText: "Tìm theo tên đường, địa điểm",
+                    //   border: InputBorder.none,
                     //   ),
                     // )
                     ),
@@ -72,7 +72,7 @@ class _SearchUIState extends State<SearchUI> {
                   InkWell(
                     onTap: () {
                       // _showMaterialDialog();
-                      Navigator.of(context).pushNamed('search');
+                      Navigator.of(context).pushNamed('demo');
                     },
                     child: Column(
                       children: [

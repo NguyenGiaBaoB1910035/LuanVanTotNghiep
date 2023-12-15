@@ -68,116 +68,140 @@ class _SuggestUIState extends State<SuggestUI> {
                 ),
               ),
               GridView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // Số cột
-                    childAspectRatio: 1 / 1.4,
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20 // Tỉ lệ chiều cao theo chiều rộng
-                    ),
-                itemCount: _boardigHouseList.length > 10
-                    ? 10
-                    : _boardigHouseList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  BoardingHouse boardingHouse = _boardigHouseList[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => BoardingHouseDetailPage(
-                                    boardingHouseId: boardingHouse.id!,
-                                  )));
-                      // Navigator.of(context).pushNamed('boardinghousedetail');
-                    },
-                    child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 1),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 2.5),
-                              width: MediaQuery.of(context).size.width,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                  image: Image.network(
-                                    '${boardingHouse.urlIamge}',
-                                  ).image,
-                                  fit: BoxFit.fitWidth,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // Số cột
+                      childAspectRatio: 1 / 1.4,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20 // Tỉ lệ chiều cao theo chiều rộng
+                      ),
+                  // itemCount: _boardigHouseList.length > 10
+                  //     ? 10
+                  //     : _boardigHouseList.length,
+                  itemCount: _boardigHouseList
+                              .where((boardingHouse) =>
+                                  boardingHouse.status != "0")
+                              .length >
+                          10
+                      ? 10
+                      : _boardigHouseList
+                          .where((boardingHouse) => boardingHouse.status != "0")
+                          .length,
+                  itemBuilder: (BuildContext context, int index) {
+                    List<BoardingHouse> filteredList = _boardigHouseList
+                        .where((boardingHouse) => boardingHouse.status != "0")
+                        .cast<
+                            BoardingHouse>() // Explicitly cast to List<BoardingHouse>
+                        .toList();
+
+                    BoardingHouse boardingHouse = filteredList[_boardigHouseList
+                            .where(
+                                (boardingHouse) => boardingHouse.status != "0")
+                            .length -
+                        1 -
+                        index];
+
+                    // BoardingHouse boardingHouse =
+                    //     _boardigHouseList[_boardigHouseList.length - 1 - index];
+
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => BoardingHouseDetailPage(
+                                      boardingHouseId: boardingHouse.id!,
+                                    )));
+                        // Navigator.of(context).pushNamed('boardinghousedetail');
+                      },
+                      child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(width: 1),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(bottom: 2.5),
+                                width: MediaQuery.of(context).size.width,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                    image: Image.network(
+                                      '${boardingHouse.urlIamge}',
+                                    ).image,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                ),
+                                // child: Container(
+                                //     margin: EdgeInsets.only(top: 5, right: 5),
+                                //     alignment: Alignment.topRight,
+                                //     child: InkWell(
+                                //       onTap: () {
+                                //         setState(() {
+                                //           isFavorite = !isFavorite;
+                                //         });
+                                //       },
+                                //       child: Icon(
+                                //           isFavorite ? Icons.favorite : Icons.favorite_border,
+                                //           color: Colors.red),
+                                //     )),
+                              ),
+
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 2.5),
+                                child: Text(
+                                  "${boardingHouse.boardingHouseType!.name}",
+                                  style: TextStyle(fontSize: 16),
                                 ),
                               ),
-                              // child: Container(
-                              //     margin: EdgeInsets.only(top: 5, right: 5),
-                              //     alignment: Alignment.topRight,
-                              //     child: InkWell(
-                              //       onTap: () {
-                              //         setState(() {
-                              //           isFavorite = !isFavorite;
-                              //         });
-                              //       },
-                              //       child: Icon(
-                              //           isFavorite ? Icons.favorite : Icons.favorite_border,
-                              //           color: Colors.red),
-                              //     )),
-                            ),
-
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 2.5),
-                              child: Text(
-                                "${boardingHouse.boardingHouseType!.name}",
-                                style: TextStyle(fontSize: 16),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 2.5),
+                                child: Text(
+                                  "${boardingHouse.name}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 2.5),
-                              child: Text(
-                                "${boardingHouse.name}",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 2.5),
+                                child: Text(
+                                  "${boardingHouse.price}",
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 2.5),
-                              child: Text(
-                                "${boardingHouse.price}",
-                                style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            // const Padding(
-                            //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2.5),
-                            //   child: Text(
-                            //     "40B/49, Trần Hoàng Na, Hưng Lợi",
-                            //     overflow: TextOverflow.ellipsis,
-                            //   ),
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 2.5),
-                              child: Text(
-                                "${boardingHouse.address}",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            )
-                          ],
-                        )),
-                  );
-                },
-              ),
+                              // const Padding(
+                              //   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2.5),
+                              //   child: Text(
+                              //     "40B/49, Trần Hoàng Na, Hưng Lợi",
+                              //     overflow: TextOverflow.ellipsis,
+                              //   ),
+                              // ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 2.5),
+                                child: Text(
+                                  "${boardingHouse.address}",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                              )
+                            ],
+                          )),
+                    );
+                  }),
               const Padding(
                 padding: EdgeInsets.only(top: 10),
                 child: Divider(
