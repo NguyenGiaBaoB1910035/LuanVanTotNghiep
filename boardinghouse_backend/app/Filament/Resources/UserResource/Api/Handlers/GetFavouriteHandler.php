@@ -44,7 +44,7 @@ class GetFavouriteHandler extends Handlers
             $newFavorite = new FavouriteBoardingHouse([
                 'user_id' => $userId,
                 'boarding_house_id' => $boardingHouseId,
-                'status' => false,
+                'status' => 0,
             ]);
 
             return response()->json([
