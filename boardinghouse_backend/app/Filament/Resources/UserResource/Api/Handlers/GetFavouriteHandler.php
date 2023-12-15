@@ -41,8 +41,15 @@ class GetFavouriteHandler extends Handlers
             // Toggle the existing favorite record status
             return static::sendSuccessResponse($favorite, "Successfully get favorite status.");
         } else {
+            $newFavorite = new FavouriteBoardingHouse([
+                'user_id' => $userId,
+                'boarding_house_id' => $boardingHouseId,
+                'status' => false,
+            ]);
+
             return response()->json([
-                'message' => "Favourite by $userId and $boardingHouseId not exists"
+                'message' => "Favourite by $userId and $boardingHouseId not exists, created this record!",
+                'data' => $newFavorite,
             ]);
         }
     }
