@@ -29,35 +29,33 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
   List<Utils> selectedUtils = [];
   int capacity = 1;
 
-  void _searchBoardingHouse() async {
-    try {
-      String? capacityValue = capacity != 0 ? null : capacity.toString();
+  // void _searchBoardingHouse() async {
+  //   try {
+  //     ApiResponse response = await searchBoardingHouse(
+  //       address,
+  //       selectedRoom,
+  //       capacity.toString(),
+  //       priceRange.start.toStringAsFixed(0),
+  //       priceRange.end.toStringAsFixed(0),
+  //       selectedUtils.map((util) => util.name!).toList(),
+  //     );
 
-      ApiResponse response = await searchBoardingHouse(
-        address,
-        selectedRoom,
-        capacityValue,
-        priceRange.start.toStringAsFixed(0),
-        priceRange.end.toStringAsFixed(0),
-        selectedUtils.map((util) => util.name!).toList(),
-      );
-
-      if (response.error == null) {
-        setState(() {
-          _boardingHouseList = response.data as List<dynamic>;
-          // _loading = _loading ? !_loading : _loading;
-        });
-      } else if (response.error == unauthorized) {
-        logout().then((value) => {});
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('${response.error}')));
-        print("response.error getListBoardingHouse ${response.error}");
-      }
-    } catch (e) {
-      print('Error in getListBoardingHouse: $e');
-    }
-  }
+  //     if (response.error == null) {
+  //       setState(() {
+  //         _boardingHouseList = response.data as List<dynamic>;
+  //         // _loading = _loading ? !_loading : _loading;
+  //       });
+  //     } else if (response.error == unauthorized) {
+  //       logout().then((value) => {});
+  //     } else {
+  //       ScaffoldMessenger.of(context)
+  //           .showSnackBar(SnackBar(content: Text('${response.error}')));
+  //       print("response.error getListBoardingHouse ${response.error}");
+  //     }
+  //   } catch (e) {
+  //     print('Error in getListBoardingHouse: $e');
+  //   }
+  // }
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController _txtAddressController = TextEditingController();
@@ -106,16 +104,16 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
     }
   }
 
-  TabController? _tabController;
-  RangeValues priceRange = RangeValues(0.0, 1000000.0);
-  double priceIncrement = 1000000;
+  // TabController? _tabController;
+  RangeValues priceRange = RangeValues(0.0, 15000000.0);
+  // double priceIncrement = 0.0;
 
   @override
   void initState() {
     super.initState();
     getNameBoardingHouseType();
     getListUtil();
-    _tabController = TabController(length: 6, vsync: this, initialIndex: 5);
+    // _tabController = TabController(length: 6, vsync: this, initialIndex: 5);
   }
 
   @override
@@ -216,8 +214,8 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
                     children: [
                       RangeSlider(
                         values: priceRange,
-                        min: 0.0,
-                        max: 15000000.0,
+                        min: 0,
+                        max: 15000000,
                         divisions: 15, // (15000000 - 1000000) / 1000000 + 1
                         labels: RangeLabels(
                           priceRange.start.toStringAsFixed(0) + ' VND',
@@ -407,11 +405,10 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
                             selectaddress = true;
                             selectUtil = true;
                           });
-                          // _tabController?.animateTo(5);
-                          for (Utils util in selectedUtils) {
-                            print("Util đã chọn: ${util.name}");
-                          }
-                          // _searchBoardingHouse();
+
+                          // print(capacity);
+                          // print(priceRange.start.toString());
+                          // print(priceRange.end.toStringAsFixed(0));
 
                           Navigator.push(
                             context,
@@ -422,7 +419,7 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
                                 capacity: capacity.toString(),
                                 price_start:
                                     priceRange.start.toStringAsFixed(0),
-                                typprice_end: priceRange.end.toStringAsFixed(0),
+                                price_end: priceRange.end.toStringAsFixed(0),
                                 utils: selectedUtils
                                     .map((util) => util.name!)
                                     .toList(),
@@ -453,120 +450,6 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
       ),
     );
   }
-
-//--------------------------------------default page---------------------------------------//
-
-  // Widget defaultPage() {
-  //   return SingleChildScrollView(
-  //     child: Padding(
-  //         padding: const EdgeInsets.all(20),
-  //         child: GridView.builder(
-  //           physics: const NeverScrollableScrollPhysics(),
-  //           // mainAxisSpacing: 20,
-  //           // crossAxisSpacing: 20,
-  //           shrinkWrap: true,
-  //           // crossAxisCount: 2,
-  //           // childAspectRatio: (1 / 1.4),
-  //           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-  //               crossAxisCount: 2, // Số cột
-  //               childAspectRatio: 1 / 1.4,
-  //               crossAxisSpacing: 20,
-  //               mainAxisSpacing: 20 // Tỉ lệ chiều cao theo chiều rộng
-  //               ),
-  //           // scrollDirection: Axis.vertical,
-  //           itemCount: _boardingHouseList.length,
-  //           itemBuilder: (BuildContext context, int index) {
-  //             BoardingHouse boardingHouse = _boardingHouseList[index];
-  //             return InkWell(
-  //               onTap: () {
-  //                 Navigator.push(
-  //                     context,
-  //                     MaterialPageRoute(
-  //                         builder: (_) => BoardingHouseDetailPage(
-  //                               boardingHouseId: boardingHouse.id!,
-  //                             )));
-  //               },
-  //               child: Container(
-  //                   decoration: BoxDecoration(
-  //                       border: Border.all(width: 1),
-  //                       borderRadius: BorderRadius.circular(10)),
-  //                   child: Column(
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       Container(
-  //                         margin: const EdgeInsets.only(bottom: 2.5),
-  //                         width: MediaQuery.of(context).size.width,
-  //                         height: 100,
-  //                         decoration: BoxDecoration(
-  //                           borderRadius: BorderRadius.circular(10),
-  //                           image: DecorationImage(
-  //                             image: Image.network(
-  //                               '${boardingHouse.urlIamge}',
-  //                             ).image,
-  //                             fit: BoxFit.fitWidth,
-  //                           ),
-  //                         ),
-  //                         // child: Container(
-  //                         //     margin: EdgeInsets.only(top: 5, right: 5),
-  //                         //     alignment: Alignment.topRight,
-  //                         //     child: InkWell(
-  //                         //       onTap: () {
-  //                         //         setState(() {
-  //                         //           isFavorite = !isFavorite;
-  //                         //         });
-  //                         //       },
-  //                         //       child: Icon(
-  //                         //           isFavorite ? Icons.favorite : Icons.favorite_border,
-  //                         //           color: Colors.red),
-  //                         //     )),
-  //                       ),
-  //                       Padding(
-  //                         padding: const EdgeInsets.symmetric(
-  //                             horizontal: 10, vertical: 2.5),
-  //                         child: Text(
-  //                           "${boardingHouse.boardingHouseType!.name}",
-  //                           style: TextStyle(fontSize: 16),
-  //                         ),
-  //                       ),
-  //                       Padding(
-  //                         padding: const EdgeInsets.symmetric(
-  //                             horizontal: 10, vertical: 2.5),
-  //                         child: Text(
-  //                           "${boardingHouse.name}",
-  //                           overflow: TextOverflow.ellipsis,
-  //                           maxLines: 2,
-  //                           style: const TextStyle(
-  //                               fontSize: 16, fontWeight: FontWeight.bold),
-  //                         ),
-  //                       ),
-  //                       Padding(
-  //                         padding: const EdgeInsets.symmetric(
-  //                             horizontal: 10, vertical: 2.5),
-  //                         child: Text(
-  //                           "${boardingHouse.price}",
-  //                           style: const TextStyle(
-  //                               fontSize: 16,
-  //                               color: Colors.blue,
-  //                               fontWeight: FontWeight.bold),
-  //                         ),
-  //                       ),
-  //                       Padding(
-  //                         padding: const EdgeInsets.symmetric(
-  //                             horizontal: 10, vertical: 2.5),
-  //                         child: Text(
-  //                           "${boardingHouse.address}",
-  //                           overflow: TextOverflow.ellipsis,
-  //                           maxLines: 2,
-  //                           style: const TextStyle(fontSize: 16),
-  //                         ),
-  //                       )
-  //                     ],
-  //                   )),
-  //             );
-  //           },
-  //         )),
-  //   );
-  // }
 
   Widget buildRoomOption(String roomName) {
     return Row(
@@ -791,7 +674,7 @@ class _DemoPageState extends State<DemoPage> with TickerProviderStateMixin {
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.grey.shade200),
                             child: Text(
-                              '${priceRange.start.toStringAsFixed(0)} VND - ${priceRange.end.toStringAsFixed(0)} VND',
+                              '${priceRange.start} VND - ${priceRange.end} VND',
                               style: const TextStyle(fontSize: 15),
                             ),
                           ),

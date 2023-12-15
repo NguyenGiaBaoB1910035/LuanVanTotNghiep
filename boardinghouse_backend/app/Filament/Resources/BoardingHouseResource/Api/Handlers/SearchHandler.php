@@ -29,20 +29,14 @@ class SearchHandler extends Handlers
 
             // Search by name
             if ($request->filled('name')) {
-                $name = trim($request->input('name'));
-                if ($name !== '') {
-                    $query->where('name', 'like', '%' . $name . '%');
-                }
+                $query->where('name', 'like', '%' . trim($request->input('name')) . '%');
             }
 
             // Search by author's name
             if ($request->filled('author_name')) {
-                $authorName = trim($request->input('author_name'));
-                if ($authorName !== '') {
-                    $query->whereHas('user', function ($subQuery) use ($authorName) {
-                        $subQuery->where('name', 'like', '%' . $authorName . '%');
-                    });
-                }
+                $query->whereHas('user', function ($subQuery) use ($request) {
+                    $subQuery->where('name', 'like', '%' . trim($request->input('author_name')) . '%');
+                });
             }
 
             // Search by utils
@@ -59,58 +53,33 @@ class SearchHandler extends Handlers
 
             // Search by address
             if ($request->filled('address')) {
-                $address = trim($request->input('address'));
-                if ($address !== '') {
-                    $query->where('address', 'like', '%' . $address . '%');
-                }
+                $query->where('address', 'like', '%' . trim($request->input('address')) . '%');
             }
 
             // Search by type
             if ($request->filled('type')) {
-                $type = trim($request->input('type'));
-                if ($type !== '') {
-                    $query->whereHas('boarding_house_type', function ($subQuery) use ($type) {
-                        $subQuery->where('name', 'like', '%' . $type . '%');
-                    });
-                }
+                $query->whereHas('boarding_house_type', function ($subQuery) use ($request) {
+                    $subQuery->where('name', 'like', '%' . trim($request->input('type')) . '%');
+                });
             }
 
             // Search by capacity
             if ($request->filled('capacity')) {
-<<<<<<< HEAD
                 if($request->input('capacity') > 0){
-                    $query->where('capacity', '=', $request->input('capacity'));
-=======
-                $capacity = $request->input('capacity');
-                if ($capacity !== '') {
-                    $query->where('capacity', '=', $capacity);
->>>>>>> 884b8f6b1af466e979277283c611b658c370da29
+                    $query->where('capacity', '>=', $request->input('capacity'));
                 }
             }
 
             // Search by openTime, closeTime
             if ($request->filled('openTime') && $request->filled('closeTime')) {
-                $openTime = $request->input('openTime');
-                $closeTime = $request->input('closeTime');
-                if ($openTime !== '' && $closeTime !== '') {
-                    $query->whereBetween('open_time', [$openTime, $closeTime])
-                        ->whereBetween('close_time', [$openTime, $closeTime]);
-                }
+                $query->whereBetween('open_time', [$request->input('openTime'), $request->input('closeTime')])
+                    ->whereBetween('close_time', [$request->input('openTime'), $request->input('closeTime')]);
             }
 
             // Search by price
             if ($request->filled('price_start') && $request->filled('price_end')) {
-<<<<<<< HEAD
                 $query->where('price', '>=', (int)$request->input('price_start'))
                     ->where('price', '<=', (int)$request->input('price_end'));
-=======
-                $priceStart = $request->input('price_start');
-                $priceEnd = $request->input('price_end');
-                if ($priceStart !== '' && $priceEnd !== '') {
-                    $query->where('price', '>=', $priceStart)
-                        ->where('price', '<=', $priceEnd);
-                }
->>>>>>> 884b8f6b1af466e979277283c611b658c370da29
             }
 
             $results = $query->get();

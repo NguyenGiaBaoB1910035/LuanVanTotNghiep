@@ -16,7 +16,7 @@ import 'package:boardinghouse_app/screens/home/homepage.dart';
 import 'package:boardinghouse_app/screens/outstandingpage.dart';
 import 'package:boardinghouse_app/screens/post/post_page.dart';
 import 'package:boardinghouse_app/screens/search/search_box_page.dart';
-import 'package:boardinghouse_app/screens/search/search_request_page.dart';
+// import 'package:boardinghouse_app/screens/search/search_request_page.dart';
 import 'package:boardinghouse_app/screens/suggestpage.dart';
 // import 'package:boardinghouse_app/screens/boardinghouse/create_boarding_house.dart';
 import 'package:boardinghouse_app/screens/post/post_quickly_page.dart';

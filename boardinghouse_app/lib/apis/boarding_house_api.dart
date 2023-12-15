@@ -374,14 +374,14 @@ Future<ApiResponse> searchBoardingHouse(
         "Content-Type": "application/json",
         'Authorization': 'Bearer $token'
       },
-      body: (type == null &&
-              utils == null &&
-              capacity == null &&
-              priceStart == null &&
-              priceSend == null)
+      body: utils != null
           ? json.encode(
               {
+                'type': type,
                 'address': address,
+                'capacity': capacity,
+                'price_start': priceStart,
+                'price_end': priceSend,
               },
             )
           : json.encode(
@@ -398,9 +398,9 @@ Future<ApiResponse> searchBoardingHouse(
     print('type: $type');
     print('utils: $utils');
     print('address: $address');
-    print('capacity: $priceStart');
-    print('price_start: $priceSend');
-    print('typprice_ende: $priceSend');
+    print('capacity: $capacity');
+    print('price_start: $priceStart');
+    print('price_end: $priceSend');
     print(response.body);
 
     switch (response.statusCode) {

@@ -14,7 +14,7 @@ class SearchResultsPage extends StatefulWidget {
   final String? address;
   final String? capacity;
   final String? price_start;
-  final String? typprice_end;
+  final String? price_end;
   final List<String>? utils;
 
   const SearchResultsPage(
@@ -22,7 +22,7 @@ class SearchResultsPage extends StatefulWidget {
       this.address,
       this.capacity,
       this.price_start,
-      this.typprice_end,
+      this.price_end,
       this.utils,
       Key? key})
       : super(key: key);
@@ -45,7 +45,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
           widget.type,
           widget.capacity,
           widget.price_start,
-          widget.typprice_end,
+          widget.price_end,
           widget.utils);
 
       if (response.error == null) {
