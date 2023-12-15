@@ -17,6 +17,7 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
   List<dynamic> _postList = [];
   bool _loading = true;
+  int userId = 0;
 
   //get BoardingHouse
   void _getPosts() async {
@@ -36,6 +37,23 @@ class _PostPageState extends State<PostPage> {
       }
     } catch (e) {
       print('Error in getListBoardingHouse: $e');
+    }
+  }
+
+  void _deleteEvaluate(int postId) async {
+    ApiResponse response = await deletePost(postId);
+
+    if (response.error == null) {
+      _getPosts();
+    } else if (response.error == unauthorized) {
+      logout().then((value) => {
+            // Navigator.of(context).pushAndRemoveUntil(
+            //     MaterialPageRoute(builder: (context) => Login()),
+            //     (route) => false)
+          });
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
     }
   }
 
@@ -137,7 +155,7 @@ class _PostPageState extends State<PostPage> {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 10),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         width: MediaQuery.of(context).size.width,
                         color: Colors.white,
                         child: Column(
@@ -168,13 +186,49 @@ class _PostPageState extends State<PostPage> {
                               //     )
                               //   ],
                               // ),
-                              Center(
-                                child: Text(
-                                  "${post.name}",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                              Row(
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      "${post.name}",
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  post.userId != userId
+                                      ? PopupMenuButton(
+                                          child: const Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 10),
+                                              child: Icon(
+                                                Icons.more_vert,
+                                                color: Colors.black,
+                                              )),
+                                          itemBuilder: (context) => [
+                                            const PopupMenuItem(
+                                                child: Text('Sửa'),
+                                                value: 'edit'),
+                                            const PopupMenuItem(
+                                                child: Text('Xóa'),
+                                                value: 'delete')
+                                          ],
+                                          onSelected: (val) {
+                                            if (val == 'edit') {
+                                              // Navigator.of(context).push(
+                                              //     MaterialPageRoute(
+                                              //         builder: (context) =>
+                                              //             PostForm(
+                                              //               title: 'Edit Post',
+                                              //               post: post,
+                                              //             )));
+                                            } else {
+                                              _deleteEvaluate(post.id!);
+                                            }
+                                          },
+                                        )
+                                      : SizedBox()
+                                ],
                               ),
                               const SizedBox(
                                 height: 15,
@@ -190,17 +244,25 @@ class _PostPageState extends State<PostPage> {
                               const SizedBox(
                                 height: 15,
                               ),
-                              // Center(
-                              //   child: Container(
-                              //     width: MediaQuery.of(context).size.width - 40,
-                              //     height: 150,
-                              //     child: Image.network("${post.content}")
-                              //     // Image.asset(
-                              //     //   "assets/images/anh.jpg",
-                              //     //   fit: BoxFit.cover,
-                              //     // ),
-                              //   ),
-                              // ),
+                              post.image == null
+                                  ? Container()
+                                  : Center(
+                                      child: Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              40,
+                                          height: 150,
+                                          child: Image.network(
+                                            "${post.image}",
+                                            fit: BoxFit.cover,
+                                          )
+                                          // Image.asset(
+                                          //   "assets/images/anh.jpg",
+                                          //   fit: BoxFit.cover,
+                                          // ),
+                                          ),
+                                    ),
                               const SizedBox(
                                 height: 15,
                               ),

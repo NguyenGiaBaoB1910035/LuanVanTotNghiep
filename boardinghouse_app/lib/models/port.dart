@@ -9,6 +9,7 @@ class Post {
   // BoardingHouse? boardingHouse;
   String? name;
   String? content;
+  String? image;
   DateTime? dateCreated;
   DateTime? dateUpdated;
   int? view;
@@ -21,6 +22,7 @@ class Post {
     // this.boardingHouse,
     this.name,
     this.content,
+    this.image,
     this.dateCreated,
     this.dateUpdated,
     this.view,
@@ -45,6 +47,7 @@ class Post {
       //     ),
       name: json['name'],
       content: json['content'],
+      image: json['url_featured_image'],
       dateCreated: json['date_created'] != null
           ? DateTime.parse(json['date_created'])
           : null,

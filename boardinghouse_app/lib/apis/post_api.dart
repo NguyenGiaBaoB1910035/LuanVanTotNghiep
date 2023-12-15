@@ -198,8 +198,7 @@ Future<ApiResponse> deletePost(int postId) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http
-        .delete(Uri.parse('$ApiConstants.apiPost/$postId'), headers: {
+    final response = await http.delete(Uri.parse('$apiPost/$postId'), headers: {
       "Content-Type": "application/json",
       'Authorization': 'Bearer $token'
     });

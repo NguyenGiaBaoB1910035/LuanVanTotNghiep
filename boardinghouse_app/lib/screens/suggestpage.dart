@@ -182,7 +182,8 @@ class _SuggestPageState extends State<SuggestPage> {
                       )),
                 );
               },
-            )),
+            )
+            ),
       ),
     );
   }

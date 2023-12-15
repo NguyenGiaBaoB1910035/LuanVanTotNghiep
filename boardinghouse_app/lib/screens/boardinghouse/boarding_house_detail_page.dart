@@ -8,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-enum SampleItem { itemOne, itemTwo }
-
 class BoardingHouseDetailPage extends StatefulWidget {
   final int boardingHouseId;
 
@@ -27,9 +25,11 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
   BoardingHouse? _boardingHouse;
   bool loading = false;
   bool _isFavorite = false;
-  SampleItem? selectedMenu;
+  // SampleItem? selectedMenu;
+  int userId = 0;
 
   void getBoardingHouse() async {
+    userId = await getUserId();
     int boardingHouseId = widget.boardingHouseId;
     ApiResponse response = await getBoardingHousesDetail(boardingHouseId);
     print('profile:');
@@ -89,6 +89,23 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('${response.error}')));
+    }
+  }
+
+  void _favourites(int? boardingHouseId) async {
+    int userId = await getUserId();
+    ApiResponse response = await favourites(userId, boardingHouseId!);
+    if (response.error == null) {
+      print("yêu thích");
+      // Navigator.of(context).pop();
+    } else if (response.error == unauthorized) {
+      logout().then((value) => {});
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
+      setState(() {
+        // _loading = !_loading;
+      });
     }
   }
 
@@ -195,6 +212,7 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
                                     alignment: Alignment.topRight,
                                     child: InkWell(
                                       onTap: () {
+                                        _favourites(_boardingHouse!.id);
                                         setState(() {
                                           _isFavorite = !_isFavorite;
                                         });
@@ -708,46 +726,41 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text('${evaluate.user!.userName}'),
-                                    // evaluate.userId == getUserId()
-                                    //     ? Container(
-                                    //         child: null,
-                                    //       )
-                                    //     : PopupMenuButton<SampleItem>(
-                                    //         icon: const Icon(
-                                    //           Icons.more_vert,
-                                    //           size: 15,
-                                    //         ),
-                                    //         initialValue: selectedMenu,
-
-                                    //         // Callback that sets the selected popup menu item.
-                                    //         onSelected: (SampleItem item) {
-                                    //           setState(() {
-                                    //             selectedMenu = item;
-                                    //             if (item ==
-                                    //                 SampleItem.itemOne) {
-                                    //               print(
-                                    //                   'id người đánh giá : ${evaluate.userId}');
-                                    //             }
-                                    //             if (item ==
-                                    //                 SampleItem.itemTwo) {
-                                    //               // Call your delete function here
-                                    //               _deleteEvaluate(evaluate.id!);
-                                    //             }
-                                    //           });
-                                    //         },
-                                    //         itemBuilder: (BuildContext
-                                    //                 context) =>
-                                    //             <PopupMenuEntry<SampleItem>>[
-                                    //           const PopupMenuItem<SampleItem>(
-                                    //             value: SampleItem.itemOne,
-                                    //             child: Text('sửa'),
-                                    //           ),
-                                    //           const PopupMenuItem<SampleItem>(
-                                    //             value: SampleItem.itemTwo,
-                                    //             child: Text('xóa'),
-                                    //           ),
-                                    //         ],
-                                    //       ),
+                                    evaluate.userId == userId
+                                        ? PopupMenuButton(
+                                            child: const Padding(
+                                                padding:
+                                                    EdgeInsets.only(right: 10),
+                                                child: Icon(
+                                                  Icons.more_vert,
+                                                  color: Colors.black,
+                                                )),
+                                            itemBuilder: (context) => [
+                                              const PopupMenuItem(
+                                                  child: Text('Sửa'),
+                                                  value: 'edit'),
+                                              const PopupMenuItem(
+                                                  child: Text('Xóa'),
+                                                  value: 'delete')
+                                            ],
+                                            onSelected: (val) {
+                                              if (val == 'edit') {
+                                                // Navigator.of(context).push(
+                                                //     MaterialPageRoute(
+                                                //         builder: (context) =>
+                                                //             evaForm(
+                                                //               title: 'Edit eva',
+                                                //               eva: eva,
+                                                //             )));
+                                              } else {
+                                                _deleteEvaluate(
+                                                    evaluate.id! ?? 0);
+                                              }
+                                            },
+                                          )
+                                        : Container(
+                                            child: null,
+                                          )
                                   ],
                                 ),
                                 subtitle: Column(
@@ -779,69 +792,3 @@ class _BoardingHouseDetailPageState extends State<BoardingHouseDetailPage> {
     );
   }
 }
-
-// ------------------------------------------------------------------------------------------//
-// ------------------------------------------------------------------------------------------//
-// ------------------------------------------------------------------------------------------//
-
-// List<String> imageList = [
-//   'assets/images/bh_image_1.jpg',
-//   'assets/images/bh_image_2.jpg',
-//   'assets/images/bh_image_3.jpg',
-//   'assets/images/bh_image_4.jpg',
-//   // Thêm nhiều hình ảnh khác ở đây
-// ];
-
-// class ListImage extends StatefulWidget {
-//   const ListImage({super.key});
-
-//   @override
-//   State<ListImage> createState() => _ListImageState();
-// }
-
-// class _ListImageState extends State<ListImage> {
-//   final controller = PageController(viewportFraction: 0.9);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       height: MediaQuery.of(context).size.height * 4 / 10,
-//       width: MediaQuery.of(context).size.width,
-//       child: PageView.builder(
-//         controller: controller,
-//         // shrinkWrap: true,
-//         scrollDirection: Axis.horizontal,
-//         itemCount: imageList.length,
-//         itemBuilder: (BuildContext context, int index) {
-//           return Column(
-//             children: [
-//               Padding(
-//                 padding: const EdgeInsets.only(bottom: 10),
-//                 child: Container(
-//                   margin: const EdgeInsets.symmetric(horizontal: 5),
-//                   height: 300,
-//                   width: MediaQuery.of(context).size.width,
-//                   child: Image.asset(
-//                     imageList[index],
-//                     fit: BoxFit.cover,
-//                   ),
-//                 ),
-//               ),
-//               Container(
-//                 child: SmoothPageIndicator(
-//                     controller: controller, // PageController
-//                     count: imageList.length,
-//                     effect: const WormEffect(
-//                         dotHeight: 7,
-//                         dotWidth: 7,
-//                         activeDotColor: Color.fromRGBO(
-//                             0, 177, 237, 1)), // your preferred effect
-//                     onDotClicked: (index) {}),
-//               ),
-//             ],
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
