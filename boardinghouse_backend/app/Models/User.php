@@ -109,7 +109,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
 
     public function favourite_boarding_houses(): BelongsToMany
     {
-        return $this->belongsToMany(BoardingHouse::class, 'favourite_boarding_houses', 'boarding_house_id', 'user_id');
+        return $this->belongsToMany(BoardingHouse::class, 'favourite_boarding_houses', 'user_id', 'boarding_house_id')
+            ->withPivot('status')
+            ->wherePivot('status', 1)
+            ->withTimestamps();
     }
 
     public function getUrlAvatarAttribute()

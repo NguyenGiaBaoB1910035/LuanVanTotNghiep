@@ -1,16 +1,14 @@
 <?php
-
-namespace App\Filament\Resources\BoardingHouseResource\Api\Handlers;
+namespace App\Filament\Resources\UserResource\Api\Handlers;
 
 use App\Models\FavouriteBoardingHouse;
 use Illuminate\Http\Request;
 use Rupadana\ApiService\Http\Handlers;
-use App\Filament\Resources\BoardingHouseResource;
+use App\Filament\Resources\UserResource;
 
-class FavouriteHandler extends Handlers
-{
+class FavouriteHandler extends Handlers {
     public static string | null $uri = '/favourite';
-    public static string | null $resource = BoardingHouseResource::class;
+    public static string | null $resource = UserResource::class;
 
     public static function getMethod()
     {
