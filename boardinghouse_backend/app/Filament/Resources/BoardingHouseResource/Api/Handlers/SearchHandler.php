@@ -65,7 +65,9 @@ class SearchHandler extends Handlers
 
             // Search by capacity
             if ($request->filled('capacity')) {
-                $query->where('capacity', '=', $request->input('capacity'));
+                if($request->input('capacity') > 0){
+                    $query->where('capacity', '=', $request->input('capacity'));
+                }
             }
 
             // Search by openTime, closeTime
@@ -75,9 +77,9 @@ class SearchHandler extends Handlers
             }
 
             // Search by price
-            if ($request->filled('price_start') && $request->filled('price_start')) {
-                $query->where('price', '>=', $request->input('price_start'))
-                    ->where('price', '<=', $request->input('price_end'));
+            if ($request->filled('price_start') && $request->filled('price_end')) {
+                $query->where('price', '>=', (int)$request->input('price_start'))
+                    ->where('price', '<=', (int)$request->input('price_end'));
             }
 
             $results = $query->get();

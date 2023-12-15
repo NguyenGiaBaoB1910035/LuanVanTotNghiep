@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         'home': (context) => const HomePage(),
         'outstanding': (context) => const OutstandingPage(),
         'suggest': (context) => const SuggestPage(),
-        'search': (context) => SearchPage(),
+        // 'search': (context) => SearchPage(),
         'map': (context) => const MapPage(),
         //------//
         'post': (context) => const PostPage(),

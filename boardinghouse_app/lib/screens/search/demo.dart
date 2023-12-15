@@ -12,6 +12,7 @@ import 'package:boardinghouse_app/models/util.dart';
 import 'package:boardinghouse_app/screens/search/search_results_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DemoPage extends StatefulWidget {
   @override
