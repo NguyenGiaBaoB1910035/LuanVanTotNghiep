@@ -66,7 +66,7 @@ class BoardingHouse extends Model
     }
     public function favourites(): BelongsToMany
     {
-        return $this->belongsToMany(Util::class, 'favourite_boarding_houses', 'boarding_house_id', 'user_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'favourite_boarding_houses', 'boarding_house_id', 'user_id')->withTimestamps();
     }
 
     public function getUrlFeaturedImageAttribute()

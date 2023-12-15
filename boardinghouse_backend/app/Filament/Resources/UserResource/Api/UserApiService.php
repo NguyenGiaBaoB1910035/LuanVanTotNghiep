@@ -17,5 +17,7 @@ class UserApiService extends ApiService
         Handlers\DeleteHandler::route($router);
         Handlers\PaginationHandler::route($router);
         Handlers\DetailHandler::route($router);
+        Handlers\FavouriteHandler::route($router);
+        Handlers\FavouriteListHandler::route($router);
     }
 }
