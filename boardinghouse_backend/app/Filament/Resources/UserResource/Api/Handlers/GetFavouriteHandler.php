@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Resources\UserResource\Api\Handlers;
 
 use App\Models\FavouriteBoardingHouse;
@@ -6,8 +7,9 @@ use Illuminate\Http\Request;
 use Rupadana\ApiService\Http\Handlers;
 use App\Filament\Resources\UserResource;
 
-class FavouriteHandler extends Handlers {
-    public static string | null $uri = '/favourite';
+class GetFavouriteHandler extends Handlers
+{
+    public static string | null $uri = '/get-favourite';
     public static string | null $resource = UserResource::class;
 
     public static function getMethod()
@@ -26,7 +28,7 @@ class FavouriteHandler extends Handlers {
             'user_id' => 'required|integer',
             'boarding_house_id' => 'required|integer',
         ]);
-        
+
         $userId = $request->input('user_id');
         $boardingHouseId = $request->input('boarding_house_id');
 
@@ -37,19 +39,11 @@ class FavouriteHandler extends Handlers {
 
         if ($favorite) {
             // Toggle the existing favorite record status
-            $favorite->update(['status' => !$favorite->status]);
-            return static::sendSuccessResponse($favorite, "Successfully toggled favorite status.");
+            return static::sendSuccessResponse($favorite, "Successfully get favorite status.");
+        } else {
+            return response()->json([
+                'message' => "Favourite by $userId and $boardingHouseId not exists"
+            ]);
         }
-
-        // Create a new favorite record
-        $newFavorite = new FavouriteBoardingHouse([
-            'user_id' => $userId,
-            'boarding_house_id' => $boardingHouseId,
-            'status' => true,
-        ]);
-
-        $newFavorite->save();
-
-        return static::sendSuccessResponse($newFavorite, "Successfully marked as favorite.");
     }
 }
