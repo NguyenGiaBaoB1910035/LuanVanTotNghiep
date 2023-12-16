@@ -131,12 +131,12 @@ class BoardingHouseResource extends Resource
                                 Forms\Components\TextInput::make('user_email')
                                     ->label('Author email')
                                     ->dehydrated()
-                                    ->unique(User::class, 'user_id', ignoreRecord: true)
+                                    ->unique(BoardingHouse::class, 'user_id', ignoreRecord: true)
                                     ->disabled(),
                                 Forms\Components\TextInput::make('user_phone')
                                     ->label('Author phone')
                                     ->dehydrated()
-                                    ->unique(User::class, 'user_id', ignoreRecord: true)
+                                    ->unique(BoardingHouse::class, 'user_id', ignoreRecord: true)
                                     ->disabled(),
 
                                 Forms\Components\Select::make('boarding_house_type_id')

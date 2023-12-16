@@ -13,7 +13,7 @@ class BoardingHouse extends Model
 {
     use HasFactory;
 
-    protected $appends = ['url_featured_image', 'url_images', 'utils', 'boarding_house_type', 'user', 'evaluates'];
+    protected $appends = ['url_featured_image', 'url_images', 'utils', 'boarding_house_type', 'user', 'evaluates', 'user_email', 'user_phone'];
     protected $fillable = [
         'type',
         'name',
@@ -106,5 +106,14 @@ class BoardingHouse extends Model
         }
 
         return $urlImages;
+    }
+
+    public function getUserEmailAttribute()
+    {
+        return $this->user->email;
+    }
+    public function getUserPhoneAttribute()
+    {
+        return $this->user->phone;
     }
 }

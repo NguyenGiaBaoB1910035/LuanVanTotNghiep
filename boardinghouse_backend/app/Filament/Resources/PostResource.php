@@ -79,14 +79,16 @@ class PostResource extends Resource
                                         if ($boardingHouse) {
                                             $set('user_id', $boardingHouse->user_id);
                                             $set('user_name', optional($boardingHouse->user)->name);
+                                            $set('author', optional($boardingHouse->user)->name);
                                         }
                                     }),
 
-                                Forms\Components\TextInput::make('user_name')
+                                Forms\Components\TextInput::make('author')
                                     ->label('Author')
                                     ->dehydrated()
-                                    ->unique(BoardingHouse::class, 'user_id', ignoreRecord: true)
-                                    ->disabled(),
+                                    ->unique(Post::class, 'user_id', ignoreRecord: true)
+                                    ->disabled(true),
+
 
 
                             ]),

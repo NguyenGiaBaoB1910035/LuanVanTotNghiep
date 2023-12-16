@@ -10,10 +10,11 @@ use Illuminate\Support\Facades\Storage;
 class Post extends Model
 {
     use HasFactory;
-    protected $appends = ['url_featured_image'];
+    protected $appends = ['url_featured_image', 'author'];
 
     protected $fillable = [
         'user_id',
+        'user_name',
         'name',
         'featured_image',
         'content',
@@ -29,6 +30,11 @@ class Post extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getAuthor()
+    {
+        return $this->boardingHouse->user();
     }
 
     public function boardingHouse(): BelongsTo
@@ -58,5 +64,9 @@ class Post extends Model
         if (empty($this->featured_image) || !$this->featured_image) return;
 
         return url(Storage::url($this->featured_image));
+    }
+    public function getAuthorAttribute()
+    {
+        return $this->getAuthor->name;
     }
 }
